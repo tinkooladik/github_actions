@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
@@ -18,14 +18,16 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: gradle
-
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: clean gradlew
       run: ./gradlew clean
-  #  - name: Run ktlint checks
-  #    run: ./gradlew ktlintCheck
-  #  - name: Run tests
-  #    run: ./gradlew app:test tv:test
-  #  - name: Build with Gradle
-  #    run: ./gradlew app:assembleRelease tv:assembleRelease 
+    - name: Run tests
+      run: ./gradlew app:test tv:test
+  
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug
