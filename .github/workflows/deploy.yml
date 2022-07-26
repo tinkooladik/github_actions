@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    if:  startsWith(github.head_ref, 'build/rbtv/mobile/*.*.*.*') && github.event.pull_request.merged == true
+    if:  startsWith(github.head_ref, 'build/rbtv/mobile/**') && github.event.pull_request.merged == true
 
     runs-on: ubuntu-latest
 
