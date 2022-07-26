@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             //another change to trigger CI again
             //and again
             //build/rbtv/mobile/*.*.*.* test
-            //Redbull TV Android Mobile 4.13.3.1 (229) 1
+            //upload artifact
         }
     }
 
