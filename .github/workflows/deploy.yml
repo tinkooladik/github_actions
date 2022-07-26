@@ -2,7 +2,7 @@ name: Deploy RBTV Mobile
 
 on:
   pull_request:
-    branches: [ "Redbull TV Android Mobile *" ]
+    branches: [ "build/rbtv/mobile/*.*.*.*" ]
 
 jobs:
   build:
