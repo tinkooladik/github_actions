@@ -2,10 +2,10 @@ name: Deploy RBTV Mobile
 
 on:
   pull_request:
-    branches: [ "build/rbtv/mobile/*.*.*.*" ]
 
 jobs:
   build:
+    if:  startsWith(github.head_ref, 'build/rbtv/mobile/*.*.*.*')
 
     runs-on: ubuntu-latest
 
