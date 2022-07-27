@@ -24,7 +24,7 @@ anchors:
 jobs:
   apk_debug_google_play:
     name: Generate Debug APK - GooglePlay
-    if:  startsWith(github.head_ref, 'build/rbtv/mobile/')
+    #if:  startsWith(github.head_ref, 'build/rbtv/mobile/')
     runs-on: ubuntu-latest
 
     steps:
