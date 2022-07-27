@@ -1,24 +1,32 @@
 name: Deploy RBTV Mobile - TEST Anchors
 
 on:
-  pull_request:
+  pull_request
+  
+  
+#anchors:
+#  docker_hub_credentials: &docker_hub_credentials
+#    credentials:
+#      username: my-dockerhub-username
+#      password: ${{ secrets.DOCKER_HUB_PASSWORD }}
   
 anchors:
-  initial-setup: &initial-setup
-    - name: Extract version name
-      id: extract_version_name
-      run: echo ::set-output name=versionName::$(echo "${{github.head_ref}}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
+  extract-version: &extract-version
+    name: Extract version name
+    id: extract_version_name
+    run: echo ::set-output name=versionName::$(echo "${{github.head_ref}}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
+  setup-jdk: &setup-jdk
+    #uses: actions/checkout@v3
+    name: Set up JDK 11
+    uses: actions/setup-java@v3
+    with:
+      java-version: '11'
+      distribution: 'temurin'
+      cache: gradle
+  gradlew-permission: &gradlew-permission
+    name: Grant execute permission for gradlew
+    run: chmod +x gradlew
 
-    - uses: actions/checkout@v3
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
-
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
 
 jobs:
   apk_debug_google_play:
@@ -27,13 +35,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - <<: *initial-setup
+      - uses: actions/checkout@v2
+      - *extract-version
+      - *setup-jdk
+      - *gradlew-permission
       
-    - name: Build debug APK
-      run: bash ./gradlew app:assembleDebug --stacktrace
-      
-    - name: Upload APK
-      uses: actions/upload-artifact@v3
-      with:
-        name: GooglePlay Debug APK
-        path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Build debug APK
+        run: bash ./gradlew app:assembleDebug --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: GooglePlay Debug APK
+          path: app/build/outputs/apk/debug/app-debug.apk
