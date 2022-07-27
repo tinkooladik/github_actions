@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             //some change to trigger CI
             //another change to trigger CI again
             //and again
+            // test anchors - 1
         }
     }
 
