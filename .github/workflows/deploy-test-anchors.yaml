@@ -36,9 +36,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - *extract-version
-      - *setup-jdk
-      - *gradlew-permission
+      - <<: *extract-version
+      - <<: *setup-jdk
+      - <<: *gradlew-permission
       
       - name: Build debug APK
         run: bash ./gradlew app:assembleDebug --stacktrace
