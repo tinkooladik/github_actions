@@ -4,12 +4,6 @@ on:
   pull_request
   
   
-#anchors:
-#  docker_hub_credentials: &docker_hub_credentials
-#    credentials:
-#      username: my-dockerhub-username
-#      password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-  
 anchors:
   extract-version: &extract-version
     name: Extract version name
