@@ -16,11 +16,11 @@ jobs:
     name: APK - GooglePlay Release
     steps:
       - uses: actions/checkout@v2
+        with:
+          path: ./.github/actions/deploy
       - uses: actions/checkout@v3
         with:
-          path: ./.github/actions
-      -  id: deploy
-         uses: ./.github/actions/deploy
+          path: ./.github/actions/deploy
       - uses: ./.github/actions/deploy
         with:
           buildType: "release"
