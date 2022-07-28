@@ -3,19 +3,14 @@ name: Reusable deployment workflow
 inputs:
   buildType: # Debug / Release
     required: true
-    #type: string
   store: # GooglePlay / Amazon / Portal
     required: true
-    #type: string
   brand: # rbtv / servus
     required: true
-    #type: string
   platform: # mobile / tv
     required: true
-    #type: string
-  format: # apk / bundle
+  format: # assemble / bundle
     required: true
-    #type: string
   
 
 runs:
@@ -40,7 +35,7 @@ runs:
 
       - name: Build debug APK
         shell: bash
-        run: bash ./gradlew app:assembleDebug --stacktrace
+        run: bash ./gradlew app:"${{ inputs.format }}${{ inputs.buildType }}" --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
