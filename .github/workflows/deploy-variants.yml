@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: GooglePlay APK release
     steps:
-      #- uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     name: GooglePlay APK debug
     steps:
-      #- uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
