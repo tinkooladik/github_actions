@@ -11,6 +11,7 @@ on:
         type: string
 
 jobs: 
+
 ######################### Google Play ##############################
   google_play_apk_release:
     runs-on: ubuntu-latest
@@ -59,6 +60,112 @@ jobs:
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
+          buildType: "debug"
+          format: "bundle"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+          
+######################### Amazon ##############################
+  amazon_apk_release:
+    runs-on: ubuntu-latest
+    name: Amazon APK release
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "Amazon"
+          buildType: "release"
+          format: "apk"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  amazon_apk_debug:
+    runs-on: ubuntu-latest
+    name: Amazon APK debug
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "Amazon"
+          buildType: "debug"
+          format: "apk"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  amazon_bundle_release:
+    runs-on: ubuntu-latest
+    name: Amazon Bundle release
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "Amazon"
+          buildType: "release"
+          format: "bundle"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  amazon_bundle_debug:
+    runs-on: ubuntu-latest
+    name: Amazon Bundle debug
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "Amazon"
+          buildType: "debug"
+          format: "bundle"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+######################### Portal ##############################
+  portal_apk_release:
+    runs-on: ubuntu-latest
+    name: Portal APK release
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "Portal"
+          buildType: "release"
+          format: "apk"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  portal_apk_debug:
+    runs-on: ubuntu-latest
+    name: Portal APK debug
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "Portal"
+          buildType: "debug"
+          format: "apk"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  portal_bundle_release:
+    runs-on: ubuntu-latest
+    name: Portal Bundle release
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "Portal"
+          buildType: "release"
+          format: "bundle"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  portal_bundle_debug:
+    runs-on: ubuntu-latest
+    name: Portal Bundle debug
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "Portal"
           buildType: "debug"
           format: "bundle"
           brand: ${{ inputs.brand }}
