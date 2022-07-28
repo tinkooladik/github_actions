@@ -17,9 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        path: .github/actions
+        path: ./.github/actions
     
-    - uses: ./.github/actions/deploy-reusable
+    - uses: ./.github/actions/deploy-reusable.yml
       with:
         buildType: "release"
         store: "GooglePlay"
