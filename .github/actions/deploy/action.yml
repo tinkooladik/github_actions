@@ -15,16 +15,14 @@ inputs:
 
 runs:
   using: "composite"
+  env:
+    buildType: "${{ inputs.buildType }}"
   steps:
       - name: Extract version name
         id: extract_version_name
         shell: bash
         run: echo ::set-output name=versionName::$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
         
-      - name: Capitalise build type
-        id: capitalise_build_type
-        shell: bash
-        run: echo ::set-output name=buildType::$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')"
 
       - uses: actions/checkout@v3
       - name: Set up JDK 11
