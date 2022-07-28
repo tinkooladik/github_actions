@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     name: APK - GooglePlay Release
     steps:
-      - uses: ./.github/actions/deploy-reusable.yml
+      - uses: ./.github/actions/deploy-reusable
         with:
           buildType: "release"
           store: "GooglePlay"
