@@ -24,7 +24,7 @@ runs:
       - name: Cap build variant
         id: cap_build_type
         shell: bash
-        run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')"
+        run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')")
 
       - uses: actions/checkout@v3
       - name: Set up JDK 11
