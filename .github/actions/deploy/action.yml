@@ -20,11 +20,6 @@ runs:
         id: extract_version_name
         shell: bash
         run: echo ::set-output name=versionName::$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
-        
-
-      - name: CAPITALIZE FKNG STRING
-        shell: bash
-        run: echo "${{ inputs.buildType }}^ ${GITHUB_BUILD_TYPE}^" 
 
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -40,9 +35,10 @@ runs:
 
       - name: Build debug APK
         shell: bash
-        run: bash ./gradlew app:"${{ inputs.format }}${buildType}" --stacktrace
+        run: bash ./gradlew app:"${{ inputs.format }}${buildTypeCap}""${buildTypeCap" --stacktrace
         env:
-          buildType: "${inputs.buildType}^"
+          buildType: "${{ inputs.buildType }}"
+          buildTypeCap: "${buildType^}"
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
