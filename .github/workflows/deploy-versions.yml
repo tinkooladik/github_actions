@@ -12,10 +12,12 @@ on:
 
 jobs: 
   google_play_apk_release:
+    runs-on: ubuntu-latest
     name: APK - GooglePlay Release
-    uses: ./.github/actions/deploy-reusable.yml
-    with:
-      buildType: "release"
-      store: "GooglePlay"
-      format: "apk"
+    steps:
+      - uses: ./.github/actions/deploy-reusable.yml
+        with:
+          buildType: "release"
+          store: "GooglePlay"
+          format: "apk"
       
