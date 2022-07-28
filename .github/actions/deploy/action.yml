@@ -41,6 +41,11 @@ runs:
         shell: bash
         run: echo ::set-output name=action::$([[ ${{ inputs.format }} == "apk" ]] && echo "assemble" || echo "${{ inputs.format }}")
         
+      - name: results
+        id: results
+        shell: bash
+        run: echo "action - ${steps.extract_action.outlputs.action} ${{ steps.extract_action.outlputs.action }} ; extension - ${steps.extract_file_extension.outlputs.extention} ${{ steps.extract_file_extension.outlputs.extention }} "
+        
       - uses: actions/checkout@v3
       - name: Set up JDK 11
         uses: actions/setup-java@v3
