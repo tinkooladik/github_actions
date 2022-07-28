@@ -37,7 +37,11 @@ runs:
       - name: Extract file extension
         id: extract_file_extension
         shell: bash
-        run: echo "[[ ${{ inputs.format }} == "bundle" ]] && echo "aab" || echo "${{ inputs.format }}""
+        run: |
+          if [[ "${{ inputs.format }}" == "bundle" ]]; then
+              echo "FILE_EXTENSION=aab" >> $GITHUB_ENV; else
+              echo "FILE_EXTENSION=${{ inputs.format }}" >> $GITHUB_ENV
+          fi
         
       - name: Extract action
         id: extract_action
