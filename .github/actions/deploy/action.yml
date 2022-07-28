@@ -55,7 +55,7 @@ runs:
       - name: results
         id: results
         shell: bash
-        run: echo "action - ${{ env.ACTION }} ; extension - ${{ env.EXTENSION }} ; suffix - ${{ env.SUFFIX }}"
+        run: echo "action - ${{ env.ACTION }} ; extension - ${{ env.FILE_EXTENSION }} ; suffix - ${{ env.SUFFIX }}"
         
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -77,4 +77,4 @@ runs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.store }} ${{ inputs.buildType }} ${{ inputs.format }}
-          path: app/build/outputs/apk/${{ inputs.buildType }}/app${{ env.SUFFIX }}.${{ env.EXTENSION }}
+          path: app/build/outputs/apk/${{ inputs.buildType }}/app${{ env.SUFFIX }}.${{ env.FILE_EXTENSION }}
