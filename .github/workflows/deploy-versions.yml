@@ -11,34 +11,16 @@ on:
         type: string
 
 jobs: 
-  amazon_apk_debug:
-    name: Generate APK - Amazon Debug
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "Amazon"
-      format: "apk"
+  google_play_apk_release:
+    name: APK - GooglePlay Release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: pass data
+      uses: ./.github/workflows/deploy-reusable.yml
+      with:
+        buildType: "release"
+        store: "GooglePlay"
+        format: "apk"
       
-  amazon_apk_release:
-    name: Generate APK - Amazon Release
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "release"
-      store: "Amazon"
-      format: "apk"
-      
-  amazon_bundle_debug:
-    name: Generate Bundle - Amazon Debug
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "Amazon"
-      format: "bundle"
-      
-  amazon_bundle_release:
-    name: Generate Bundle - Amazon Release
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "Amazon"
-      format: "bundle"
