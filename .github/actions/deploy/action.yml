@@ -31,7 +31,7 @@ runs:
         shell: bash
         run: |
           if [[ "${{ inputs.buildType }}" == "debug" ]]; then
-              echo "BUILD_TYPE=-debug" >> $GITHUB_ENV
+              echo "SUFFIX=-debug" >> $GITHUB_ENV
           fi
         
       - name: Extract file extension
@@ -46,12 +46,16 @@ runs:
       - name: Extract action
         id: extract_action
         shell: bash
-        run: echo ::set-output name=action::$([[ ${{ inputs.format }} == "apk" ]] && echo "assemble" || echo "${{ inputs.format }}")
+        run: |
+          if [[ "${{ inputs.format }}" == "apk" ]]; then
+              echo "ACTION=assemble" >> $GITHUB_ENV; else
+              echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
+          fi
         
       - name: results
         id: results
         shell: bash
-        run: echo "action - ${{ steps.extract_action.outlputs.action }} ; extension - ${{ steps.extract_file_extension.outlputs.extention }} ; suffix - ${{ steps.extract_file_suffix.outlputs.suffix }} ; env - ${{ env.BUILD_TYPE }}"
+        run: echo "action - ${{ env.ACTION }} ; extension - ${{ env.EXTENSION }} ; suffix - ${{ env.SUFFIX }}"
         
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -67,10 +71,10 @@ runs:
 
       - name: Build debug APK
         shell: bash
-        run: bash ./gradlew app:"${{ steps.extract_action.outlputs.action }}${{ env.BUILD_TYPE }}" --stacktrace
+        run: bash ./gradlew app:"${{ env.ACTION }}${{ steps.cap_build_type.outputs.buildType }}" --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.store }} ${{ inputs.buildType }} ${{ inputs.format }}
-          path: app/build/outputs/apk/${{ inputs.buildType }}/app${{ steps.extract_file_suffix.outputs.suffix }}.${{ steps.extract_file_extension.outputs.extension }}
+          path: app/build/outputs/apk/${{ inputs.buildType }}/app${{ env.SUFFIX }}.${{ env.EXTENSION }}
