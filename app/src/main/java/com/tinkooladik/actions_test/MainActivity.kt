@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             //and again
             //build/rbtv/mobile/*.*.*.* test
             //upload artifact
-            // composite action
+            // composite action 2
         }
     }
 
