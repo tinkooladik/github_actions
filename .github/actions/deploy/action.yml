@@ -34,7 +34,7 @@ runs:
       - name: Extract file extension
         id: extract_file_extension
         shell: bash
-        run: echo ::set-output name=suffix::$([[ ${{ inputs.format }} == "bundle" ]] && echo "aab" || echo "${{ inputs.format }}")
+        run: echo ::set-output name=suffix::$(echo "[[ ${{ inputs.format }} == "bundle" ]] && echo "aab" || echo "${{ inputs.format }}"")
         
       - name: Extract action
         id: extract_action
@@ -44,7 +44,7 @@ runs:
       - name: results
         id: results
         shell: bash
-        run: echo "action - ${steps.extract_action.outlputs.action} ${{ steps.extract_action.outlputs.action }} ; extension - ${steps.extract_file_extension.outlputs.extention} ${{ steps.extract_file_extension.outlputs.extention }} "
+        run: echo "action - ${{ steps.extract_action.outlputs.action }} ; extension - ${{ steps.extract_file_extension.outlputs.extention }} ; suffix - ${{ steps.extract_file_suffix.outlputs.suffix }} "
         
       - uses: actions/checkout@v3
       - name: Set up JDK 11
