@@ -13,15 +13,9 @@ on:
 jobs: 
   google_play_apk_release:
     name: APK - GooglePlay Release
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        path: ./.github
-    
-    - uses: ./.github/actions/deploy-reusable.yml
-      with:
-        buildType: "release"
-        store: "GooglePlay"
-        format: "apk"
+    uses: ./.github/actions/deploy-reusable.yml
+    with:
+      buildType: "release"
+      store: "GooglePlay"
+      format: "apk"
       
