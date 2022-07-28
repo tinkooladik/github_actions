@@ -23,6 +23,7 @@ runs:
   steps:
       - name: Extract version name
         id: extract_version_name
+        shell: bash
         run: echo ::set-output name=versionName::$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
 
       - uses: actions/checkout@v3
@@ -34,6 +35,7 @@ runs:
           cache: gradle
 
       - name: Grant execute permission for gradlew
+        shell: bash
         run: chmod +x gradlew
 
       - name: Build debug APK
