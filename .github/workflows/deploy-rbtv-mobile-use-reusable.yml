@@ -1,0 +1,35 @@
+name: Deploy RBTV Mobile Using Reusable Workflow
+
+on:
+  pull_request:
+
+jobs:
+  google_play_apk_debug:
+    name: Generate APK - GooglePlay Debug
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      buildType: "debug"
+      store: "GooglePlay"
+      brand: "rbtv"
+      platform: "mobile"
+      format: "apk"
+      
+  google_play_apk_release:
+    name: Generate APK - GooglePlay Release
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      buildType: "release"
+      store: "GooglePlay"
+      brand: "rbtv"
+      platform: "mobile"
+      format: "apk"
+      
+  google_play_bundle_debug:
+    name: Generate Bundle - GooglePlay Debug
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      buildType: "debug"
+      store: "GooglePlay"
+      brand: "rbtv"
+      platform: "mobile"
+      format: "bundle"
