@@ -1,7 +1,7 @@
 name: Reusable deployment workflow
 
 inputs:
-  buildType: # Debug / Release
+  buildType: # debug / release
     required: true
   store: # GooglePlay / Amazon / Portal
     required: true
@@ -29,18 +29,20 @@ runs:
       - name: Extract file suffix
         id: extract_file_suffix
         shell: bash
-        run: if [${{ inputs.format }} == 'debug']; then
-               echo ::set-output name=suffix::"-debug"
+        run: if [${{ inputs.buildType }} == 'debug']; then
+               echo ::set-output name=suffix::$(echo "-debug")
              else
-               echo ::set-output name=suffix::""
+               echo ::set-output name=suffix::$(echo "")
+             fi
         
       - name: Extract file extension
         id: extract_file_extension
         shell: bash
         run: if [${{ inputs.format }} == 'bundle']; then
-               echo ::set-output name=extension::"aab"
+               echo ::set-output name=extension::$(echo "aab")
              else
-               echo ::set-output name=extension::${{ inputs.format }}
+               echo ::set-output name=extension::$(echo "${{ inputs.format }}")
+             fi
 
       - uses: actions/checkout@v3
       - name: Set up JDK 11
