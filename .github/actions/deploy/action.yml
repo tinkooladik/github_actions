@@ -37,6 +37,7 @@ runs:
         run: chmod +x gradlew
 
       - name: Build debug APK
+        shell: bash
         run: bash ./gradlew app:assembleDebug --stacktrace
 
       - name: Upload APK
