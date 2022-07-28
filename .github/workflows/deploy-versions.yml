@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - uses: github_actions/deploy-reusable@v1
+    - uses: tinkooladik/deploy-reusable@v1
       with:
         buildType: "release"
         store: "GooglePlay"
