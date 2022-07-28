@@ -29,11 +29,7 @@ runs:
       - name: Extract file suffix 1
         id: extract_file_suffix1
         shell: bash
-        run: echo ::set-output name=suffix::$(if "${{ inputs.buildType }}" == "debug" then
-               echo "-debug"
-             else
-               echo ""
-             fi)
+        run: echo ::set-output name=suffix::$(echo "$(${{inputs.buildType}}="debug" ? "-debug" : "")")
              
       - name: print smht
         id: epritn_f
