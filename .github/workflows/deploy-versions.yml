@@ -14,96 +14,132 @@ jobs:
 ######################### Google Play ##############################
   google_play_apk_debug:
     name: Generate APK - GooglePlay Debug
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "GooglePlay"
-      format: "apk"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "GooglePlay"
+          format: "apk"
       
   google_play_apk_release:
     name: Generate APK - GooglePlay Release
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "release"
-      store: "GooglePlay"
-      format: "apk"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "release"
+          store: "GooglePlay"
+          format: "apk"
       
   google_play_bundle_debug:
     name: Generate Bundle - GooglePlay Debug
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "GooglePlay"
-      format: "bundle"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "GooglePlay"
+          format: "bundle"
       
   google_play_bundle_release:
     name: Generate Bundle - GooglePlay Release
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "GooglePlay"
-      format: "bundle"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "GooglePlay"
+          format: "bundle"
 ######################### Amazon ##############################
   amazon_apk_debug:
     name: Generate APK - Amazon Debug
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "Amazon"
-      format: "apk"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "Amazon"
+          format: "apk"
       
   amazon_apk_release:
     name: Generate APK - Amazon Release
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "release"
-      store: "Amazon"
-      format: "apk"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "release"
+          store: "Amazon"
+          format: "apk"
       
   amazon_bundle_debug:
     name: Generate Bundle - Amazon Debug
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "Amazon"
-      format: "bundle"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "Amazon"
+          format: "bundle"
       
   amazon_bundle_release:
     name: Generate Bundle - Amazon Release
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "Amazon"
-      format: "bundle"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "Amazon"
+          format: "bundle"
 ######################### Portal ##############################
   portal_apk_debug:
     name: Generate APK - Portal Debug
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "Portal"
-      format: "apk"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "Portal"
+          format: "apk"
       
   portal_apk_release:
     name: Generate APK - Portal Release
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "release"
-      store: "Portal"
-      format: "apk"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "release"
+          store: "Portal"
+          format: "apk"
       
   portal_bundle_debug:
     name: Generate Bundle - Portal Debug
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "Portal"
-      format: "bundle"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "Portal"
+          format: "bundle"
       
   portal_bundle_release:
     name: Generate Bundle - Portal Release
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "Portal"
-      format: "bundle"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "Portal"
+          format: "bundle"
