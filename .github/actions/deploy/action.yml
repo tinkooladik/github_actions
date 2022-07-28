@@ -47,7 +47,7 @@ runs:
       - name: results
         id: results
         shell: bash
-        run: echo "action - ${{ steps.extract_action.outlputs.action }} ; extension - ${{ steps.extract_file_extension.outlputs.extention }} ; suffix - ${{ steps.extract_file_suffix.outlputs.suffix }} ; env - ${env.BUILD_TYPE}"
+        run: echo "action - ${{ steps.extract_action.outlputs.action }} ; extension - ${{ steps.extract_file_extension.outlputs.extention }} ; suffix - ${{ steps.extract_file_suffix.outlputs.suffix }} ; env - ${{ env.BUILD_TYPE }}"
         
       - uses: actions/checkout@v3
       - name: Set up JDK 11
