@@ -15,8 +15,6 @@ inputs:
 
 runs:
   using: "composite"
-  env:
-    buildType: "${{ inputs.buildType }}"
   steps:
       - name: Extract version name
         id: extract_version_name
@@ -39,6 +37,8 @@ runs:
       - name: Build debug APK
         shell: bash
         run: bash ./gradlew app:"${{ inputs.format }}${buildType}^" --stacktrace
+        env:
+          buildType: "${{ inputs.buildType }}"
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
