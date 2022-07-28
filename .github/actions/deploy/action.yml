@@ -31,7 +31,7 @@ runs:
         shell: bash
         run: |
           if [[ "${{ inputs.buildType }}" == "debug" ]]; then
-              echo "-debug"
+              echo "BUILD_TYPE=-debug" >> $GITHUB_ENV
           fi
         
       - name: Extract file extension
@@ -47,7 +47,7 @@ runs:
       - name: results
         id: results
         shell: bash
-        run: echo "action - ${{ steps.extract_action.outlputs.action }} ; extension - ${{ steps.extract_file_extension.outlputs.extention }} ; suffix - ${{ steps.extract_file_suffix.outlputs.suffix }} "
+        run: echo "action - ${{ steps.extract_action.outlputs.action }} ; extension - ${{ steps.extract_file_extension.outlputs.extention }} ; suffix - ${{ steps.extract_file_suffix.outlputs.suffix }} ; env - ${env.BUILD_TYPE}"
         
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -63,7 +63,7 @@ runs:
 
       - name: Build debug APK
         shell: bash
-        run: bash ./gradlew app:"${{ steps.extract_action.outlputs.action }}${{ steps.cap_build_type.outputs.buildType }}" --stacktrace
+        run: bash ./gradlew app:"${{ steps.extract_action.outlputs.action }}${{ env.BUILD_TYPE }}" --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
