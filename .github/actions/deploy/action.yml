@@ -30,9 +30,9 @@ runs:
         id: extract_file_suffix1
         shell: bash
         run: echo ::set-output name=suffix::$(if [${{ inputs.buildType }} == 'debug']; then
-               echo ::set-output name=suffix::$(echo "-debug")
+               echo echo "-debug"
              else
-               echo ::set-output name=suffix::$(echo "")
+               echo ""
              fi)
         
       - name: Extract file suffix
