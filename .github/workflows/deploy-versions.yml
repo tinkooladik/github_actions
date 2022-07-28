@@ -10,20 +10,13 @@ on:
         required: true
         type: string
 
-jobs:
-######################### Google Play ##############################
-  google_play_apk_debug:
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "GooglePlay"
-      format: "apk"
-      
+jobs: 
   google_play_apk_release:
     name: APK - GooglePlay Release
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    
     - name: pass data
       uses: ./.github/workflows/deploy-reusable.yml
       with:
