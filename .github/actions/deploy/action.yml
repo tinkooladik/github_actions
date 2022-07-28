@@ -33,6 +33,14 @@ runs:
                echo ::set-output name=suffix::"-debug"
              else
                echo ::set-output name=suffix::""
+        
+      - name: Extract file extension
+        id: extract_file_extension
+        shell: bash
+        run: if [${{ inputs.format }} == 'bundle']; then
+               echo ::set-output name=extension::"aab"
+             else
+               echo ::set-output name=extension::${{ inputs.format }}
 
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -54,4 +62,4 @@ runs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.store }} ${{ inputs.buildType }} ${{ inputs.format }}
-          path: app/build/outputs/apk/${{ inputs.buildType }}/app${{ steps.extract_file_suffix.outputs.suffix }}.${{ format }}
+          path: app/build/outputs/apk/${{ inputs.buildType }}/app${{ steps.extract_file_suffix.outputs.suffix }}.${{ steps.extract_file_extension.outputs.extension }}
