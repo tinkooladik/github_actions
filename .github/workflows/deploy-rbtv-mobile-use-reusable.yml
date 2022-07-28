@@ -5,7 +5,9 @@ on:
 
 jobs:
   rbtv_mobile:
-    uses: ./.github/workflows/deploy-versions.yml
-    with:
-      brand: "rbtv"
-      platform: "mobile"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/deploy-versions.yml
+        with:
+          brand: "rbtv"
+          platform: "mobile"
