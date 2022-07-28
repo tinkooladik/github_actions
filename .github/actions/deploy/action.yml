@@ -26,14 +26,6 @@ runs:
         shell: bash
         run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')")
         
-      - name: Extract file extension
-        shell: bash
-        run: |
-          if [[ "${{ inputs.format }}" == "bundle" ]]; then
-              echo "FILE_EXTENSION=aab" >> $GITHUB_ENV; else
-              echo "FILE_EXTENSION=${{ inputs.format }}" >> $GITHUB_ENV
-          fi
-        
       - name: Extract action
         shell: bash
         run: |
