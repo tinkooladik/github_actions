@@ -36,9 +36,9 @@ runs:
 
       - name: Build debug APK
         shell: bash
-        run: bash ./gradlew app:"${{ inputs.format }}${buildType}^" --stacktrace
+        run: bash ./gradlew app:"${{ inputs.format }}${buildType}" --stacktrace
         env:
-          buildType: "${{ inputs.buildType }}"
+          buildType: echo "${inputs.buildType}^"
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
