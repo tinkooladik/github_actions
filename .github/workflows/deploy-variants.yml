@@ -21,7 +21,7 @@ jobs:
         with:
           store: "GooglePlay"
           buildType: "release"
-          format: "assemble"
+          format: "apk"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
 
@@ -34,7 +34,7 @@ jobs:
         with:
           store: "GooglePlay"
           buildType: "debug"
-          format: "assemble"
+          format: "apk"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
 
@@ -47,7 +47,7 @@ jobs:
         with:
           store: "GooglePlay"
           buildType: "release"
-          format: "bundle"
+          format: "apk"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
 
@@ -60,6 +60,6 @@ jobs:
         with:
           store: "GooglePlay"
           buildType: "debug"
-          format: "bundle"
+          format: "apk"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
