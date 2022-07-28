@@ -26,16 +26,7 @@ runs:
         shell: bash
         run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')")
         
-      - name: Extract file suffix
-        id: extract_file_suffix
-        shell: bash
-        run: |
-          if [[ "${{ inputs.buildType }}" == "debug" ]]; then
-              echo "SUFFIX=-debug" >> $GITHUB_ENV
-          fi
-        
       - name: Extract file extension
-        id: extract_file_extension
         shell: bash
         run: |
           if [[ "${{ inputs.format }}" == "bundle" ]]; then
@@ -44,18 +35,12 @@ runs:
           fi
         
       - name: Extract action
-        id: extract_action
         shell: bash
         run: |
           if [[ "${{ inputs.format }}" == "apk" ]]; then
               echo "ACTION=assemble" >> $GITHUB_ENV; else
               echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
           fi
-        
-      - name: results
-        id: results
-        shell: bash
-        run: echo "action - ${{ env.ACTION }} ; extension - ${{ env.FILE_EXTENSION }} ; suffix - ${{ env.SUFFIX }}"
         
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -77,4 +62,4 @@ runs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.store }} ${{ inputs.buildType }} ${{ inputs.format }}
-          path: app/build/outputs/apk/${{ inputs.buildType }}/*.${{ env.FILE_EXTENSION }}
+          path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.${{ env.FILE_EXTENSION }}
