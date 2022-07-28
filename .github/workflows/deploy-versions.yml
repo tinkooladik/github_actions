@@ -15,7 +15,7 @@ jobs:
     name: APK - GooglePlay Release
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: github_actions/checkout@v3
     
     - uses: actions/deploy-reusable@v1
       with:
