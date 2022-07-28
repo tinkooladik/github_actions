@@ -13,11 +13,11 @@ on:
 jobs: 
   google_play_apk_release:
     runs-on: ubuntu-latest
-    name: APK - GooglePlay Release
+    name: GooglePlay
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/deploy
+      - uses: ./.github/actions/define-variants
         with:
-          buildType: "release"
           store: "GooglePlay"
-          format: "apk"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
