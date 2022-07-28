@@ -1,0 +1,13 @@
+name: Deploy RBTV Mobile - TEST
+
+on:
+  pull_request:
+
+jobs:
+  example_job:
+    name: Pass input and secrets to my-action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/workflows/reusable-workflow
+        with:
+          username: "SOBAKA"
