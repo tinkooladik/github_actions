@@ -12,5 +12,5 @@ jobs:
     - name: Deploy
       uses: ./.github/workflows/deploy-versions.yml
       with:
-        brand: "brand"
+        brand: "rbtv"
         platform: "mobile"
