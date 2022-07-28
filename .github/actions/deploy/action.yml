@@ -35,7 +35,7 @@ runs:
 
       - name: Build debug APK
         shell: bash
-        run: bash ./gradlew app:"${{ inputs.format }}${buildTypeCap}""${buildTypeCap" --stacktrace
+        run: bash ./gradlew app:"${{ inputs.format }}${buildTypeCap}""${buildTypeCap}" --stacktrace
         env:
           buildType: "${{ inputs.buildType }}"
           buildTypeCap: "${buildType^}"
