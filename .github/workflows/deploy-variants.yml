@@ -20,8 +20,8 @@ jobs:
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
-          buildType: "release"
-          format: "apk"
+          buildType: "Release"
+          format: "assemble"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
 
@@ -33,8 +33,8 @@ jobs:
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
-          buildType: "debug"
-          format: "apk"
+          buildType: "Debug"
+          format: "assemble"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
 
@@ -46,7 +46,7 @@ jobs:
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
-          buildType: "release"
+          buildType: "Release"
           format: "bundle"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
@@ -59,7 +59,7 @@ jobs:
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
-          buildType: "debug"
+          buildType: "Debug"
           format: "bundle"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
