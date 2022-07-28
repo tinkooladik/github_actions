@@ -21,7 +21,7 @@ on:
   
 
 jobs:
-  apk_debug_google_play:
+  build_and_upload:
     name: ${{ inputs.format }} - ${{ inputs.store }} ${{ inputs.buildType }}
     if:  startsWith(github.head_ref, "build/${{ inputs.brand }}/${{ inputs.platform }}/")
     runs-on: ubuntu-latest
