@@ -9,7 +9,7 @@ inputs:
     required: true
   platform: # mobile / tv
     required: true
-  format: # assemble / bundle
+  format: # apk / bundle
     required: true
   
 
@@ -20,6 +20,11 @@ runs:
         id: extract_version_name
         shell: bash
         run: echo ::set-output name=versionName::$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
+        
+      - name: Capitalise build type
+        id: capitalise_build_type
+        shell: bash
+        run: echo ::set-output name=buildType::$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')"
 
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -35,7 +40,7 @@ runs:
 
       - name: Build debug APK
         shell: bash
-        run: bash ./gradlew app:"${{ inputs.format }}${{ ${{ inputs.buildType^ }}^ }}" --stacktrace
+        run: bash ./gradlew app:"${{ inputs.format }}${{ steps.capitalise_build_type.outputs.buildType }}" --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
