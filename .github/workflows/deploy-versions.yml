@@ -14,32 +14,44 @@ jobs:
 ######################### Google Play ##############################
   google_play_apk_debug:
     name: APK - GooglePlay Debug
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "GooglePlay"
-      format: "apk"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "GooglePlay"
+          format: "apk"
       
   google_play_apk_release:
     name: APK - GooglePlay Release
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "release"
-      store: "GooglePlay"
-      format: "apk"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "release"
+          store: "GooglePlay"
+          format: "apk"
       
   google_play_bundle_debug:
     name: Bundle - GooglePlay Debug
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "debug"
-      store: "GooglePlay"
-      format: "bundle"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "GooglePlay"
+          format: "bundle"
       
   google_play_bundle_release:
     name: Bundle - GooglePlay Release
-    uses: ./.github/workflows/deploy-reusable.yml
-    with:
-      buildType: "release"
-      store: "GooglePlay"
-      format: "bundle"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/workflows/deploy-reusable.yml
+        with:
+          buildType: "debug"
+          store: "GooglePlay"
+          format: "bundle"
