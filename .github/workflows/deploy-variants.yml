@@ -11,6 +11,7 @@ on:
         type: string
 
 jobs: 
+######################### Google Play ##############################
   google_play_apk_release:
     runs-on: ubuntu-latest
     name: GooglePlay APK release
@@ -34,5 +35,31 @@ jobs:
           store: "GooglePlay"
           buildType: "debug"
           format: "apk"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  google_play_bundle_release:
+    runs-on: ubuntu-latest
+    name: GooglePlay Bundle release
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "GooglePlay"
+          buildType: "release"
+          format: "bundle"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  google_play_bundle_debug:
+    runs-on: ubuntu-latest
+    name: GooglePlay Bundle debug
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "GooglePlay"
+          buildType: "debug"
+          format: "bundle"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
