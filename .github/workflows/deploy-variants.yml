@@ -20,7 +20,7 @@ jobs:
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
-          buildType: "Release"
+          buildType: "release"
           format: "assemble"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
@@ -33,7 +33,7 @@ jobs:
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
-          buildType: "Debug"
+          buildType: "debug"
           format: "assemble"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
@@ -46,7 +46,7 @@ jobs:
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
-          buildType: "Release"
+          buildType: "release"
           format: "bundle"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
@@ -59,7 +59,7 @@ jobs:
       - uses: ./.github/actions/deploy
         with:
           store: "GooglePlay"
-          buildType: "Debug"
+          buildType: "debug"
           format: "bundle"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
