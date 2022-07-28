@@ -1,0 +1,50 @@
+name: Define build variants
+
+inputs:
+  brand: # rbtv / servus
+    required: true
+    type: string
+  platform: # mobile / tv
+    required: true
+    type: string
+  store: # GooglePlay / Amazon / Portal
+    required: true
+  
+runs:
+  using: "composite"
+  steps:
+    - name: Release APK
+      uses: ./.github/actions/deploy
+      with:
+        buildType: "release"
+        format: "apk"
+        store: ${{ inputs.store }}
+        brand: ${{ inputs.brand }}
+        platform: ${{ inputs.platform }}
+        
+    - name: Debug APK
+      uses: ./.github/actions/deploy
+      with:
+        buildType: "debug"
+        format: "apk"
+        store: ${{ inputs.store }}
+        brand: ${{ inputs.brand }}
+        platform: ${{ inputs.platform }}
+        
+    - name: Release Bundle
+      uses: ./.github/actions/deploy
+      with:
+        buildType: "release"
+        format: "bundle"
+        store: ${{ inputs.store }}
+        brand: ${{ inputs.brand }}
+        platform: ${{ inputs.platform }}
+        
+    - name: Debug Bundle
+      uses: ./.github/actions/deploy
+      with:
+        buildType: "debug"
+        format: "bundle"
+        store: ${{ inputs.store }}
+        brand: ${{ inputs.brand }}
+        platform: ${{ inputs.platform }}
