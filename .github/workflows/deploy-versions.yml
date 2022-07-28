@@ -13,14 +13,11 @@ on:
 jobs:
 ######################### Google Play ##############################
   google_play_apk_debug:
-    name: APK - GooglePlay Debug
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/deploy-reusable.yml
-        with:
-          buildType: "debug"
-          store: "GooglePlay"
-          format: "apk"
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      buildType: "debug"
+      store: "GooglePlay"
+      format: "apk"
       
   google_play_apk_release:
     name: APK - GooglePlay Release
