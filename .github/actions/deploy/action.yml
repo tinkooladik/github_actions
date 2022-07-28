@@ -29,10 +29,8 @@ runs:
       - name: Extract file suffix
         id: extract_file_suffix
         shell: bash
-        run: |
-            if [[ "${{ inputs.buildType }}" == "debug" ]]; then
-                echo ::set-output name=suffix::debug
-            fi
+        run: echo ::set-output name=suffix::debug
+      - if: "${{ inputs.buildType }}" == "debug"
         
       - name: Extract file extension
         id: extract_file_extension
