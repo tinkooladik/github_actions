@@ -9,6 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/workflows/reusable-workflow@main
+      - uses: reusable-workflow@main #./.github/workflows/reusable-workflow@main
         with:
           username: "SOBAKA"
