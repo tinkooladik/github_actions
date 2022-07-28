@@ -30,7 +30,7 @@ runs:
         id: extract_file_suffix
         shell: bash
         run: echo ::set-output name=suffix::debug
-      - if: inputs.buildType }} == "debug"
+      - if: inputs.buildType == "debug"
         
       - name: Extract file extension
         id: extract_file_extension
