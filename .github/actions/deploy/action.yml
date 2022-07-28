@@ -29,12 +29,17 @@ runs:
       - name: Extract file suffix
         id: extract_file_suffix
         shell: bash
-        run: echo ::set-output name=suffix::$(echo "[[ ${{ inputs.buildType }} == "debug" ]] && echo "-debug" || echo """)
+        run: echo ::set-output name=suffix::$([[ ${{ inputs.buildType }} == "debug" ]] && echo "-debug" || echo "")
         
       - name: Extract file extension
         id: extract_file_extension
         shell: bash
-        run: echo ::set-output name=suffix::$(echo "[[ ${{ inputs.format }} == "bundle" ]] && echo "aab" || echo "${{ inputs.format }}"")
+        run: echo ::set-output name=suffix::$([[ ${{ inputs.format }} == "bundle" ]] && echo "aab" || echo "${{ inputs.format }}")
+        
+      - name: Extract action
+        id: extract_action
+        shell: bash
+        run: echo ::set-output name=action::$([[ ${{ inputs.format }} == "apk" ]] && echo "assemble" || echo "${{ inputs.format }}")
         
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -50,7 +55,7 @@ runs:
 
       - name: Build debug APK
         shell: bash
-        run: bash ./gradlew app:"${{ inputs.format }}${{ steps.cap_build_type.outputs.buildType }}" --stacktrace
+        run: bash ./gradlew app:"${{ steps.extract_action.outlputs.action }}${{ steps.cap_build_type.outputs.buildType }}" --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
