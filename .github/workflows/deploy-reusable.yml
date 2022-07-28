@@ -1,0 +1,52 @@
+name: Reusable deployment workflow
+
+on:
+  workflow_call:
+    inputs:
+      buildType: # Debug / Release
+        required: true
+        type: string
+      store: # GooglePlay / Amazon / Portal
+        required: true
+        type: string
+      brand: # rbtv / servus
+        required: true
+        type: string
+      platform: # mobile / tv
+        required: true
+        type: string
+      format: # apk / bundle
+        required: true
+        type: string
+  
+
+jobs:
+  apk_debug_google_play:
+    name: Generate ${{ inputs.format }} - ${{ inputs.store }} ${{ inputs.buildType }}
+    if:  startsWith(github.head_ref, "build/${{ inputs.brand }}/${{ inputs.platform }}/")
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Extract version name
+      id: extract_version_name
+      run: echo ::set-output name=versionName::$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
+      
+    - uses: actions/checkout@v3
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+          
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Build debug APK
+      run: bash ./gradlew app:assembleDebug --stacktrace
+      
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: GooglePlay Debug APK
+        path: app/build/outputs/apk/debug/app-debug.apk
