@@ -37,7 +37,7 @@ jobs:
       format: "bundle"
       
   google_play_bundle_release:
-    name: Generate Bundle - GooglePlay Debug
+    name: Generate Bundle - GooglePlay Release
     uses: ./.github/workflows/deploy-reusable.yml
     with:
       buildType: "debug"
@@ -69,7 +69,7 @@ jobs:
       format: "bundle"
       
   amazon_bundle_release:
-    name: Generate Bundle - Amazon Debug
+    name: Generate Bundle - Amazon Release
     uses: ./.github/workflows/deploy-reusable.yml
     with:
       buildType: "debug"
@@ -101,7 +101,7 @@ jobs:
       format: "bundle"
       
   portal_bundle_release:
-    name: Generate Bundle - Portal Debug
+    name: Generate Bundle - Portal Release
     uses: ./.github/workflows/deploy-reusable.yml
     with:
       buildType: "debug"
