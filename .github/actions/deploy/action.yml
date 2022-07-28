@@ -26,6 +26,11 @@ runs:
         shell: bash
         run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')")
         
+      - name: Extract file suffix 1
+        id: extract_file_suffix1
+        shell: bash
+        run: echo ::set-output name=suffix::$(echo ${ ((${{ inputs.buildType }} == "debug" ? "-debug" : "" )) })
+        
       - name: Extract file suffix
         id: extract_file_suffix
         shell: bash
