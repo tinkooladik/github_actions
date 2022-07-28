@@ -9,13 +9,3 @@ jobs:
     with:
       brand: "rbtv"
       platform: "mobile"
-  google_play_apk_release:
-    runs-on: ubuntu-latest
-    name: APK - GooglePlay Release
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./.github/actions/deploy
-        with:
-          buildType: "release"
-          store: "GooglePlay"
-          format: "apk"
