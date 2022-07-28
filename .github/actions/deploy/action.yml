@@ -31,7 +31,7 @@ runs:
         shell: bash
         run: |
             if [[ "${{ inputs.buildType }}" == "debug" ]]; then
-                echo "::set-output name=suffix::-debug"
+                echo "::set-output name=suffix::debug"
             fi
         
       - name: Extract file extension
