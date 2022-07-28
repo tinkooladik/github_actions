@@ -35,7 +35,7 @@ runs:
       - name: Extract file extension
         id: extract_file_extension
         shell: bash
-        run: echo ::set-output name=suffix::$(echo "[[ ${{ inputs.format }} == "bundle" ]] && echo "aab" || echo "${{ inputs.format }}"")
+        run: echo "[[ ${{ inputs.format }} == "bundle" ]] && echo "aab" || echo "${{ inputs.format }}""
         
       - name: Extract action
         id: extract_action
