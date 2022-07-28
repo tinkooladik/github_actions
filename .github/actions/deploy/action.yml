@@ -3,19 +3,19 @@ name: Reusable deployment workflow
 inputs:
   buildType: # Debug / Release
     required: true
-    type: string
+    #type: string
   store: # GooglePlay / Amazon / Portal
     required: true
-    type: string
+    #type: string
   brand: # rbtv / servus
     required: true
-    type: string
+    #type: string
   platform: # mobile / tv
     required: true
-    type: string
+    #type: string
   format: # apk / bundle
     required: true
-    type: string
+    #type: string
   
 
 runs:
