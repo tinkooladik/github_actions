@@ -1,57 +1,87 @@
 name: Reusable deployment workflow
+description: Reusable action that makes a build and uploads it
 
 inputs:
-  buildType: # debug / release
+  buildType:
+    description: debug / release
     required: true
-  store: # GooglePlay / Amazon / Portal
+  store:
+    description: GooglePlay / Amazon / Portal / Oculus
     required: true
-  brand: # rbtv / servus
+  brand:
+    description: rbtv / servus
     required: true
-  platform: # mobile / tv
+  platform:
+    description: mobile / 10ft
     required: true
-  format: # apk / bundle
+  format:
+    description: apk / bundle
     required: true
-  
+
 
 runs:
   using: "composite"
   steps:
-      - name: Extract version name
-        id: extract_version_name
-        shell: bash
-        run: echo ::set-output name=versionName::$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
-        
-      - name: Capitalize build variant
-        id: cap_build_type
-        shell: bash
-        run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')")
-        
-      - name: Extract action
-        shell: bash
-        run: |
-          if [[ "${{ inputs.format }}" == "apk" ]]; then
-              echo "ACTION=assemble" >> $GITHUB_ENV; else
-              echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
-          fi
-        
-      - uses: actions/checkout@v3
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
+    - name: Extract version name
+      id: extract_version_name
+      shell: bash
+      run: echo ::set-output name=versionName::$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
 
-      - name: Grant execute permission for gradlew
-        shell: bash
-        run: chmod +x gradlew
+    - name: Capitalize build variant
+      id: cap_build_type
+      shell: bash
+      run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')")
 
-      - name: Build debug APK
-        shell: bash
-        run: bash ./gradlew app:"${{ env.ACTION }}${{ steps.cap_build_type.outputs.buildType }}" --stacktrace
+    - name: Extract action
+      shell: bash
+      run: |
+        if [[ "${{ inputs.format }}" == "apk" ]]; then
+            echo "ACTION=assemble" >> $GITHUB_ENV; else
+            echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
+        fi
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ inputs.store }} ${{ inputs.buildType }} ${{ inputs.format }}
-          path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
+    - name: Extract brand path
+      shell: bash
+      run: |
+        if [[ "${{ inputs.brand }}" == "rbtv" ]]; then
+            echo "BRAND=RedBullTV" >> $GITHUB_ENV; else
+            echo "BRAND=ServusTV" >> $GITHUB_ENV
+        fi
+
+    - name: Extract build name
+      shell: bash
+      run: echo "BUILD_NAME=${{ inputs.store }}_${{ inputs.buildType }}_${{ inputs.format }}" >> $GITHUB_ENV
+
+    - uses: actions/checkout@v3
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      shell: bash
+      run: chmod +x gradlew
+
+    - name: Build APK
+      shell: bash
+      run: bash ./gradlew app:"${{ env.ACTION }}${{ steps.cap_build_type.outputs.buildType }}" --stacktrace
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.BUILD_NAME }}
+        path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
+
+    - name: Build Package for AWS Upload
+      shell: bash
+      run: |
+        mkdir s3bundle
+        cp -R app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.* s3bundle
+
+
+    - name: Upload files to S3 with AWS CLI
+      shell: bash
+      run: |
+        echo //rb-streaming-app-builds/${{ env.BRAND }}/Android/${{ inputs.brand }}_${{ inputs.platform }}/${{ steps.extract_version_name.outputs.versionName }}/${{ env.BUILD_NAME }}
