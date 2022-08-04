@@ -66,7 +66,7 @@ runs:
 
     - name: Build APK
       shell: bash
-      run: bash ./gradlew app:"${{ env.ACTION }}${{ steps.cap_build_type.outputs.buildType }}" --stacktrace
+      run: bash ./gradlew app:assembleDebug --stacktrace
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
