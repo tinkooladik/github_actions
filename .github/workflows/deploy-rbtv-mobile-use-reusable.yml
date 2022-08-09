@@ -10,7 +10,6 @@ jobs:
     with:
       brand: "rbtv"
       platform: "mobile"
-    if: |
-      startsWith(github.head_ref, 'build/rbtv/mobile/') &&
+    if: ${{ startsWith(github.head_ref, 'build/rbtv/mobile/') &&
       github.event.review.state == 'approved' &&
-      ${{ contains(github.event.pull_request.labels.*.name, 'deploy') }}
+      contains(github.event.pull_request.labels.*.name, 'deploy') }}
