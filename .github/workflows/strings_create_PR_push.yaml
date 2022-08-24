@@ -2,8 +2,8 @@ name: Strings PR push
 
 on:
   push:
-  #  branches:
-  #    - 'strings/*'
+    branches:
+      - 'strings/*'
 
 jobs:
    build:
