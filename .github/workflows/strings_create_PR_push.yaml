@@ -6,11 +6,11 @@ on:
       - 'strings/*'
 
 jobs:
-   build:
+    create-pr:
+      if:  startsWith(github.head_ref, 'strings/')
 
-     runs-on: ubuntu-latest
-
-     steps:
+      runs-on: ubuntu-latest
+      steps:
       - name: Create Pull Request
         uses: actions/github-script@v6
         with:
