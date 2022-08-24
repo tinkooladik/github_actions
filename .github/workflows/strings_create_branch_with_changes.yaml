@@ -13,7 +13,7 @@ jobs:
      steps:
      - uses: actions/checkout@v3
        with:
-         ref: 'development'
+         ref: 'branch1' #'development'
 
      - name: Grant execute permission for gradlew
        run: chmod +x gradlew
