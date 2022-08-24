@@ -3,9 +3,9 @@ name: Strings localization
 on:
   workflow_dispatch:
   schedule:
-    - cron: "H 0 * * *"
+    - cron: "*/5 * * * *" #"H 0 * * *"
 
- jobs:
+jobs:
    build:
 
      runs-on: ubuntu-latest
