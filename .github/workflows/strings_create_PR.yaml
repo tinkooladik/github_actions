@@ -1,7 +1,7 @@
 name: Strings PR 
 
 on:
-  create:
+  push:
     branches:
       - strings/*
 
