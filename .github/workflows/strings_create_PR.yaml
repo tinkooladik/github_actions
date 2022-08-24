@@ -1,11 +1,11 @@
-name: Strings localization 
+name: Strings PR 
 
 on:
   create:
     branches:
       - strings/*
 
- jobs:
+jobs:
    build:
 
      runs-on: ubuntu-latest
