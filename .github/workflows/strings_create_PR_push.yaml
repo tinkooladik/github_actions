@@ -2,13 +2,19 @@ name: Strings PR push
 
 on:
   push:
+    branches:
+      - 'strings/[0-9]+'
 
 jobs:
     create-pr:
-      if:  startsWith(github.head_ref, 'strings/')
 
       runs-on: ubuntu-latest
       steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+           ref: github.head_ref #'development'
+           
       - name: Create Pull Request
         uses: actions/github-script@v6
         with:
