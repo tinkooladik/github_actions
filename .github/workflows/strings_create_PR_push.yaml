@@ -3,7 +3,7 @@ name: Strings PR push
 on:
   push:
     branches:
-      - "strings/[0-9]+"
+      - "strings/*"
 
 jobs:
    build:
