@@ -1,0 +1,35 @@
+name: Strings localization 
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *" #"H 0 * * *"
+
+jobs:
+   build:
+
+     runs-on: ubuntu-latest
+
+     steps:
+     - uses: actions/checkout@v3
+       with:
+         ref: 'development'
+
+     - name: Grant execute permission for gradlew
+       run: chmod +x gradlew
+       
+     - name: clean gradlew
+       run: ./gradlew clean
+       
+     - name: download strings
+       run: ./gradlew randomChanges
+       
+     - name: Commit & Push changes
+       uses: stefanzweifel/git-auto-commit-action@v4
+       with:
+         commit_message: Update string files
+         branch: strings/${{ github.run_id }}
+         commit_user_name: Strings Bot
+         push_options: '--verbose'
+       
+       
