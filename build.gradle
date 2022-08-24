@@ -8,3 +8,11 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task randomChanges {
+    ext.outputFile = file("$project.rootDir.absolutePath/project-info.txt")
+    outputs.file(outputFile)
+    doLast {
+        outputFile.text = "projectInfo.project=${project.name}${Math.abs(new Random().nextInt(999))}"
+    }
+}
