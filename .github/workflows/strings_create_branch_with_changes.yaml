@@ -22,7 +22,7 @@ on:
        run: ./gradlew clean
        
      - name: download strings
-       run: ./gradlew downloadStrings
+       run: ./gradlew randomChanges
        
      - name: Commit & Push changes
        uses: stefanzweifel/git-auto-commit-action@v4
