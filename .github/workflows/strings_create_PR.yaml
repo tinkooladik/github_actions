@@ -1,10 +1,14 @@
 name: Strings PR 
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - "strings/*"
+  create:
+    ref_type: branch
+    ref: "refs/heads/strings/[0-9]+"
+  
+  
+ # push:
+ #   branches:
+  #    - "strings/*"
 
 jobs:
    build:
