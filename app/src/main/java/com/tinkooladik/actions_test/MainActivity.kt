@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
             //and again
             //build/rbtv/mobile/*.*.*.* test
             //upload artifact
+            //build/rbtv/mobile/1.1.2.3
         }
     }
 
