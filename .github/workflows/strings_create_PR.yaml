@@ -1,6 +1,7 @@
 name: Strings PR 
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - strings/*
