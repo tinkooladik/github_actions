@@ -34,6 +34,7 @@ jobs:
          create_branch: true
            
      - name: Create Pull Request
+       if: steps.auto-commit-action.outputs.changes_detected == 'true'
        uses: actions/github-script@v6
        with:
           script: |
@@ -57,4 +58,8 @@ jobs:
               labels: ['strings', 'automated pr']
             });
        
+
+     - name: Log no changes
+       if: steps.auto-commit-action.outputs.changes_detected == 'false'
+       run: echo "No Changes!"
        
