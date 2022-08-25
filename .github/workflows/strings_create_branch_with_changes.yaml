@@ -61,5 +61,7 @@ jobs:
 
      - name: Log no changes
        if: steps.auto-commit-action.outputs.changes_detected == 'false'
-       run: echo "No Changes!"
+       run: |
+            echo "No Changes!"
+            exit 1
        
