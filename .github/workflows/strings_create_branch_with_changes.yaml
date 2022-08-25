@@ -59,6 +59,7 @@ jobs:
 
       - name: Log no changes
         if: steps.auto-commit-action.outputs.changes_detected == 'false'
-        run: |
-          echo "No Changes!";
-          exit 1
+        uses: actions/github-script@v6
+        with:
+          script: |
+              core.setFailed('No changes')
