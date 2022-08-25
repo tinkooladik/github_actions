@@ -8,6 +8,8 @@ on:
 jobs:
    update:
      runs-on: ubuntu-latest
+     outputs:
+      changes_detected: ${{ steps.auto-commit-action.outputs.changes_detected }}
      steps:
      - uses: actions/checkout@v3
        with:
@@ -34,7 +36,7 @@ jobs:
    create_pr:
      runs-on: ubuntu-latest
      needs: update
-     if: needs.update.steps.auto-commit-action.outputs.changes_detected == 'true'
+     if: needs.update.outputs.changes_detected == 'true'
      steps:
      - name: Create Pull Request
        uses: actions/github-script@v6
@@ -63,7 +65,7 @@ jobs:
    log_no_changes:
      runs-on: ubuntu-latest 
      needs: update
-     if: needs.update.steps.auto-commit-action.outputs.changes_detected == 'false'
+     if: needs.update.outputs.changes_detected == 'false'
      steps:
      - name: Log no changes
        run: echo "No Changes!"
