@@ -3,7 +3,7 @@ name: Strings localization
 on:
   workflow_dispatch:
   schedule:
-    - cron: "H 0 * * *"
+    - cron: "0 0 * * *"
 
 jobs:
    build:
