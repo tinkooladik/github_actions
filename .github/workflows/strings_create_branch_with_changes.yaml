@@ -23,6 +23,7 @@ jobs:
       #    run: ./gradlew randomChanges
 
       - name: Commit & Push changes
+        id: commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
          commit_message: Update string files
@@ -32,7 +33,7 @@ jobs:
          create_branch: true
 
       - name: Create Pull Request
-        if: steps.auto-commit-action.outputs.changes_detected == 'true'
+        if: steps.commit.outputs.changes_detected == 'true'
         uses: actions/github-script@v6
         with:
            script: |
@@ -58,7 +59,7 @@ jobs:
 
 
       - name: Log no changes
-        if: steps.auto-commit-action.outputs.changes_detected == 'false'
+        if: steps.commit.outputs.changes_detected == 'false'
         uses: actions/github-script@v6
         with:
           script: core.setFailed('No changes')
