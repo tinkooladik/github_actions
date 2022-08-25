@@ -61,5 +61,4 @@ jobs:
         if: steps.auto-commit-action.outputs.changes_detected == 'false'
         uses: actions/github-script@v6
         with:
-          script: |
-              core.setFailed('No changes')
+          script: core.setFailed('No changes')
