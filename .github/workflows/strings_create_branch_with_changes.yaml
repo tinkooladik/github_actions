@@ -50,5 +50,11 @@ jobs:
               ].join('\n'),
               labels: ['strings', 'automated pr', 'push']
             });
+            github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: result.data.number,
+              labels: ['strings', 'automated pr']
+            });
        
        
