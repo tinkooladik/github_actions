@@ -14,6 +14,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
+  push:
+    branches:
+      - 'localization'
 
 jobs:
   update:
@@ -53,7 +56,7 @@ jobs:
               --head "strings-update" \
               --state "open" \
           )
-          if ((prs.size > 0)); then
+          if ((prs.length > 0)); then
               echo "pr_exists=true" >> "$GITHUB_OUTPUT"
           fi
 
