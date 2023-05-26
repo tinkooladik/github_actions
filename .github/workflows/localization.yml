@@ -58,7 +58,7 @@ jobs:
           fi
 
       - name: Create Pull Request
-        if: steps.commit.outputs.changes_detected == 'true' && steps.check_pr.outputs.pr_exists != true
+        if: steps.commit.outputs.changes_detected == 'true' && steps.check_pr.outputs.pr_exists != 'true'
         uses: actions/github-script@v6
         with:
           script: |
