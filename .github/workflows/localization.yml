@@ -51,12 +51,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           prs=$(gh pr list --base branch1 --head strings-update --state open)
-          if (( ${#prs[@]} > 0 )); then
-              echo "PR_EXISTS=true" >> $GITHUB_ENV
+          if (( ${#prs[@]} eq 0 )); then
+              echo "CREATE_PR=true" >> $GITHUB_ENV
           fi
 
       - name: Create Pull Request
-        if: steps.commit.outputs.changes_detected == 'true' && env.PR_EXISTS == 'false'
+        if: steps.commit.outputs.changes_detected && env.CREATE_PR
         uses: actions/github-script@v6
         with:
           script: |
