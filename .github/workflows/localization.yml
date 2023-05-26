@@ -57,7 +57,7 @@ jobs:
                   map(select(.baseRefName == "branch1" and .headRefName == "strings-update"))
                   | length
               ')
-          if ((prs > 0)); then
+          if ((prs == 0)); then
               echo "CREATE_PR=true" >> $GITHUB_ENV
           fi
 
