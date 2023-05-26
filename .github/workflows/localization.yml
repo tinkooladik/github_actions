@@ -29,8 +29,8 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-#      - name: clean gradlew
-#        run: ./gradlew clean
+      - name: clean gradlew
+        run: ./gradlew clean
 
       - name: download strings
         run: ./gradlew randomChanges
@@ -90,9 +90,3 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: core.setFailed('No changes')
-
-      - name: Updated existing PR
-        if: steps.check_pr.outputs.pr_exists == 'true'
-        uses: actions/github-script@v6
-        with:
-          script: core.setSucceed('Pushed new commit to existing PR')
