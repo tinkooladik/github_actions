@@ -45,35 +45,18 @@ jobs:
           push_options: '--verbose'
           #create_branch: false
 
-#      - name: Check if PR exists
-#        id: check_pr
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: |
-#          prs=$(gh pr list --repo "$GITHUB_REPOSITORY" --base branch1 --head strings-update --state open)
-#          if (( ${#prs[@]} eq 0 )); then
-#              echo "CREATE_PR=true" >> $GITHUB_ENV
-#          fi
-
       - name: Check if PR exists
         id: check_pr
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run:  |
-          prs=$(gh pr list \
-            --repo "$GITHUB_REPOSITORY" \
-            --state open \
-            --json baseRefName,headRefName \
-            --jq '
-            map(select(.baseRefName == "branch1" and .headRefName == "strings-update"))
-            | length
-          ')
-          if ((prs eq 0)); then
-          echo "DO_PR=true" >> $GITHUB_ENV
+        run: |
+          prs=$(gh pr list --base branch1 --head strings-update111 --state open)
+          if (( ${#prs[@]} == 0 )); then
+              echo "CREATE_PR=true" >> $GITHUB_ENV
           fi
 
       - name: Create Pull Request
-        if: steps.commit.outputs.changes_detected && env.DO_PR
+        if: steps.commit.outputs.changes_detected && env.CREATE_PR
         uses: actions/github-script@v6
         with:
           script: |
