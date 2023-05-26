@@ -50,15 +50,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          prs=$(gh pr list --base branch1 --head strings-update --state open)
+          prs=$(gh pr list --base branch1 --head strings-update)
           echo 'OPEN_PRS='${#prs[@]} >> $GITHUB_ENV
 
-      - name: Print prs
-        id: print_prs
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          echo $(gh pr list --base branch1 --head strings-update --state open)
+#      - name: Print prs
+#        id: print_prs
+#        env:
+#          GH_TOKEN: ${{ github.token }}
+#        run: |
+#          echo $(gh pr list --base branch1 --head strings-update --state open)
 
       - name: Create Pull Request
         if: steps.commit.outputs.changes_detected == 'true' && env.OPEN_PRS == '0'
