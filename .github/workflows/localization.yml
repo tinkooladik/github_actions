@@ -50,8 +50,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-#          prs=$(gh pr list --base branch1 --head strings-update --state open)
-#          echo 'OPEN_PRS='${#prs[@]} >> $GITHUB_ENV
           prs=$(gh pr list \
               --repo "$GITHUB_REPOSITORY" \
               --json baseRefName,headRefName \
@@ -59,9 +57,15 @@ jobs:
                   map(select(.baseRefName == "branch1" and .headRefName == "strings-update"))
                   | length
               ')
-          if ((prs == 0)); then
+          if ((prs > 0)); then
               echo "CREATE_PR=true" >> $GITHUB_ENV
           fi
+
+
+
+#          prs=$(gh pr list --base branch1 --head strings-update --state open)
+#          echo 'OPEN_PRS='${#prs[@]} >> $GITHUB_ENV
+
 
 #      - name: Print prs
 #        id: print_prs
