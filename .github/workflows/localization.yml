@@ -50,8 +50,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          prs=$(gh pr list --base branch1 --head strings-update)
-          echo 'OPEN_PRS='${#prs[@]} >> $GITHUB_ENV
+#          prs=$(gh pr list --base branch1 --head strings-update --state open)
+#          echo 'OPEN_PRS='${#prs[@]} >> $GITHUB_ENV
+          prs=$(gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --json baseRefName,headRefName \
+              --jq '
+                  map(select(.baseRefName == "branch1" and .headRefName == "strings-update"))
+                  | length
+              ')
+          if ((prs == 0)); then
+              echo "CREATE_PR=true" >> $GITHUB_ENV
+          fi
 
 #      - name: Print prs
 #        id: print_prs
@@ -61,7 +71,7 @@ jobs:
 #          echo $(gh pr list --base branch1 --head strings-update --state open)
 
       - name: Create Pull Request
-        if: steps.commit.outputs.changes_detected == 'true' && env.OPEN_PRS == '0'
+        if: steps.commit.outputs.changes_detected == 'true' && env.CREATE_PR == 'true'
         uses: actions/github-script@v6
         with:
           script: |
