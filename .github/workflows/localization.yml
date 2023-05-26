@@ -55,8 +55,7 @@ jobs:
               --base "branch1" \
               --head "strings-update" \
               --state "open" \
-              --jq 'length'
-          )
+          ) | jq length
           if ((prs > 0)); then
               echo "pr_exists=true" >> "$GITHUB_OUTPUT"
           fi
