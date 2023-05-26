@@ -67,7 +67,7 @@ jobs:
           script: |
             const { repo, owner } = context.repo;
             const result = await github.rest.pulls.create({
-              title: '[Example] Simple demo',
+              title: '[Strings] Test strings update script',
               owner,
               repo,
               head: 'strings-update',
