@@ -32,8 +32,8 @@ jobs:
       - name: clean gradlew
         run: ./gradlew clean
 
-#      - name: download strings
-#        run: ./gradlew randomChanges
+      - name: download strings
+        run: ./gradlew randomChanges
 
       - name: Commit & Push changes
         id: commit
@@ -47,8 +47,6 @@ jobs:
 
       - name: Check if PR exists
         id: check_pr
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           prs=$(gh pr list --base branch1 --head strings-update --state open)
           if (( ${#prs[@]} == 0 )); then
@@ -56,7 +54,7 @@ jobs:
           fi
 
       - name: Create Pull Request
-        if: steps.commit.outputs.changes_detected && env.CREATE_PR
+        if: steps.commit.outputs.changes_detected #&& env.CREATE_PR
         uses: actions/github-script@v6
         with:
           script: |
