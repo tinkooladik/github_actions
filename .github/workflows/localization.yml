@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: 'branch1' #'development'
+          ref: 'strings' #'development'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -40,7 +40,7 @@ jobs:
           branch: strings
           commit_user_name: Strings Bot
           push_options: '--verbose'
-          create_branch: false
+          #create_branch: false
 
       - name: Check if PR exists
         id: check_pr
@@ -59,7 +59,7 @@ jobs:
           fi
 
       - name: Create Pull Request
-        if: steps.commit.outputs.changes_detected == 'true'  && steps.check_pr.outputs.pr_exists != true
+        if: steps.commit.outputs.changes_detected == 'true' && steps.check_pr.outputs.pr_exists != true
         uses: actions/github-script@v6
         with:
           script: |
