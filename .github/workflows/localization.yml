@@ -58,10 +58,12 @@ jobs:
           )
           if (( ${#prs[@]} > 0 )); then
               echo "pr_exists=true" >> "$GITHUB_OUTPUT"
+          else
+              echo "pr_exists=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create Pull Request
-        if: steps.commit.outputs.changes_detected == 'true' && steps.check_pr.outputs.pr_exists != 'true'
+        if: steps.commit.outputs.changes_detected == 'true' && steps.check_pr.outputs.pr_exists == 'false'
         uses: actions/github-script@v6
         with:
           script: |
