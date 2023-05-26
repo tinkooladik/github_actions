@@ -54,7 +54,6 @@ jobs:
                   map(select(.baseRefName == "branch1" and .headRefName == "strings"))
                   | length
               ')
-          echo "PRs count with strings branch: ${{ prs }}"
           if ((prs > 0)); then
               echo "pr_exists=true" >> "$GITHUB_OUTPUT"
           fi
