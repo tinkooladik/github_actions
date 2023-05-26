@@ -53,7 +53,7 @@ jobs:
               --head "strings-update" \
               --state "open" \
           )
-          if ((prs > 0)); then
+          if ((prs.size > 0)); then
               echo "pr_exists=true" >> "$GITHUB_OUTPUT"
           fi
 
