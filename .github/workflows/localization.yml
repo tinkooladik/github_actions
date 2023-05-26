@@ -53,10 +53,6 @@ jobs:
           prs=$(gh pr list --base branch1 --head strings-update --state open)
           echo 'OPEN_PRS='${#prs[@]} >> $GITHUB_ENV
 
-#          if (( ${#prs[@]} > 0 )); then
-#              echo "OPEN_PRS=true" >> $GITHUB_ENV
-#          fi
-
       - name: Print prs
         id: print_prs
         env:
