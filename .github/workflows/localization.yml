@@ -62,8 +62,7 @@ jobs:
           env:
             GH_TOKEN: ${{ github.token }}
           run: |
-            prs=$(gh pr list --base branch1 --head strings-update --state open)
-            echo prs
+            gh pr list --base branch1 --head strings-update --state open
 
         - name: Create Pull Request
         if: steps.commit.outputs.changes_detected == 'true' && env.OPEN_PRS == '0'
