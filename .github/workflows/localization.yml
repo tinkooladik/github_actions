@@ -53,11 +53,11 @@ jobs:
           prs=$(gh pr list --base branch1 --head strings-update --state open)
           if (( ${#prs[@]} > 0 )); then
 #              echo "pr_exists=true" >> "$GITHUB_OUTPUT"
-              echo 'pr_exists=true' >> $GITHUB_OUTPUT
+              echo 'pr_exists=true' >> $GITHUB_ENV
           fi
 
       - name: Create Pull Request
-        if: steps.commit.outputs.changes_detected == 'true' && steps.check_pr.outputs.pr_exists == 'false'
+        if: steps.commit.outputs.changes_detected == 'true' && pr_exists == 'false'
         uses: actions/github-script@v6
         with:
           script: |
