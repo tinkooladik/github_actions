@@ -50,7 +50,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          prs=$(gh pr list --base branch1 --head strings-update111 --state open)
+          prs=$(gh pr list --base branch1 --head strings-update --state open)
           if (( ${#prs[@]} == 0 )); then
               echo "CREATE_PR=true" >> $GITHUB_ENV
           fi
