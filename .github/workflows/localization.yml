@@ -50,11 +50,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          prs=$(gh pr list --base "branch1" --head "strings-update" --state "open")
+          prs=$(gh pr list --base branch1 --head strings-update --state open)
           if (( ${#prs[@]} > 0 )); then
-              echo "pr_exists=true" >> "$GITHUB_OUTPUT"
-          else
-              echo "pr_exists=false" >> "$GITHUB_OUTPUT"
+#              echo "pr_exists=true" >> "$GITHUB_OUTPUT"
+              echo 'pr_exists='true >> $GITHUB_OUTPUT
           fi
 
       - name: Create Pull Request
