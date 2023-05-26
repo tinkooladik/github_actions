@@ -57,7 +57,15 @@ jobs:
 #              echo "OPEN_PRS=true" >> $GITHUB_ENV
 #          fi
 
-      - name: Create Pull Request
+      - name: Print prs
+        id: print_prs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prs=$(gh pr list --base branch1 --head strings-update --state open)
+          echo prs
+
+          - name: Create Pull Request
         if: steps.commit.outputs.changes_detected == 'true' && env.OPEN_PRS == '0'
         uses: actions/github-script@v6
         with:
