@@ -40,7 +40,7 @@ jobs:
           branch: strings
           commit_user_name: Strings Bot
           push_options: '--verbose'
-          create_branch: true
+          create_branch: false
 
       - name: Check if PR exists
         id: check_pr
@@ -54,6 +54,7 @@ jobs:
                   map(select(.baseRefName == "branch1" and .headRefName == "strings"))
                   | length
               ')
+          echo "PRs count with strings branch: ${{ prs }}"
           if ((prs > 0)); then
               echo "pr_exists=true" >> "$GITHUB_OUTPUT"
           fi
@@ -82,6 +83,7 @@ jobs:
               issue_number: result.data.number,
                labels: ['strings', 'automated pr']
              });
+
       - name: Log no changes
         if: steps.commit.outputs.changes_detected == 'false'
         uses: actions/github-script@v6
