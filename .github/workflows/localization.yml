@@ -51,12 +51,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           prs=$(gh pr list --base branch1 --head strings-update --state open)
-          if (( ${#prs[@]} == 0 )); then
-              echo "CREATE_PR=false" >> $GITHUB_ENV
+          if (( ${#prs[@]} > 0 )); then
+              echo "CREATE_PR=true" >> $GITHUB_ENV
           fi
 
       - name: Create Pull Request
-        if: steps.commit.outputs.changes_detected == 'true' && env.CREATE_PR == 'true'
+        if: steps.commit.outputs.changes_detected == 'true' #&& env.CREATE_PR == 'true'
         uses: actions/github-script@v6
         with:
           script: |
