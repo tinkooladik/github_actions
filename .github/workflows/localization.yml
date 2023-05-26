@@ -40,7 +40,7 @@ jobs:
           branch: strings
           commit_user_name: Strings Bot
           push_options: '--verbose'
-          create_branch: false
+          create_branch: true
 
       - name: Check if PR exists
         id: check_pr
