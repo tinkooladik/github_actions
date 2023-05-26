@@ -52,7 +52,7 @@ jobs:
         run: |
           prs=$(gh pr list --base branch1 --head strings-update --state open)
           if (( ${#prs[@]} == 0 )); then
-              echo "CREATE_PR=true" >> $GITHUB_ENV
+              echo "CREATE_PR=false" >> $GITHUB_ENV
           fi
 
       - name: Create Pull Request
