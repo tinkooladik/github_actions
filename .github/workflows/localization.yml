@@ -32,8 +32,8 @@ jobs:
       - name: clean gradlew
         run: ./gradlew clean
 
-      - name: download strings
-        run: ./gradlew randomChanges
+#      - name: download strings
+#        run: ./gradlew randomChanges
 
       - name: Commit & Push changes
         id: commit
