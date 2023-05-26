@@ -49,11 +49,9 @@ jobs:
         run: |
           prs=$(gh pr list \
               --repo "$GITHUB_REPOSITORY" \
-              --json baseRefName, headRefName \
-              --jq '
-                  map(select(.baseRefName == "branch1" and .headRefName == "strings-update"))
-                  | length
-              ')
+              --base "branch1" \
+              --head "strings-update" \
+              --state "open" \)
           if ((prs > 0)); then
               echo "pr_exists=true" >> "$GITHUB_OUTPUT"
           fi
