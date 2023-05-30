@@ -1,1 +1,1 @@
-projectInfo.project=GitHub Actions Test296 test auto assign
+projectInfo.project=GitHub Actions Test296 test auto assign1
