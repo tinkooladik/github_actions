@@ -3,3 +3,10 @@ addReviewers: false
 
 # Set to true to add assignees to pull requests
 addAssignees: true
+
+# Set to true to add reviewers from different groups to pull requests
+useReviewGroups: false
+
+# A number of reviewers added to the pull request
+# Set 0 to add all the reviewers (default: 0)
+numberOfReviewers: 0
