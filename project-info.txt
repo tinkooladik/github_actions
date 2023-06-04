@@ -1,1 +1,1 @@
-projectInfo.project=GitHub Actions Test834
+projectInfo.project=GitHub Actions Test960
