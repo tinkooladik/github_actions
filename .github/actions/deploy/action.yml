@@ -45,7 +45,7 @@ runs:
     - name: Capitalize brand
       shell: bash
       run: |
-        echo "BRAND=$(echo "${{ inputs.brand }}" | sed 's/./\u&/')" >> $GITHUB_ENV
+        echo "BRAND=$(echo $(tr '[:lower:]' '[:upper:]' <<< ${${{ input.brand }}:0:1})${input.brand:1})" >> $GITHUB_ENV
         echo "BUILD_TYPE=$(echo "${{ inputs.buildType }}" | sed 's/./\u&/')" >> $GITHUB_ENV
 
     - name: Extract build name
