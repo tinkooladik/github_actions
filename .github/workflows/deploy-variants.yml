@@ -1,6 +1,9 @@
 name: Define build variants
 description: description
 
+on:
+  workflow_call:
+
 inputs:
   brand: # rbtv / servus
     required: true
