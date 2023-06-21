@@ -3,6 +3,7 @@ name: Deploy RBTV Mobile
 on:
   workflow_dispatch:
   pull_request:
+    types: [opened,labeled,reopened]
     paths:
       - 'build.gradle'
 
