@@ -50,7 +50,7 @@ runs:
 
     - name: Extract build name
       shell: bash
-      run: echo "BUILD_NAME=${{ inputs.brand^^ }}-Android-${{ inputs.platform^ }}-${{ inputs.store^ }}-${{ steps.extract_version_name.outputs.versionName }}-${{ inputs.buildType }}" >> $GITHUB_ENV
+      run: echo "BUILD_NAME=${${{ inputs.brand }}^^}-Android-${{ inputs.platform^ }}-${{ inputs.store^ }}-${{ steps.extract_version_name.outputs.versionName }}-${{ inputs.buildType }}" >> $GITHUB_ENV
 
     - uses: actions/checkout@v3
     - name: Set up JDK 11
