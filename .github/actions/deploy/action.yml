@@ -45,8 +45,8 @@ runs:
     - name: Capitalize brand
       shell: bash
       run: |
-        echo "BRAND=${{ inputs.brand^ }}" >> $GITHUB_ENV
-        echo "BUILD_TYPE=${{ inputs.buildType^ }}" >> $GITHUB_ENV
+        echo "BRAND=${{ inputs.brand }}^" >> $GITHUB_ENV
+        echo "BUILD_TYPE=${{ inputs.buildType }}^" >> $GITHUB_ENV
 
     - name: Extract build name
       shell: bash
