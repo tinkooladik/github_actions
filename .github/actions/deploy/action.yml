@@ -37,9 +37,10 @@ runs:
             echo "ACTION=assemble" >> $GITHUB_ENV; else
             echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
         fi
-        brand=${{ inputs.brand }}
-        brand_lc="${brand,,}"
-        echo "BRAND=$(echo "${brand_lc^}")" >> $GITHUB_ENV
+        if [[ "${{ inputs.brand }}" == "RBTV" ]]; then
+            echo "BRAND=Rbtv" >> $GITHUB_ENV; else
+            echo "BRAND=Servus" >> $GITHUB_ENV
+        fi
         buildType=${{ inputs.buildType }}
         echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
 
