@@ -26,25 +26,17 @@ runs:
       shell: bash
       run: echo "VERSION=$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)" >> $GITHUB_ENV
 
-    - name: Extract module
+    - name: Prepare string variables
       shell: bash
       run: |
         if [[ "${{ inputs.platform }}" == "mobile" ]]; then
             echo "MODULE=app" >> $GITHUB_ENV; else
             echo "MODULE=tv" >> $GITHUB_ENV
         fi
-
-    - name: Extract action
-      shell: bash
-      run: |
         if [[ "${{ inputs.format }}" == "apk" ]]; then
             echo "ACTION=assemble" >> $GITHUB_ENV; else
             echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
         fi
-
-    - name: Capitalize brand
-      shell: bash
-      run: |
         brand=${{ inputs.brand }}
         brand_lc="${brand,,}"
         echo "BRAND=$(echo "${brand_lc^}")" >> $GITHUB_ENV
