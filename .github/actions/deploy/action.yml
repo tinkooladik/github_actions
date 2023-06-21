@@ -35,6 +35,11 @@ runs:
             echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
         fi
 
+    - name: Capitalize build type
+      id: cap_build_type
+      shell: bash
+      run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')")
+
     - name: Extract build name
       shell: bash
       run: echo "BUILD_NAME=${{ inputs.brand }}-Android-${{ inputs.platform }}-${{ inputs.store }}-${{ steps.extract_version_name.outputs.versionName }}-${{ inputs.buildType }}" >> $GITHUB_ENV
@@ -64,4 +69,4 @@ runs:
     - name: Upload files to S3 with AWS CLI
       shell: bash
       run: |
-        echo //rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/${{ steps.extract_version_name.outputs.versionName }}/${ ${{ inputs.buildType }}^ }
+        echo //rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/${{ steps.extract_version_name.outputs.versionName }}/${{ steps.cap_build_type.outputs.buildType }}
