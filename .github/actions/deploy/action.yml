@@ -23,9 +23,8 @@ runs:
   using: "composite"
   steps:
     - name: Extract version name
-      id: extract_version_name
       shell: bash
-      run: echo ::set-output name=versionName::$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
+      run: echo "VERSION=$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)" >> $GITHUB_ENV
 
     - name: Extract module
       shell: bash
@@ -44,23 +43,19 @@ runs:
         fi
 
     - name: Capitalize brand
-      id: cap_brand
       shell: bash
-      run: echo ::set-output name=brand::$(echo "$(echo "${{ inputs.brand }}" | sed 's/.*/\u&/')")
-
-    - name: Capitalize build type
-      id: cap_build_type
-      shell: bash
-      run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')")
+      run: |
+        echo "BRAND=${{ inputs.brand^ }}" >> $GITHUB_ENV
+        echo "BUILD_TYPE=${{ inputs.buildType^ }}" >> $GITHUB_ENV
 
     - name: Extract build name
       shell: bash
-      run: echo "BUILD_NAME=${{ inputs.brand }}-Android-${{ inputs.platform }}-${{ inputs.store }}-${{ steps.extract_version_name.outputs.versionName }}-${{ inputs.buildType }}" >> $GITHUB_ENV
+      run: echo "BUILD_NAME=${{ inputs.brand }}-Android-${{ inputs.platform }}-${{ inputs.store }}-${{ env.VERSION }}-${{ inputs.buildType }}" >> $GITHUB_ENV
 
     - name: Print build action
       shell: bash
       run: |
-        echo ${{ env.MODULE }}:${{ env.ACTION }}${{ steps.cap_brand.outputs.brand }}${{ inputs.store }}${{ steps.cap_build_type.outputs.buildType }}
+        echo ${{ env.MODULE }}:${{ env.ACTION }}${{ env.BRAND }}${{ inputs.store }}${{ env.BUILD_TYPE }}
 
     - uses: actions/checkout@v3
     - name: Set up JDK 11
@@ -88,4 +83,4 @@ runs:
     - name: Upload files to S3 with AWS CLI
       shell: bash
       run: |
-        echo //rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/${{ steps.extract_version_name.outputs.versionName }}/${{ steps.cap_build_type.outputs.buildType }}
+        echo //rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/${{ env.VERSION }}/${{ env.BUILD_TYPE }}
