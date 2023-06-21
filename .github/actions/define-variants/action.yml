@@ -1,15 +1,17 @@
 name: Define build variants
+description: description
 
 inputs:
   brand: # rbtv / servus
     required: true
-    type: string
+    description: description
   platform: # mobile / tv
     required: true
-    type: string
+    description: description
   store: # GooglePlay / Amazon / Portal
     required: true
-  
+    description: description
+
 runs:
   using: "composite"
   steps:
@@ -21,7 +23,7 @@ runs:
         store: ${{ inputs.store }}
         brand: ${{ inputs.brand }}
         platform: ${{ inputs.platform }}
-        
+
     - name: Debug APK
       uses: ./.github/actions/deploy
       with:
@@ -30,7 +32,7 @@ runs:
         store: ${{ inputs.store }}
         brand: ${{ inputs.brand }}
         platform: ${{ inputs.platform }}
-        
+
     - name: Release Bundle
       uses: ./.github/actions/deploy
       with:
@@ -39,7 +41,7 @@ runs:
         store: ${{ inputs.store }}
         brand: ${{ inputs.brand }}
         platform: ${{ inputs.platform }}
-        
+
     - name: Debug Bundle
       uses: ./.github/actions/deploy
       with:
