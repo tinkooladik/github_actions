@@ -1,1 +1,1 @@
-projectInfo.project=GitHub Actions Test296 test auto assign5
+projectInfo.project=GitHub Actions Test296 test auto assign5 test branch push
