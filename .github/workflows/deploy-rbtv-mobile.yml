@@ -8,7 +8,7 @@ on:
 
 jobs:
   rbtv_mobile:
-    uses: ./.github/workflows/deploy-variants
+    uses: ./.github/workflows/deploy-variants.yml
     with:
       brand: "rbtv"
       platform: "mobile"
