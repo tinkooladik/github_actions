@@ -47,7 +47,7 @@ runs:
       run: |
         brand=${{ inputs.brand }}
         brand_lc="${brand,,}"
-        echo "BRAND=$(echo "${brand^}")" >> $GITHUB_ENV
+        echo "BRAND=$(echo "${brand_lc^}")" >> $GITHUB_ENV
         buildType=${{ inputs.buildType }}
         echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
 
