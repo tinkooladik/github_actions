@@ -38,7 +38,7 @@ runs:
             echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
         fi
         brand=${{ inputs.brand }}
-        brand_lc="${brand,,}"
+        brand_lc="${${{ inputs.brand }},,}"
         echo "BRAND=$(echo "${brand_lc^}")" >> $GITHUB_ENV
         buildType=${{ inputs.buildType }}
         echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
