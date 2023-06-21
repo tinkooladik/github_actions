@@ -74,13 +74,6 @@ runs:
         name: ${{ env.BUILD_NAME }}
         path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
 
-    - name: Build Package for AWS Upload
-      shell: bash
-      run: |
-        mkdir s3bundle
-        cp -R app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.* s3bundle
-
-
     - name: Upload files to S3 with AWS CLI
       shell: bash
       run: |
