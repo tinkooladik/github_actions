@@ -6,7 +6,7 @@ inputs:
     description: debug / release
     required: true
   store:
-    description: GooglePlay / Amazon / Portal / Oculus
+    description: GooglePlay / Amazon
     required: true
   brand:
     description: rbtv / servus
@@ -23,58 +23,59 @@ runs:
   using: "composite"
   steps:
     - name: Extract version name
-      id: extract_version_name
       shell: bash
-      run: echo ::set-output name=versionName::$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
+      run: echo "VERSION=$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)" >> $GITHUB_ENV
 
-    - name: Capitalize build variant
-      id: cap_build_type
-      shell: bash
-      run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')")
-
-    - name: Extract action
+    - name: Prepare string variables
       shell: bash
       run: |
+        if [[ "${{ inputs.platform }}" == "mobile" ]]; then
+            echo "MODULE=app" >> $GITHUB_ENV; else
+            echo "MODULE=tv" >> $GITHUB_ENV
+        fi
         if [[ "${{ inputs.format }}" == "apk" ]]; then
             echo "ACTION=assemble" >> $GITHUB_ENV; else
             echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
         fi
-
-    - name: Extract brand path
-      shell: bash
-      run: |
-        if [[ "${{ inputs.brand }}" == "rbtv" ]]; then
-            echo "BRAND=RedBullTV" >> $GITHUB_ENV; else
-            echo "BRAND=ServusTV" >> $GITHUB_ENV
-        fi
+        brand=${{ inputs.brand }}
+        brand_lc="${brand,,}"
+        echo "BRAND=$(echo "${brand_lc^}")" >> $GITHUB_ENV
+        buildType=${{ inputs.buildType }}
+        echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
 
     - name: Extract build name
       shell: bash
-      run: echo "BUILD_NAME=${{ inputs.brand^^ }}-Android-${{ inputs.platform^ }}-${{ inputs.store^ }}-${{ steps.extract_version_name.outputs.versionName }}-${{ inputs.buildType }}" >> $GITHUB_ENV
+      run: echo "BUILD_NAME=${{ inputs.brand }}-Android-${{ inputs.platform }}-${{ inputs.store }}-${{ env.VERSION }}-${{ inputs.buildType }}" >> $GITHUB_ENV
 
-    - uses: actions/checkout@v3
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
-
-    - name: Grant execute permission for gradlew
+    - name: Print build action
       shell: bash
-      run: chmod +x gradlew
+      run: |
+        echo PRINT ACTION: ${{ env.MODULE }}:${{ env.ACTION }}${{ env.BRAND }}${{ inputs.store }}${{ env.BUILD_TYPE }}
 
-    - name: Build APK
-      shell: bash
-      run: bash ./gradlew app:assembleDebug --stacktrace
-
-    - name: Upload APK
-      uses: actions/upload-artifact@v3
-      with:
-        name: ${{ env.BUILD_NAME }}
-        path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
+#    - uses: actions/checkout@v3
+#    - name: Set up JDK 11
+#      uses: actions/setup-java@v3
+#      with:
+#        java-version: '11'
+#        distribution: 'temurin'
+#        cache: gradle
+#
+#    - name: Grant execute permission for gradlew
+#      shell: bash
+#      run: chmod +x gradlew
+#
+#    - name: Build APK
+#      shell: bash
+#      run: bash ./gradlew app:"${{ env.ACTION }}${{ inputs.buildType }}" --stacktrace
+#
+#    - name: Upload APK
+#      uses: actions/upload-artifact@v3
+#      with:
+#        name: ${{ env.BUILD_NAME }}
+#        path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
+#        ##path: ${{ env.MODULE }}/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
 
     - name: Upload files to S3 with AWS CLI
       shell: bash
       run: |
-        echo //rb-streaming-app-builds/Builds/${{ env.BRAND }}/Android/${{ steps.extract_version_name.outputs.versionName }}/${{ steps.cap_build_type.outputs.buildType }}
+        echo //rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/${{ env.VERSION }}/${{ env.BUILD_TYPE }}
