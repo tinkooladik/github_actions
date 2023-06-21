@@ -10,6 +10,6 @@ jobs:
   rbtv_mobile:
     uses: ./.github/workflows/deploy-variants.yml
     with:
-      brand: "rbtv"
-      platform: "mobile"
+      brand: "RBTV"
+      platform: "Mobile"
     if: contains(github.event.pull_request.labels.*.name, 'deploy')

@@ -27,11 +27,6 @@ runs:
       shell: bash
       run: echo ::set-output name=versionName::$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)
 
-    - name: Capitalize build variant
-      id: cap_build_type
-      shell: bash
-      run: echo ::set-output name=buildType::$(echo "$(echo "${{ inputs.buildType }}" | sed 's/.*/\u&/')")
-
     - name: Extract action
       shell: bash
       run: |
@@ -40,17 +35,9 @@ runs:
             echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
         fi
 
-    - name: Extract brand path
-      shell: bash
-      run: |
-        if [[ "${{ inputs.brand }}" == "rbtv" ]]; then
-            echo "BRAND=RedBullTV" >> $GITHUB_ENV; else
-            echo "BRAND=ServusTV" >> $GITHUB_ENV
-        fi
-
     - name: Extract build name
       shell: bash
-      run: echo "BUILD_NAME=${ ${{ inputs.brand }}^^ }-Android-${ ${{ inputs.platform }}^ }-${ ${{ inputs.store }}^ }-${{ steps.extract_version_name.outputs.versionName }}-${{ inputs.buildType }}" >> $GITHUB_ENV
+      run: echo "BUILD_NAME=${{ inputs.brand }}-Android-${{ inputs.platform }}-${{ inputs.store }}-${{ steps.extract_version_name.outputs.versionName }}-${{ inputs.buildType }}" >> $GITHUB_ENV
 
     - uses: actions/checkout@v3
     - name: Set up JDK 11
@@ -66,7 +53,7 @@ runs:
 
     - name: Build APK
       shell: bash
-      run: bash ./gradlew app:assembleDebug --stacktrace
+      run: bash ./gradlew app:"${{ env.ACTION }}${{ inputs.buildType }}" --stacktrace
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
@@ -77,4 +64,4 @@ runs:
     - name: Upload files to S3 with AWS CLI
       shell: bash
       run: |
-        echo //rb-streaming-app-builds/Builds/${{ env.BRAND }}/Android/${{ steps.extract_version_name.outputs.versionName }}/${ ${{ steps.cap_build_type.outputs.buildType }}^ }
+        echo //rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/${{ steps.extract_version_name.outputs.versionName }}/${ ${{ steps.cap_build_type.outputs.buildType }}^ }
