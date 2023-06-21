@@ -46,9 +46,9 @@ runs:
       shell: bash
       run: |
         brand=${{ inputs.brand }},,
-        echo "BRAND=$(echo "${brand^})" >> $GITHUB_ENV
+        echo "BRAND=$(echo "${brand^}")" >> $GITHUB_ENV
         buildType=${{ inputs.buildType }}
-        echo "BUILD_TYPE=$(echo "${buildType^})" >> $GITHUB_ENV
+        echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
 
     - name: Extract build name
       shell: bash
