@@ -45,7 +45,7 @@ runs:
 
     - name: Extract build name
       shell: bash
-      run: echo "BUILD_NAME=${{ inputs.brand }}-Android-${{ inputs.platform }}-${{ inputs.store }}-${{ env.VERSION }}-${{ inputs.buildType }}" >> $GITHUB_ENV
+      run: echo "BUILD_NAME=${{ inputs.brand }}-Android-${{ inputs.platform }}-${{ inputs.store }}-${{ env.VERSION }}-${{ env.BUILD_TYPE }}" >> $GITHUB_ENV
 
     - name: Print build action
       shell: bash
