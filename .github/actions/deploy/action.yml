@@ -46,7 +46,7 @@ runs:
       shell: bash
       run: |
         echo "BRAND=$(echo "${{ inputs.brand }}" | sed 's/./\u&/')" >> $GITHUB_ENV
-        echo "BUILD_TYPE=(${{ inputs.buildType }} sed 's/./\u&/')" >> $GITHUB_ENV
+        echo "BUILD_TYPE=$(echo "${{ inputs.buildType }}" | sed 's/./\u&/')" >> $GITHUB_ENV
 
     - name: Extract build name
       shell: bash
