@@ -15,4 +15,4 @@ task randomChanges {
     doLast {
         outputFile.text = "projectInfo.project=${project.name}${Math.abs(new Random().nextInt(999))}"
     }
-}
+}// test 8

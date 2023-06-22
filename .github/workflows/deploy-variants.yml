@@ -1,0 +1,93 @@
+name: Deploy APK / Bundle for Debug / Release
+
+on:
+  workflow_call:
+    inputs:
+      brand: # rbtv / servus
+        required: true
+        type: string
+      platform: # mobile / 10ft
+        required: true
+        type: string
+
+jobs:
+
+  ######################### Google Play ##############################
+  google_play_apk_release:
+    runs-on: ubuntu-latest
+    name: GooglePlay APK release
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "GooglePlay"
+          buildType: "release"
+          format: "apk"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  google_play_apk_debug:
+    runs-on: ubuntu-latest
+    name: GooglePlay APK debug
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "GooglePlay"
+          buildType: "debug"
+          format: "apk"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  google_play_bundle_release:
+    runs-on: ubuntu-latest
+    name: GooglePlay Bundle release
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "GooglePlay"
+          buildType: "release"
+          format: "bundle"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  google_play_bundle_debug:
+    runs-on: ubuntu-latest
+    name: GooglePlay Bundle debug
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "GooglePlay"
+          buildType: "debug"
+          format: "bundle"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  ######################### Amazon ##############################
+  amazon_apk_release:
+    runs-on: ubuntu-latest
+    name: Amazon APK release
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "Amazon"
+          buildType: "release"
+          format: "apk"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}
+
+  amazon_apk_debug:
+    runs-on: ubuntu-latest
+    name: Amazon APK debug
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          store: "Amazon"
+          buildType: "debug"
+          format: "apk"
+          brand: ${{ inputs.brand }}
+          platform: ${{ inputs.platform }}

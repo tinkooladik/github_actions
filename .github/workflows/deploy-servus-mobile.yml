@@ -1,0 +1,14 @@
+name: Deploy Servus Mobile
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'build/stv/mobile/**'
+
+jobs:
+  servus_mobile:
+    uses: ./.github/workflows/deploy-variants.yml
+    with:
+      brand: "STV"
+      platform: "Mobile"
