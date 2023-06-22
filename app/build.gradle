@@ -32,6 +32,13 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    // adding it here has no effect. added just to keep track of the options to exclude
+    packagingOptions {
+        exclude 'META-INF/ASL-2.0.txt'
+        exclude 'META-INF/ASL-3.0.txt'
+        exclude 'META-INF/LGPL-3.0.txt'
+    }
 }
 
 dependencies {
