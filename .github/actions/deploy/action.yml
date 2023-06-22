@@ -26,7 +26,7 @@ runs:
       shell: bash
       run: |
         branch=${{ github.head_ref }}
-        echo "VERSION=$(echo "${branch#"${branch%%[0-9]*}"})" >> $GITHUB_ENV
+        echo "VERSION=$(echo "${branch#"${branch%%[0-9]*}"}")" >> $GITHUB_ENV
 
     - name: Prepare string variables
       shell: bash
