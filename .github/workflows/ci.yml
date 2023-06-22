@@ -1,0 +1,19 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "development" ]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  assemble_debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup-ci
+      - name: Run ktlint checks
+        run: ./gradlew app:assembleDebug

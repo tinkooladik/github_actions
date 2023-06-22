@@ -5,11 +5,23 @@ pluginManagement {
         mavenCentral()
     }
 }
+def localPropertyFile = file('local.properties')
+def localProperties = new Properties()
+if (localPropertyFile.canRead()) {
+    localProperties.load(new FileInputStream(localPropertyFile))
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/tinkooladik/github_packages_test")
+            credentials {
+                username = localProperties['gpr.user'] ?: System.getenv("GITHUB_ACTOR")
+                password = localProperties['gpr.key'] ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
 rootProject.name = "GitHub Actions Test"
