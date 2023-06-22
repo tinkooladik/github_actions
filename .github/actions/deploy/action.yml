@@ -25,8 +25,8 @@ runs:
     - name: Extract version name old
       shell: bash
       run: |
-        echo "VERSION_OLD=$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)" >> $GITHUB_ENV
-        echo env.VERSION_OLD
+        echo "VERSION_OLD=$(echo "${{ github.ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)" >> $GITHUB_ENV
+        echo ${{ env.VERSION_OLD }}
 
     - name: Extract version name
       shell: bash
