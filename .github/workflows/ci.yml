@@ -28,3 +28,5 @@ jobs:
         run: ./gradlew clean
       - name: Run ktlint checks
         run: ./gradlew app:assembleDebug
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
