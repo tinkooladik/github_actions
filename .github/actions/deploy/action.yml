@@ -22,10 +22,14 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Extract version name old
+      shell: bash
+      run: echo "VERSION_OLD=$(echo "${{ github.head_ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)" >> $GITHUB_ENV
+
     - name: Extract version name
       shell: bash
       run: |
-        branch=${{ github.head_ref }}
+        branch=${{ github.ref }}
         echo "VERSION=$(echo "${branch#"${branch%%[0-9]*}"}")" >> $GITHUB_ENV
 
     - name: Prepare string variables
