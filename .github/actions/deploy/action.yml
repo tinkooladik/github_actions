@@ -24,7 +24,9 @@ runs:
   steps:
     - name: Extract version name
       shell: bash
-      run: echo "VERSION=$(echo "${{ github.head_ref }}" | grep -o '[0-9].*')" >> $GITHUB_ENV
+      run: |
+        branch=${{ github.head_ref }}
+        echo "VERSION=$(echo "${branch#"${branch%%[0-9]*}"})" >> $GITHUB_ENV
 
     - name: Prepare string variables
       shell: bash
