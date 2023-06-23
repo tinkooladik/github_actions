@@ -8,9 +8,8 @@ on:
 
 jobs:
   servus_mobile:
-    env:
-      GITHUB_TOKEN: ${{ inputs.token }}
     uses: ./.github/workflows/deploy-variants.yml
+    secrets: inherit
     with:
       brand: "STV"
       platform: "Mobile"
