@@ -60,21 +60,23 @@ runs:
       run: |
         echo PRINT ACTION: ${{ env.MODULE }}:${{ env.ACTION }}${{ env.BRAND }}${{ inputs.store }}${{ env.BUILD_TYPE }}
 
-#    - uses: actions/checkout@v3
-#    - name: Set up JDK 11
-#      uses: actions/setup-java@v3
-#      with:
-#        java-version: '11'
-#        distribution: 'temurin'
-#        cache: gradle
-#
-#    - name: Grant execute permission for gradlew
-#      shell: bash
-#      run: chmod +x gradlew
-#
-#    - name: Build APK
-#      shell: bash
-#      run: bash ./gradlew app:"${{ env.ACTION }}${{ inputs.buildType }}" --stacktrace
+    - uses: actions/checkout@v3
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      shell: bash
+      run: chmod +x gradlew
+
+    - name: Build APK
+      shell: bash
+      run: bash ./gradlew app:"${{ env.ACTION }}${{ inputs.buildType }}" --stacktrace
+      env:
+        GITHUB_TOKEN: ${{ secrets.SHARED_SECRET }}
 #
 #    - name: Upload APK
 #      uses: actions/upload-artifact@v3
