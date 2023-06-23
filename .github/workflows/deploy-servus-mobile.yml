@@ -8,9 +8,9 @@ on:
 
 jobs:
   servus_mobile:
+    env:
+      GITHUB_TOKEN: ${{ inputs.token }}
     uses: ./.github/workflows/deploy-variants.yml
     with:
       brand: "STV"
       platform: "Mobile"
-    env:
-      GITHUB_TOKEN: ${{ inputs.token }}
