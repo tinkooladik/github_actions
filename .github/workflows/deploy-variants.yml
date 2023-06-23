@@ -26,6 +26,7 @@ jobs:
           format: "apk"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
+          token: ${{ secrets.SHARED_SECRET }}
 
   google_play_apk_debug:
     runs-on: ubuntu-latest
