@@ -26,7 +26,7 @@ jobs:
       - name: clean gradlew
         shell: bash
         run: ./gradlew clean
-      - name: Run ktlint checks
+      - name: Assemble
         run: ./gradlew app:assembleDebug
         env:
           GITHUB_TOKEN: ${{ secrets.SHARED_SECRET }}
