@@ -81,12 +81,12 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
 #
-#    - name: Upload APK
-#      uses: actions/upload-artifact@v3
-#      with:
-#        name: ${{ env.BUILD_NAME }}
-#        path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
-#        ##path: ${{ env.MODULE }}/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.BUILD_NAME }}
+        path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
+        ##path: ${{ env.MODULE }}/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
 
     - name: Upload files to S3 with AWS CLI
       shell: bash
