@@ -25,7 +25,7 @@ jobs:
           format: "apk"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
-          token: ${{ secrets.SHARED_TOKEN }}
+          token: ${{ secrets.SHARED_SECRET }}
 
   google_play_apk_debug:
     runs-on: ubuntu-latest
@@ -39,7 +39,7 @@ jobs:
           format: "apk"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
-          token: ${{ secrets.SHARED_TOKEN }}
+          token: ${{ secrets.SHARED_SECRET }}
 
   google_play_bundle_release:
     runs-on: ubuntu-latest
@@ -53,7 +53,7 @@ jobs:
           format: "bundle"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
-          token: ${{ secrets.SHARED_TOKEN }}
+          token: ${{ secrets.SHARED_SECRET }}
 
   google_play_bundle_debug:
     runs-on: ubuntu-latest
@@ -67,7 +67,7 @@ jobs:
           format: "bundle"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
-          token: ${{ secrets.SHARED_TOKEN }}
+          token: ${{ secrets.SHARED_SECRET }}
 
   ######################### Amazon ##############################
   amazon_apk_release:
@@ -82,7 +82,7 @@ jobs:
           format: "apk"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
-          token: ${{ secrets.SHARED_TOKEN }}
+          token: ${{ secrets.SHARED_SECRET }}
 
   amazon_apk_debug:
     runs-on: ubuntu-latest
@@ -96,4 +96,4 @@ jobs:
           format: "apk"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
-          token: ${{ secrets.SHARED_TOKEN }}
+          token: ${{ secrets.SHARED_SECRET }}
