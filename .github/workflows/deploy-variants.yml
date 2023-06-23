@@ -19,13 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/deploy
+        secrets: inherit
         with:
           store: "GooglePlay"
           buildType: "release"
           format: "apk"
           brand: ${{ inputs.brand }}
           platform: ${{ inputs.platform }}
-          token: ${{ secrets.SHARED_SECRET }}
 
   google_play_apk_debug:
     runs-on: ubuntu-latest

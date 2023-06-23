@@ -79,7 +79,7 @@ runs:
       shell: bash
       run: bash ./gradlew app:"${{ env.ACTION }}${{ inputs.buildType }}" --stacktrace
       env:
-        GITHUB_TOKEN: ${{ inputs.token }}
+        GITHUB_TOKEN: ${{ secrets.SHARED_SECRET }}
 #
 #    - name: Upload APK
 #      uses: actions/upload-artifact@v3
