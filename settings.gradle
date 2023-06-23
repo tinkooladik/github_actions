@@ -5,11 +5,34 @@ pluginManagement {
         mavenCentral()
     }
 }
+def localPropertyFile = file('local.properties')
+def localProperties = new Properties()
+if (localPropertyFile.canRead()) {
+    localProperties.load(new FileInputStream(localPropertyFile))
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/tinkooladik/github_packages_test")
+            credentials {
+                username = localProperties['gpr.user'] ?: System.getenv("GITHUB_ACTOR")
+                password = localProperties['gpr.key'] ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven {
+            url = uri("https://maven.pkg.github.com/RBNA/rbak-analytics-android")
+            credentials {
+                username = localProperties['gpr.user'] ?: System.getenv("GITHUB_ACTOR")
+                password = localProperties['gpr.key'] ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+        google()
+        jcenter()
+        maven { url "https://ease-live-sdk-releases.s3.eu-central-1.amazonaws.com/maven" }
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = "GitHub Actions Test"

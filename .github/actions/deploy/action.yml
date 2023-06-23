@@ -58,7 +58,7 @@ runs:
     - name: Print build action
       shell: bash
       run: |
-        echo PRINT ACTION: ${{ env.MODULE }}:${{ env.ACTION }}$BRAND${{ inputs.store }}${{ env.BUILD_TYPE }}
+        echo PRINT ACTION: ${{ env.MODULE }}:${{ env.ACTION }}${{ env.BRAND }}${{ inputs.store }}${{ env.BUILD_TYPE }}
 
 #    - uses: actions/checkout@v3
 #    - name: Set up JDK 11
