@@ -12,3 +12,5 @@ jobs:
     with:
       brand: "STV"
       platform: "Mobile"
+    env:
+      GITHUB_TOKEN: ${{ inputs.token }}
