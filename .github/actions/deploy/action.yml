@@ -41,8 +41,10 @@ runs:
       shell: bash
       run: |
         if [[ "${{ inputs.platform }}" == "mobile" ]]; then
-            echo "MODULE=app" >> $GITHUB_ENV; else
+            echo "MODULE=app" >> $GITHUB_ENV
+            echo "MODULE_1=app" >> $GITHUB_ENV; else
             echo "MODULE=tv" >> $GITHUB_ENV
+            echo "MODULE_1=tv" >> $GITHUB_ENV
         fi
         if [[ "${{ inputs.format }}" == "apk" ]]; then
             echo "ACTION=assemble" >> $GITHUB_ENV; else
@@ -62,6 +64,7 @@ runs:
       shell: bash
       run: |
         echo PRINT ACTION: ${{ env.MODULE }}:${{ env.ACTION }}${{ env.BRAND }}${{ inputs.store }}${{ env.BUILD_TYPE }}
+        echo PRINT MODULE: ${{ env.MODULE }} - ${{ env.MODULE_1 }}
 
     - uses: actions/checkout@v3
     - name: Set up JDK 11
