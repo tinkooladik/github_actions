@@ -42,7 +42,8 @@ runs:
       run: |
         if [[ "${{ inputs.platform }}" == "mobile" ]]; then
             echo "MODULE=app" >> $GITHUB_ENV
-            echo "MODULE_1=app" >> $GITHUB_ENV; else
+            echo "MODULE_1=app" >> $GITHUB_ENV;
+        else
             echo "MODULE=tv" >> $GITHUB_ENV
             echo "MODULE_1=tv" >> $GITHUB_ENV
         fi
