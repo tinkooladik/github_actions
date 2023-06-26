@@ -48,11 +48,11 @@ runs:
         if [[ "${{ inputs.format }}" == "apk" ]]; then
             echo "ACTION=assemble" >> $GITHUB_ENV
             echo "FILE_EXT=apk" >> $GITHUB_ENV
-            echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}/${{ buildType }}")" >> $GITHUB_ENV;
+            echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}/${buildType}")" >> $GITHUB_ENV;
         else
             echo "ACTION=bundle" >> $GITHUB_ENV
             echo "FILE_EXT=aab" >> $GITHUB_ENV
-            echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}${{ buildType^ }}")" >> $GITHUB_ENV
+            echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}${buildType^}")" >> $GITHUB_ENV
         fi
         if [[ ${{ inputs.brand }} == "RBTV" ]]; then
             echo "BRAND=Rbtv" >> $GITHUB_ENV; else
