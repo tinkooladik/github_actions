@@ -61,7 +61,6 @@ runs:
         fi
         echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
         brand=${{ inputs.brand }}
-        echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}")" >> $GITHUB_ENV
 
     - name: Extract build name
       shell: bash
