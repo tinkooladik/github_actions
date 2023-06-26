@@ -89,17 +89,12 @@ runs:
       run: bash ./gradlew app:"${{ env.ACTION }}${{ inputs.buildType }}" --stacktrace
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
-#
-    - name: Print file tree
-      shell: bash
-      run: |
-        echo ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.BUILD_NAME }}
-        path: app/*/*.*
+        path: ${{ env.MODULE }}/build/outputs/${{ inputs.format }}/${{ env.PATH_FOLDER }}/*.${{ env.FILE_EXT }}
         ##path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
         ##path: ${{ env.MODULE }}/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
 
