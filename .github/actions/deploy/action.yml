@@ -40,15 +40,15 @@ runs:
     - name: Prepare string variables
       shell: bash
       run: |
-        if [[ "${{ inputs.platform }}" == "Mobile" ]]; then
+        if [[ ${{ inputs.platform }} == "Mobile" ]]; then
             echo "MODULE=app" >> $GITHUB_ENV; else
             echo "MODULE=tv" >> $GITHUB_ENV
         fi
         buildType=${{ inputs.buildType }}
-        if [[ "${{ inputs.format }}" == "apk" ]]; then
+        if [[ ${{ inputs.format }} == "apk" ]]; then
             echo "ACTION=assemble" >> $GITHUB_ENV
             echo "FILE_EXT=apk" >> $GITHUB_ENV
-            echo "PATH_FOLDER=$(echo "${brand,,}/$buildType")" >> $GITHUB_ENV;
+            echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}/$buildType")" >> $GITHUB_ENV;
         else
             echo "ACTION=bundle" >> $GITHUB_ENV
             echo "FILE_EXT=aab" >> $GITHUB_ENV
