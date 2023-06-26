@@ -40,22 +40,27 @@ runs:
     - name: Prepare string variables
       shell: bash
       run: |
-        if [[ "${{ inputs.platform }}" == "mobile" ]]; then
-            echo "MODULE=app" >> $GITHUB_ENV
-            echo "MODULE_1=app" >> $GITHUB_ENV;
-        else
+        if [[ "${{ inputs.platform }}" == "Mobile" ]]; then
+            echo "MODULE=app" >> $GITHUB_ENV; else
             echo "MODULE=tv" >> $GITHUB_ENV
-            echo "MODULE_1=tv" >> $GITHUB_ENV
         fi
-        if [[ "${{ inputs.format }}" == "apk" ]]; then
-            echo "ACTION=assemble" >> $GITHUB_ENV; else
-            echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
-        fi
-        brand=${{ inputs.brand }}
-        brand_lc="${brand,,}"
-        echo "BRAND=$(echo "${brand_lc^}")" >> $GITHUB_ENV
         buildType=${{ inputs.buildType }}
+        if [[ "${{ inputs.format }}" == "apk" ]]; then
+            echo "ACTION=assemble" >> $GITHUB_ENV
+            echo "FILE_EXT=apk" >> $GITHUB_ENV
+            echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}/${{ buildType }}")" >> $GITHUB_ENV;
+        else
+            echo "ACTION=bundle" >> $GITHUB_ENV
+            echo "FILE_EXT=aab" >> $GITHUB_ENV
+            echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}${{ buildType^ }}")" >> $GITHUB_ENV
+        fi
+        if [[ ${{ inputs.brand }} == "RBTV" ]]; then
+            echo "BRAND=Rbtv" >> $GITHUB_ENV; else
+            echo "BRAND=Servus" >> $GITHUB_ENV
+        fi
         echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
+        brand=${{ inputs.brand }}
+        echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}")" >> $GITHUB_ENV
 
     - name: Extract build name
       shell: bash
