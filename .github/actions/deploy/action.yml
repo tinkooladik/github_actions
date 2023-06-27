@@ -95,6 +95,7 @@ runs:
     - name: Rename APK
       shell: bash
       run: |
+        path="app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/"
         file=$(find ${{ env.FILE_PATH }} -type f -name "*.${{ env.FILE_EXT }}")[0]
         mv ${{ env.FILE_PATH }}$file.${{ env.FILE_EXT }} ${{ env.FILE_PATH }}${{ env.BUILD_NAME }}.${{ env.FILE_EXT }}
 
