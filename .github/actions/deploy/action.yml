@@ -94,7 +94,9 @@ runs:
 
     - name: Rename APK
       shell: bash
-      run: mv ${{ env.FILE_PATH }}*.${{ env.FILE_EXT }} ${{ env.FILE_PATH }}${{ env.BUILD_NAME }}.${{ env.FILE_EXT }}
+      run: |
+        file=$(find ${{ env.FILE_PATH }} -type f -name "*.${{ env.FILE_EXT }}")[0]
+        mv ${{ env.FILE_PATH }}$file.${{ env.FILE_EXT }} ${{ env.FILE_PATH }}${{ env.BUILD_NAME }}.${{ env.FILE_EXT }}
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
