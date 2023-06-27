@@ -96,8 +96,8 @@ runs:
       shell: bash
       run: |
         path="app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/"
-        file=$(find ${{ env.FILE_PATH }} -type f -name "*.${{ env.FILE_EXT }}")[0]
-        mv ${{ env.FILE_PATH }}$file.${{ env.FILE_EXT }} ${{ env.FILE_PATH }}${{ env.BUILD_NAME }}.${{ env.FILE_EXT }}
+        file=$(find ${path} -type f -name "*.${{ env.FILE_EXT }}")[0]
+        mv ${path}$file.${{ env.FILE_EXT }} ${path}${{ env.BUILD_NAME }}.${{ env.FILE_EXT }}
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
