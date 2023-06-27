@@ -45,23 +45,24 @@ runs:
             echo "MODULE=tv" >> $GITHUB_ENV
         fi
         brand=${{ inputs.brand }}
-        if [[ ${{ inputs.brand }} == "RBTV" ]]; then
+        if [[ brand == "RBTV" ]]; then
             brand="Rbtv"; else
             brand="Servus"
         fi
         echo "BRAND=${brand}" >> $GITHUB_ENV
         buildType=${{ inputs.buildType }}
+        echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
         if [[ ${{ inputs.format }} == "apk" ]]; then
             echo "ACTION=assemble" >> $GITHUB_ENV
             echo "FILE_EXT=apk" >> $GITHUB_ENV
-            #echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}/${buildType}")" >> $GITHUB_ENV;
-            echo "PATH_FOLDER=$(echo "/${buildType}")" >> $GITHUB_ENV
+            pathFolder="${brand,,}${{ inputs.store }}/${buildType}"
         else
             echo "ACTION=bundle" >> $GITHUB_ENV
             echo "FILE_EXT=aab" >> $GITHUB_ENV
-            echo "PATH_FOLDER=$(echo "${brand,,}${{ inputs.store }}${buildType^}")" >> $GITHUB_ENV
+            pathFolder="${brand,,}${{ inputs.store }}${buildType^}"
         fi
-        echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
+        filePath="${{ env.MODULE }}/build/outputs/${{ inputs.format }}/${pathFolder}/"
+        echo "FILE_PATH=$(echo "${filePath}")" >> $GITHUB_ENV
 
     - name: Extract build name
       shell: bash
@@ -91,15 +92,19 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
 
+    - name: Rename APK
+      shell: bash
+      run: bash mv ${{ env.FILE_PATH }}*.${{ env.FILE_EXT }} ${{ env.FILE_PATH }}${{ env.BUILD_NAME }}.${{ env.FILE_EXT }}
+
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: ${{ env.BUILD_NAME }}
-        path: ${{ env.MODULE }}/build/outputs/${{ inputs.format }}/${{ env.PATH_FOLDER }}/*.${{ env.FILE_EXT }}
+        path: ${{ env.FILE_PATH }}${{ env.BUILD_NAME }}.${{ env.FILE_EXT }}
         ##path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
         ##path: ${{ env.MODULE }}/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
 
     - name: Upload files to S3 with AWS CLI
       shell: bash
       run: |
-        echo //rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/${{ env.VERSION }}/${{ env.BUILD_TYPE }}
+        echo s3://rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/${{ inputs.platform }}/${{ env.VERSION }}/${{ env.BUILD_TYPE }}
