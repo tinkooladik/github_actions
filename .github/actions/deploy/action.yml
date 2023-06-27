@@ -41,9 +41,10 @@ runs:
       shell: bash
       run: |
         if [[ ${{ inputs.platform }} == "Mobile" ]]; then
-            echo "MODULE=app" >> $GITHUB_ENV; else
-            echo "MODULE=tv" >> $GITHUB_ENV
+            module="app"; else
+            module="tv"
         fi
+        echo "MODULE=app" >> $GITHUB_ENV
         brand=${{ inputs.brand }}
         if [[ brand == "RBTV" ]]; then
             brand="Rbtv"; else
@@ -61,7 +62,7 @@ runs:
             echo "FILE_EXT=aab" >> $GITHUB_ENV
             pathFolder="${brand,,}${{ inputs.store }}${buildType^}"
         fi
-        filePath="${{ env.MODULE }}/build/outputs/${{ inputs.format }}/${pathFolder}/"
+        filePath="${module}/build/outputs/${{ inputs.format }}/${pathFolder}/"
         echo "FILE_PATH=$(echo "${filePath}")" >> $GITHUB_ENV
 
     - name: Extract build name
