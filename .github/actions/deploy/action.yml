@@ -46,6 +46,10 @@ runs:
             echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
         fi
         brand=${{ inputs.brand }}
+        if [[ $brand == "STV" ]]; then
+            echo "TEST_BRAND=servus" >> $GITHUB_ENV; else
+            echo "TEST_BRAND=mf" >> $GITHUB_ENV
+        fi
         brand_lc="${brand,,}"
         echo "BRAND=$(echo "${brand_lc^}")" >> $GITHUB_ENV
         buildType=${{ inputs.buildType }}
