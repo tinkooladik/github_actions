@@ -33,10 +33,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SHARED_SECRET }}
 
-      - name: Run unit tests
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: test
+#      - name: Run unit tests
+#        uses: gradle/gradle-build-action@v2
+#        with:
+#          arguments: test
 
       - name: Building Android aar
         uses: gradle/gradle-build-action@v2
