@@ -31,11 +31,17 @@ jobs:
         run: ./gradlew assembleRelease
 
       - name: Publishing Android aar
-        run: ./gradlew publishGitHubPackagesPublicationToGitHubPackagesRepository
+        run: ./gradlew publishGitHubPackagesTestPublicationToGitHubPackagesRepository
+        env:
+          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+          GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
+        env:
+          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+          GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
         with:
           tag_name: ${{ env.VERSION }}
           release_name: Release ${{ env.VERSION }}

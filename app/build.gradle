@@ -72,15 +72,15 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.findByName('release')
                 groupId "com.tinkooladik"
-                artifactId 'github-actions-test'
+                artifactId 'github_actions'
                 version '0.0.1'
             }
         }
 
         repositories {
             maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/tinkooladik/github-actions-test")
+                name = "GitHubPackagesTest"
+                url = uri("https://maven.pkg.github.com/tinkooladik/github_actions")
 
                 credentials {
                     username = localProperties['gpr.user'] ?: System.getenv("GITHUB_ACTOR")
