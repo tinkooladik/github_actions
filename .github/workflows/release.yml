@@ -48,3 +48,10 @@ jobs:
           body: 'Release - ${{ env.MESSAGE }}'
           draft: false
           prerelease: false
+
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'github_actions'
+          package-type: 'npm'
+#          min-versions-to-keep: 10
+          delete-only-pre-release-versions: "true"

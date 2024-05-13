@@ -73,7 +73,7 @@ afterEvaluate {
                 from components.findByName('release')
                 groupId "com.tinkooladik"
                 artifactId 'github_actions'
-                version '0.0.1'
+                version '0.0.2'
             }
         }
 
