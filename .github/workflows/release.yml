@@ -3,7 +3,7 @@ name: Release workflow
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+      - '*.*.*'
 
 env:
   VERSION: ${{ github.ref_name }}
@@ -29,3 +29,16 @@ jobs:
 
       - name: Building Android aar
         run: ./gradlew assembleRelease
+
+      - name: Publishing Android aar
+        run: ./gradlew publishGitHubPackagesPublicationToGitHubPackagesRepository
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          body: 'Release - ${{ env.MESSAGE }}'
+          draft: false
+          prerelease: false
