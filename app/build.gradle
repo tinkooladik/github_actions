@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.tinkooladik.actions_test"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -33,13 +33,14 @@ android {
     buildFeatures {
         viewBinding true
     }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/ASL-2.0.txt', 'META-INF/ASL-3.0.txt', 'META-INF/LGPL-3.0.txt']
+        }
+    }
 
     // adding it here has no effect. added just to keep track of the options to exclude
-    packagingOptions {
-        exclude 'META-INF/ASL-2.0.txt'
-        exclude 'META-INF/ASL-3.0.txt'
-        exclude 'META-INF/LGPL-3.0.txt'
-    }
+    namespace 'com.tinkooladik.actions_test'
 }
 
 dependencies {
@@ -59,11 +60,17 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
 
+def localPropertyFile = project.rootProject.file('local.properties')
+def localProperties = new Properties()
+if (localPropertyFile.canRead()) {
+    localProperties.load(new FileInputStream(localPropertyFile))
+}
+
 afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
+                from components.findByName('release')
                 groupId "com.tinkooladik"
                 artifactId 'github-actions-test'
                 version '0.0.1'
@@ -74,6 +81,11 @@ afterEvaluate {
             maven {
                 name = "GitHubPackages"
                 url = uri("https://maven.pkg.github.com/tinkooladik/github-actions-test")
+
+                credentials {
+                    username = localProperties['gpr.user'] ?: System.getenv("GITHUB_ACTOR")
+                    password = localProperties['gpr.key'] ?: System.getenv("GITHUB_TOKEN")
+                }
             }
         }
     }
