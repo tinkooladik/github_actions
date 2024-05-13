@@ -53,5 +53,5 @@ jobs:
         with:
           package-name: 'github_actions'
           package-type: 'maven'
-#          min-versions-to-keep: 10
+          min-versions-to-keep: 0
           delete-only-pre-release-versions: "true"
