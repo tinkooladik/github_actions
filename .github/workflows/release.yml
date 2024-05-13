@@ -51,7 +51,7 @@ jobs:
 
       - uses: actions/delete-package-versions@v5
         with:
-          package-name: 'github_actions'
+          package-name: 'com.tinkooladik.github_actions'
           package-type: 'maven'
           min-versions-to-keep: 0
           delete-only-pre-release-versions: "true"
