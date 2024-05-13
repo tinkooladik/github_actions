@@ -52,6 +52,6 @@ jobs:
       - uses: actions/delete-package-versions@v5
         with:
           package-name: 'github_actions'
-          package-type: 'pom'
+          package-type: 'npm'
           min-versions-to-keep: 0
           delete-only-pre-release-versions: "true"
