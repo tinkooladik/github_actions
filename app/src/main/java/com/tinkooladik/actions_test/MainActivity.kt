@@ -10,7 +10,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
-import com.rbak.analytics.RbakAnalytics
 import com.tinkooladik.actions_test.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -41,7 +40,6 @@ class MainActivity : AppCompatActivity() {
             //build/rbtv/mobile/*.*.*.* test
             //upload artifact
         }
-        RbakAnalytics.isInitialized
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
