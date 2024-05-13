@@ -2,8 +2,8 @@ name: Release workflow
 
 on:
   push:
-    tags:
-      - '*.*.*'
+#    tags:
+#      - '*.*.*'
 
 env:
   VERSION: ${{ github.ref_name }}
@@ -27,31 +27,31 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Building Android aar
-        run: ./gradlew assembleRelease
-
-      - name: Publishing Android aar
-        run: ./gradlew publishReleasePublicationToGitHubPackagesTestRepository
-        env:
-          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-          GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-          GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
-        with:
-          tag_name: ${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          body: 'Release - ${{ env.MESSAGE }}'
-          draft: false
-          prerelease: false
+#      - name: Building Android aar
+#        run: ./gradlew assembleRelease
+#
+#      - name: Publishing Android aar
+#        run: ./gradlew publishReleasePublicationToGitHubPackagesTestRepository
+#        env:
+#          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+#          GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+#
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+#          GITHUB_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+#        with:
+#          tag_name: ${{ env.VERSION }}
+#          release_name: Release ${{ env.VERSION }}
+#          body: 'Release - ${{ env.MESSAGE }}'
+#          draft: false
+#          prerelease: false
 
       - uses: actions/delete-package-versions@v5
         with:
           package-name: 'github_actions'
-          package-type: 'maven'
+          package-type: 'pom'
           min-versions-to-keep: 0
           delete-only-pre-release-versions: "true"
