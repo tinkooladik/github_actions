@@ -12,3 +12,4 @@ jobs:
     uses: ./.github/workflows/rbak-deploy-shared-workflow.yml
     with:
       package-name: "com.tinkooladik.github_actions"
+      rbak-token: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}

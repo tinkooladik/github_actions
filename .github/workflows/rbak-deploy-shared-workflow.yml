@@ -6,6 +6,11 @@ on:
       package-name:
         required: true
         type: string
+      publication-name:
+        description: 'A PubName specified in maven-publish gradle plugin'
+        default: 'Release'
+        required: false
+        type: string
     secrets:
       rbak-token:
         required: true
@@ -36,19 +41,19 @@ jobs:
         run: ./gradlew assembleRelease
 #        env:
 #          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-#          GITHUB_TOKEN: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}
+#          GITHUB_TOKEN: ${{ secrets.rbak-token }}
 
       - name: Publishing Android aar
-        run: ./gradlew publishReleasePublicationToGitHubPackagesRepository
+        run: ./gradlew publish${{ inputs.publication-name }}PublicationToGitHubPackagesRepository
 #        env:
 #          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-#          GITHUB_TOKEN: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}
+#          GITHUB_TOKEN: ${{ secrets.rbak-token }}
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
 #        env:
-#          GITHUB_TOKEN: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}
+#          GITHUB_TOKEN: ${{ secrets.rbak-token }}
         with:
           tag_name: ${{ env.VERSION }}
           release_name: Release ${{ env.VERSION }}
