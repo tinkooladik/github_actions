@@ -3,14 +3,18 @@ name: RBAK shared deploy workflow
 on:
   workflow_call:
     inputs:
-      package-name:
+      artifact-id:
+        type: string
         required: true
+      group-id:
         type: string
-      publication-name:
-        description: 'A PubName specified in maven-publish gradle plugin'
-        default: 'Release'
         required: false
+        default: 'com.redbull'
+      publication-name:
         type: string
+        required: false
+        default: 'Release'
+        description: 'A PubName specified in maven-publish gradle plugin'
     secrets:
       rbak-token:
         required: true
@@ -34,37 +38,37 @@ jobs:
           distribution: zulu
           java-version: 17
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+#      - name: Setup Gradle
+#        uses: gradle/actions/setup-gradle@v3
 
-      - name: Building Android aar
-        run: ./gradlew assembleRelease
+#      - name: Building Android aar
+#        run: ./gradlew assembleRelease
 #        env:
 #          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
 #          GITHUB_TOKEN: ${{ secrets.rbak-token }}
-
-      - name: Publishing Android aar
-        run: ./gradlew publish${{ inputs.publication-name }}PublicationToGitHubPackagesRepository
+#
+#      - name: Publishing Android aar
+#        run: ./gradlew publish${{ inputs.publication-name }}PublicationToGitHubPackagesRepository
 #        env:
 #          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
 #          GITHUB_TOKEN: ${{ secrets.rbak-token }}
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+#
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.rbak-token }}
-        with:
-          tag_name: ${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          body: 'Release - ${{ env.MESSAGE }}'
-          draft: false
-          prerelease: false
+#        with:
+#          tag_name: ${{ env.VERSION }}
+#          release_name: Release ${{ env.VERSION }}
+#          body: 'Release - ${{ env.MESSAGE }}'
+#          draft: false
+#          prerelease: false
 
       - name: Delete pre-release versions
         uses: actions/delete-package-versions@v5
         with:
-          package-name: ${{ inputs.package-name }}
+          package-name: ${{ inputs.group-id }}'.'${{ inputs.artifact-id }}
           package-type: 'maven'
           min-versions-to-keep: 0
           delete-only-pre-release-versions: "true"

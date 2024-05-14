@@ -11,6 +11,7 @@ jobs:
   Build-Release:
     uses: ./.github/workflows/rbak-deploy-shared-workflow.yml
     with:
-      package-name: "com.tinkooladik.github_actions"
+      artifact-id: "github_actions"
+      group-id: "com.tinkooladik"
     secrets:
       rbak-token: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}
