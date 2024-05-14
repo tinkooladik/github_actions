@@ -9,7 +9,7 @@ env:
 
 jobs:
   Build-Release:
-    uses: ./.github/workflows/deploy-variants.yml
+    uses: ./.github/workflows/rbak-deploy-shared-workflow.yml
     with:
       package-name: "com.tinkooladik.github_actions"
       platform: "Mobile"
