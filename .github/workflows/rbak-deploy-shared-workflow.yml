@@ -68,7 +68,7 @@ jobs:
       - name: Delete pre-release versions
         uses: actions/delete-package-versions@v5
         with:
-          package-name: ${{ inputs.group-id }}'.'${{ inputs.artifact-id }}
+          package-name: ${{ inputs.group-id }}.${{ inputs.artifact-id }}
           package-type: 'maven'
           min-versions-to-keep: 0
           delete-only-pre-release-versions: "true"
