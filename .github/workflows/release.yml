@@ -13,5 +13,6 @@ jobs:
     with:
       artifact-id: "github_actions"
       group-id: "com.tinkooladik"
+      delete-alphas: false
     secrets:
       rbak-token: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}
