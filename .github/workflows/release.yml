@@ -1,11 +1,8 @@
 name: Release workflow
 
 on:
-  push:
-
-env:
-  VERSION: ${{ github.ref_name }}
-  MESSAGE: ${{ github.event.head_commit.message }}
+  pull_request:
+    types: [ labeled ]
 
 jobs:
   Build-Release:

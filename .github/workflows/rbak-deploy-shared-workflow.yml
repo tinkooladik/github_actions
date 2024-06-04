@@ -23,8 +23,6 @@ on:
         type: boolean
         required: false
         default: true
-  pull_request:
-    types: [ labeled ]
 
 env:
   MESSAGE: ${{ github.event.head_commit.message }}
