@@ -28,7 +28,7 @@ env:
   MESSAGE: ${{ github.event.head_commit.message }}
 
 jobs:
-  Build-Release:
+  release_shared:
     if: github.event.label.name == 'approved' && startsWith(github.head_ref, 'version/')
     runs-on: ubuntu-latest
     permissions: write-all
