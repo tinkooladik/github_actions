@@ -39,7 +39,7 @@ jobs:
         id: extract_version_name
         shell: bash
         run: |
-          branch=${{ github.ref }}
+          branch=${{ github.event.pull_request.head.ref }}
           echo "VERSION=$(echo "${branch#"${branch%%[0-9]*}"}")" >> $GITHUB_ENV
 
       - name: Check out repository code
