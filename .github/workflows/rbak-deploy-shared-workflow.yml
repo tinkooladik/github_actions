@@ -15,25 +15,38 @@ on:
         required: false
         default: 'Release'
         description: 'A PubName specified in maven-publish gradle plugin'
+      repo-name:
+        type: string
+        required: false
+        default: 'GitHubPackages'
       delete-alphas:
         type: boolean
         required: false
         default: true
-    secrets:
-      rbak-token:
-        required: true
+  pull_request:
+    types: [ labeled ]
 
 env:
-  VERSION: ${{ github.ref_name }}
   MESSAGE: ${{ github.event.head_commit.message }}
 
 jobs:
   Build-Release:
+    if: github.event.label.name == 'approved' && startsWith(github.head_ref, 'version/')
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-      - name: Print release version
-        run: echo "the current version ${{ env.VERSION }}"
+      - name: Extract version name
+        id: extract_version_name
+        shell: bash
+        run: |
+          branch=${{ github.ref }}
+          echo "VERSION=$(echo "${branch#"${branch%%[0-9]*}"}")" >> $GITHUB_ENV
+
+      - name: Create and push tag
+        run: |
+          TAG_NAME="${{ env.VERSION }}"
+          git tag -a $TAG_NAME
+          git push origin $TAG_NAME
 
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -42,32 +55,32 @@ jobs:
           distribution: zulu
           java-version: 17
 
-#      - name: Setup Gradle
-#        uses: gradle/actions/setup-gradle@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-#      - name: Building Android aar
-#        run: ./gradlew assembleRelease
-#        env:
-#          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-#          GITHUB_TOKEN: ${{ secrets.rbak-token }}
-#
-#      - name: Publishing Android aar
-#        run: ./gradlew publish${{ inputs.publication-name }}PublicationToGitHubPackagesRepository
-#        env:
-#          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-#          GITHUB_TOKEN: ${{ secrets.rbak-token }}
-#
-#      - name: Create Release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.rbak-token }}
-#        with:
-#          tag_name: ${{ env.VERSION }}
-#          release_name: Release ${{ env.VERSION }}
-#          body: 'Release - ${{ env.MESSAGE }}'
-#          draft: false
-#          prerelease: false
+      - name: Building Android aar
+        run: ./gradlew assembleRelease
+        env:
+          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publishing Android aar
+        run: ./gradlew publish${{ inputs.publication-name }}PublicationTo${{ inputs.repo-name }}Repository
+        env:
+          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          body: 'Release - ${{ env.MESSAGE }}'
+          draft: false
+          prerelease: false
 
       - name: Delete pre-release versions
         if: ${{ inputs.delete-alphas }}
