@@ -23,14 +23,12 @@ on:
         type: boolean
         required: false
         default: true
-  pull_request:
-    types: [ labeled ]
 
 env:
   MESSAGE: ${{ github.event.head_commit.message }}
 
 jobs:
-  Build-Release:
+  release_shared:
     if: github.event.label.name == 'approved' && startsWith(github.head_ref, 'version/')
     runs-on: ubuntu-latest
     permissions: write-all
@@ -39,14 +37,8 @@ jobs:
         id: extract_version_name
         shell: bash
         run: |
-          branch=${{ github.ref }}
+          branch=${{ github.event.pull_request.head.ref }}
           echo "VERSION=$(echo "${branch#"${branch%%[0-9]*}"}")" >> $GITHUB_ENV
-
-      - name: Create and push tag
-        run: |
-          TAG_NAME="${{ env.VERSION }}"
-          git tag -a $TAG_NAME
-          git push origin $TAG_NAME
 
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -54,6 +46,12 @@ jobs:
         with:
           distribution: zulu
           java-version: 17
+
+#      - name: Create and push tag
+#        run: |
+#          TAG_NAME="${{ env.VERSION }}"
+#          git tag -a $TAG_NAME
+#          git push origin $TAG_NAME
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -90,3 +88,4 @@ jobs:
           package-type: 'maven'
           min-versions-to-keep: 0
           delete-only-pre-release-versions: "true"
+## version 0.0.0

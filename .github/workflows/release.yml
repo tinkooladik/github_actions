@@ -1,11 +1,8 @@
 name: Release workflow
 
 on:
-  push:
-
-env:
-  VERSION: ${{ github.ref_name }}
-  MESSAGE: ${{ github.event.head_commit.message }}
+  pull_request:
+    types: [ labeled ]
 
 jobs:
   Build-Release:
@@ -14,5 +11,5 @@ jobs:
       artifact-id: "github_actions"
       group-id: "com.tinkooladik"
       delete-alphas: false
-    secrets:
-      rbak-token: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}
+#    secrets:
+#      rbak-token: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}
