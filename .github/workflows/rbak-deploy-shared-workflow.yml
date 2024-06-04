@@ -88,4 +88,4 @@ jobs:
           package-type: 'maven'
           min-versions-to-keep: 0
           delete-only-pre-release-versions: "true"
-## version 0.0.0
+## version 0.1.0
