@@ -49,11 +49,11 @@ jobs:
           distribution: zulu
           java-version: 17
 
-      - name: Create and push tag
-        run: |
-          TAG_NAME="${{ env.VERSION }}"
-          git tag -a $TAG_NAME
-          git push origin $TAG_NAME
+#      - name: Create and push tag
+#        run: |
+#          TAG_NAME="${{ env.VERSION }}"
+#          git tag -a $TAG_NAME
+#          git push origin $TAG_NAME
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
