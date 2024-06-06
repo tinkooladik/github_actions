@@ -54,7 +54,7 @@ afterEvaluate {
                 from components.findByName('release')
                 groupId "com.tinkooladik"
                 artifactId 'github_actions_multimodule'
-                version '0.1.2'
+                version '0.1.7'
             }
         }
 
