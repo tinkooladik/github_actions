@@ -45,18 +45,16 @@ jobs:
           java-version: 17
 
       - name: Extract Pull Request Description
-        id: extract-description
         run: |
           PR_DESCRIPTION=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                          -H "Accept: application/vnd.github.v3+json" \
                          https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} | \
                          jq -r '.body')
-          echo "PR_DESCRIPTION=$PR_DESCRIPTION" >> $GITHUB_ENV
+          echo "PR_DESCRIPTION=${PR_DESCRIPTION}" >> $GITHUB_ENV
 
       - name: Print Description
         run: |
           echo "Pull Request Description: $PR_DESCRIPTION"
-
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
