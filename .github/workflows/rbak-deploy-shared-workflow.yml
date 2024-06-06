@@ -24,12 +24,9 @@ on:
         required: false
         default: true
 
-env:
-  MESSAGE: ${{ github.event.head_commit.message }}
-
 jobs:
   release_shared:
-    if: github.event.label.name == 'approved' && startsWith(github.head_ref, 'version/')
+    #    if: github.event.label.name == 'approved' && startsWith(github.head_ref, 'version/')
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -47,11 +44,14 @@ jobs:
           distribution: zulu
           java-version: 17
 
-#      - name: Create and push tag
-#        run: |
-#          TAG_NAME="${{ env.VERSION }}"
-#          git tag -a $TAG_NAME
-#          git push origin $TAG_NAME
+      - name: Extract Pull Request Description
+        id: extract-description
+        run: |
+          PR_DESCRIPTION=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                         -H "Accept: application/vnd.github.v3+json" \
+                         https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} | \
+                         jq -r '.body')
+          echo "::set-output name=description::$PR_DESCRIPTION"
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -76,16 +76,23 @@ jobs:
         with:
           tag_name: ${{ env.VERSION }}
           release_name: Release ${{ env.VERSION }}
-          body: 'Release - ${{ env.MESSAGE }}'
+          body: ${{ env.PR_DESCRIPTION }}
           draft: false
           prerelease: false
+#
+#      - name: Delete pre-release versions
+#        if: ${{ inputs.delete-alphas }}
+#        uses: actions/delete-package-versions@v5
+#        with:
+#          package-name: ${{ inputs.group-id }}.${{ inputs.artifact-id }}
+#          package-type: 'maven'
+#          min-versions-to-keep: 0
+#          delete-only-pre-release-versions: "true"
 
-      - name: Delete pre-release versions
-        if: ${{ inputs.delete-alphas }}
-        uses: actions/delete-package-versions@v5
-        with:
-          package-name: ${{ inputs.group-id }}.${{ inputs.artifact-id }}
-          package-type: 'maven'
-          min-versions-to-keep: 0
-          delete-only-pre-release-versions: "true"
+#      - name: List all package versions
+#        run: |
+#          gh pkg list OWNER/REPOSITORY
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 ## version 0.1.0
