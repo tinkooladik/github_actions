@@ -44,12 +44,6 @@ jobs:
           distribution: zulu
           java-version: 17
 
-      - name: Print Description
-        env:
-          $PR_DESCRIPTION: ${{ github.event.pull_request.body }}
-        run: |
-          echo "Pull Request Description: $PR_DESCRIPTION"
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
@@ -70,6 +64,7 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_DESCRIPTION: ${{ github.event.pull_request.body }}
         with:
           tag_name: ${{ env.VERSION }}
           release_name: Release ${{ env.VERSION }}
