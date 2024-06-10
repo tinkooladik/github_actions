@@ -1,4 +1,5 @@
 Please go the the `Preview` tab and select the appropriate sub-template:
 
-* [Default PR template](?expand=1&template=template_PR.md)
-* [Release template](?expand=1&template=template_release.md)
+* [Default template](?expand=1&template=pr_template_default.md)
+* [Demo screenshots table template](?expand=1&template=pr_template_screenshots_table.md)
+* [Release template](?expand=1&template=pr_template_release.md)
