@@ -1,6 +1,4 @@
-# PR Header
-
-[Jira Issue](https://jira.redbullmediahouse.com/browse/RBMN-XXXXX)
+[RBMN-XXXXX](https://jira.redbullmediahouse.com/browse/RBMN-XXXXX)
 
 A description of the changes proposed in the pull request
 
