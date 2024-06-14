@@ -39,6 +39,8 @@ class MainActivity : AppCompatActivity() {
             //and again
             //build/rbtv/mobile/*.*.*.* test
             //upload artifact
+
+            // now I'm doing some changes to test how release-drafter github app works
         }
     }
 
