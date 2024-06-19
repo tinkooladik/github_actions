@@ -5,6 +5,6 @@ template: |
 
   ## Full Changelog
 
-  For the detail-oriented, here's the full list of changes: [Full Changelog between $PREVIOUS_TAG and $RESOLVED_VERSION](https://github.com/organization/repo/compare/$PREVIOUS_TAG...$RESOLVED_VERSION)
+  For the detail-oriented, here's the full list of changes: [Full Changelog between $PREVIOUS_TAG and $RESOLVED_VERSION](https://github.com/RBNA/${{ github.event.repository.name }}/compare/$PREVIOUS_TAG...$RESOLVED_VERSION)
 
   Next patch version: $NEXT_PATCH_VERSION
