@@ -26,7 +26,7 @@ on:
 
 jobs:
   release_shared:
-    #    if: github.event.label.name == 'approved' && startsWith(github.head_ref, 'version/')
+    if: github.event.label.name == 'approved' && startsWith(github.head_ref, 'version/')
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
@@ -87,4 +87,4 @@ jobs:
 #        env:
 #          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-## version test pr template 3
+## version 0.1.13
