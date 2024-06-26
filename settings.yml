@@ -12,26 +12,18 @@ repository:
 ############################ Branches ############################
 branches:
   - name: main
+    # https://developer.github.com/v3/repos/branches/#update-branch-protection
+    # Branch Protection settings. Set to null to disable
     protection:
       # Required. Require at least one approving review on a pull request, before merging. Set to null to disable.
       required_pull_request_reviews:
         # The number of approvals required. (1-6)
         required_approving_review_count: 1
-#      # Required. Require status checks to pass before merging. Set to null to disable
-#      required_status_checks:
-#        # Required. Require branches to be up to date before merging.
-#        strict: true
-#        # Required. The list of status checks to require in order to merge into this branch
-#        contexts: []
-#
-#      # When enabled, all conversations on code must be resolved before a pull request can be merged.
-#      required_conversation_resolution: true
-#      # Required. Enforce all configured restrictions for administrators. Set to true to enforce required status checks for repository administrators. Set to null to disable.
-#      enforce_admins: true
-#      # Prevent merge commits from being pushed to matching branches
-#      required_linear_history: false
-#      # Required. Restrict who can push to this branch. Team and user restrictions are only available for organization-owned repositories. Set to null to disable.
-#      restrictions: null
+        # Dismiss approved reviews automatically when a new commit is pushed.
+        dismiss_stale_reviews: true
+      required_status_checks: null
+      restrictions: null
+      enforce_admins: null
 
 ############################ Labels ############################
 ## beware: if label exists in the repo, but not present in this list - it will be removed
