@@ -1,13 +1,13 @@
 ############################ Repository ############################
-repository:
-  has_issues: true
-  has_projects: true
-  has_wiki: true
-  default_branch: main
-  allow_squash_merge: true
-  allow_merge_commit: true
-  allow_rebase_merge: true
-  delete_branch_on_merge: true
+#repository:
+#  has_issues: true
+#  has_projects: true
+#  has_wiki: true
+#  default_branch: main
+#  allow_squash_merge: true
+#  allow_merge_commit: true
+#  allow_rebase_merge: true
+#  delete_branch_on_merge: true
 
 ############################ Branches ############################
 branches:
@@ -27,55 +27,55 @@ branches:
 
 ############################ Labels ############################
 ## beware: if label exists in the repo, but not present in this list - it will be removed
-labels:
-  - name: approved
-    color: 4cfead
-    description: pr is approved and waiting confirmation to merge
-
-  - name: chained
-    color: d4c5f9
-    description: pr chained on another pr in the same repo
-
-  - name: conflicts
-    color: d35f4a
-    description: pr has conflicts with the base branch
-
-  - name: dependency
-    color: 512c01
-    description: pr depends on another pr from another repo
-
-  - name: epic
-    color: b60205
-    description: this pr contains multiple tasks for an epic
-
-  - name: future release
-    color: 006b75
-    description: pr will be released in the future
-
-  - name: hold
-    color: c2e0c6
-    description: pr is on hold
-
-  - name: needs help
-    color: 9f682b
-    description: pr needs help
-
-  - name: needs review
-    color: 5319e7
-    description: pr needs to be reviewed
-
-  - name: rejected
-    color: f9d0c4
-    description: pr is rejected
-
-  - name: waiting
-    color: d93f0b
-    description: pr waiting on dependency that is not related to our code (design, translations, backend, etc)
-
-  - name: wip
-    color: dbb7f4
-    description: pr is still being worked on
-
-  - name: wontfix
-    color: ffffff
-    description: pr wont be worked on
+#labels:
+#  - name: approved
+#    color: 4cfead
+#    description: pr is approved and waiting confirmation to merge
+#
+#  - name: chained
+#    color: d4c5f9
+#    description: pr chained on another pr in the same repo
+#
+#  - name: conflicts
+#    color: d35f4a
+#    description: pr has conflicts with the base branch
+#
+#  - name: dependency
+#    color: 512c01
+#    description: pr depends on another pr from another repo
+#
+#  - name: epic
+#    color: b60205
+#    description: this pr contains multiple tasks for an epic
+#
+#  - name: future release
+#    color: 006b75
+#    description: pr will be released in the future
+#
+#  - name: hold
+#    color: c2e0c6
+#    description: pr is on hold
+#
+#  - name: needs help
+#    color: 9f682b
+#    description: pr needs help
+#
+#  - name: needs review
+#    color: 5319e7
+#    description: pr needs to be reviewed
+#
+#  - name: rejected
+#    color: f9d0c4
+#    description: pr is rejected
+#
+#  - name: waiting
+#    color: d93f0b
+#    description: pr waiting on dependency that is not related to our code (design, translations, backend, etc)
+#
+#  - name: wip
+#    color: dbb7f4
+#    description: pr is still being worked on
+#
+#  - name: wontfix
+#    color: ffffff
+#    description: pr wont be worked on
