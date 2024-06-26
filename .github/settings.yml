@@ -67,38 +67,38 @@ labels:
     color: 512c01
     description: pr depends on other pr
 
-  - name: epic
-    color: b60205
-    description: this pr contains multiple tasks for an epic
-
-  - name: future release
-    color: 006b75
-    description: pr will be released in the future
-
-  - name: hold
-    color: c2e0c6
-    description: pr is on hold
-
-  - name: needs help
-    color: 9f682b
-    description: pr needs help
-
-  - name: needs review
-    color: 5319e7
-    description: pr needs to be reviewed
-
-  - name: rejected
-    color: f9d0c4
-    description: pr is rejected
-
-  - name: waiting
-    color: d93f0b
-    description: pr waiting on dependencies
-
-  - name: wip
-    color: dbb7f4
-    description: pr is still being worked on
-
-  - name: wontfix
-    color: ffffff
-    description: pr wont be worked on
+#  - name: epic
+#    color: b60205
+#    description: this pr contains multiple tasks for an epic
+#
+#  - name: future release
+#    color: 006b75
+#    description: pr will be released in the future
+#
+#  - name: hold
+#    color: c2e0c6
+#    description: pr is on hold
+#
+#  - name: needs help
+#    color: 9f682b
+#    description: pr needs help
+#
+#  - name: needs review
+#    color: 5319e7
+#    description: pr needs to be reviewed
+#
+#  - name: rejected
+#    color: f9d0c4
+#    description: pr is rejected
+#
+#  - name: waiting
+#    color: d93f0b
+#    description: pr waiting on dependencies
+#
+#  - name: wip
+#    color: dbb7f4
+#    description: pr is still being worked on
+#
+#  - name: wontfix
+#    color: ffffff
+#    description: pr wont be worked on
