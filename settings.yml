@@ -22,9 +22,7 @@ branches:
         # Blocks merge until code owners have reviewed.
         require_code_owner_reviews: false
         # Specify which users and teams can dismiss pull request reviews. Pass an empty dismissal_restrictions object to disable
-        dismissal_restrictions:
-          users: []
-          teams: []
+        dismissal_restrictions: null
       #        bypass_pull_request_allowances:
       #          apps: []
       #          users:
