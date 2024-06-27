@@ -32,16 +32,12 @@ branches:
         dismiss_stale_reviews: false
         # Blocks merge until code owners have reviewed.
         require_code_owner_reviews: false
-        # Specify which users and teams can dismiss pull request reviews. Pass an empty dismissal_restrictions object to disable
-        dismissal_restrictions:
-          users: []
-          teams: []
       # Required. Require status checks to pass before merging. Set to null to disable
       required_status_checks:
         # Required. Require branches to be up to date before merging.
         strict: true
         # Required. The list of status checks to require in order to merge into this branch
-        contexts: []
+        contexts: ["ktlint"]
 
       #      # When enabled, all conversations on code must be resolved before a pull request can be merged.
       #      required_conversation_resolution: true
