@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  assemble_debug:
+  ktlint:
     if: contains(github.event.pull_request.labels.*.name, 'approved')
     runs-on: ubuntu-latest
     steps:
