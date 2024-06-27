@@ -18,9 +18,9 @@ branches:
         # The number of approvals required. (1-6)
         required_approving_review_count: 2
         # Dismiss approved reviews automatically when a new commit is pushed.
-        dismiss_stale_reviews: false
+        dismiss_stale_reviews: true
         # Blocks merge until code owners have reviewed.
-        require_code_owner_reviews: false
+        require_code_owner_reviews: true
         # Specify which users and teams can dismiss pull request reviews. Pass an empty dismissal_restrictions object to disable
         dismissal_restrictions:
           users: []
@@ -42,12 +42,9 @@ branches:
       ##### not sure about this one
       enforce_admins: true
       # Prevent merge commits from being pushed to matching branches
-      required_linear_history: false
+      required_linear_history: true
       # Required. Restrict who can push to this branch. Team and user restrictions are only available for organization-owned repositories. Set to null to disable.
-      restrictions:
-        apps: []
-        users: []
-        teams: []
+      restrictions: null
 
 ############################ Labels ############################
 labels:
