@@ -55,17 +55,17 @@ labels:
     color: 4cfead
     description: pr is approved and waiting confirmation to merge
 
-  - name: chained
-    color: d4c5f9
-    description: pr directs to other pr
-
-  - name: conflicts
-    color: d35f4a
-    description: pr has conflicts with the base branch
-
-  - name: dependency
-    color: 512c01
-    description: pr depends on other pr
+#  - name: chained
+#    color: d4c5f9
+#    description: pr directs to other pr
+#
+#  - name: conflicts
+#    color: d35f4a
+#    description: pr has conflicts with the base branch
+#
+#  - name: dependency
+#    color: 512c01
+#    description: pr depends on other pr
 
 #  - name: epic
 #    color: b60205
@@ -75,9 +75,9 @@ labels:
 #    color: 006b75
 #    description: pr will be released in the future
 #
-#  - name: hold
-#    color: c2e0c6
-#    description: pr is on hold
+  - name: hold
+    color: c2e0c6
+    description: pr is on hold
 #
 #  - name: needs help
 #    color: 9f682b
@@ -95,10 +95,10 @@ labels:
 #    color: d93f0b
 #    description: pr waiting on dependencies
 #
-#  - name: wip
-#    color: dbb7f4
-#    description: pr is still being worked on
+  - name: wip
+    color: dbb7f4
+    description: pr is still being worked on
 #
-#  - name: wontfix
-#    color: ffffff
-#    description: pr wont be worked on
+  - name: wontfix
+    color: ffffff
+    description: pr wont be worked on
