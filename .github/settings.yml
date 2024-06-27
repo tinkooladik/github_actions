@@ -35,7 +35,7 @@ branches:
       # When enabled, all conversations on code must be resolved before a pull request can be merged.
       required_conversation_resolution: true
       # Required. Enforce all configured restrictions for administrators. Set to true to enforce required status checks for repository administrators. Set to null to disable.
-      enforce_admins: null
+      enforce_admins: true
       # Prevent merge commits from being pushed to matching branches
       required_linear_history: true
       # Required. Restrict who can push to this branch. Team and user restrictions are only available for organization-owned repositories. Set to null to disable.
