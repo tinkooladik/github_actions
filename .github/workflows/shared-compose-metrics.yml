@@ -13,4 +13,4 @@ jobs:
     uses: tinkooladik/github_actions_shared/.github/workflows/shared-ci-unit-tests-and-metrics.yml@main
     with:
       shared_github_token: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}
-# test 1
+# test 2
