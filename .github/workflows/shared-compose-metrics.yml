@@ -10,6 +10,7 @@ concurrency:
 
 jobs:
   ktlint:
-    uses: RBNA/rbak-shared-sdk-setup-android/.github/workflows/rbak-shared-ci-unit-tests-and-metrics.yml@alex/RBMN-49224-shared-tests-and-metrics
-    secrets: inherit
+    uses: tinkooladik/github_actions_shared/.github/workflows/shared-ci-unit-tests-and-metrics.yml@main
+    with:
+      shared_github_token: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}
 # test 1
