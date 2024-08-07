@@ -1,0 +1,13 @@
+name: Metrics
+
+on:
+  pull_request:
+  push:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ktlint:
+    uses: RBNA/rbak-shared-sdk-setup-android/.github/workflows/rbak-shared-ci-unit-tests-and-metrics.yml@alex/RBMN-49224-shared-tests-and-metrics
