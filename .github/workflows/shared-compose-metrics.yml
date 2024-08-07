@@ -11,4 +11,5 @@ concurrency:
 jobs:
   ktlint:
     uses: RBNA/rbak-shared-sdk-setup-android/.github/workflows/rbak-shared-ci-unit-tests-and-metrics.yml@alex/RBMN-49224-shared-tests-and-metrics
+    secrets: inherit
 # test 1
