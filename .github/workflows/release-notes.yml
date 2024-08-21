@@ -98,6 +98,8 @@ jobs:
           base: "main"  # Adjust if necessary
           body: |
             ${{ env.RELEASE_NOTES }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add 'needs review' label
         run: |
