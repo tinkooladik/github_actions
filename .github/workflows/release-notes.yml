@@ -13,15 +13,15 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
 
+      - name: Set up GitHub CLI
+        uses: cli/cli-action@v2
+
       - name: Extract version from branch name
         id: extract_version
         run: |
           branch_name=$(echo "${GITHUB_REF#refs/heads/}")
           version=${branch_name#version/}
           echo "VERSION=${version}" >> $GITHUB_ENV
-
-      - name: Set up GitHub CLI
-        uses: github-cli/github-cli-action@v2
 
       - name: Get latest release version
         id: get_latest_release
@@ -97,6 +97,7 @@ jobs:
           git push origin "version/${{ env.VERSION }}"
 
       - name: Create a pull request
+        id: create_pr
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/{owner}/{repo}/pulls
@@ -104,10 +105,21 @@ jobs:
           repo: ${{ github.repository }}
           title: "Version ${{ env.VERSION }}"
           head: "version/${{ env.VERSION }}"
-          base: "main"
+          base: "main"  # Adjust if necessary
           body: |
             ### Release Notes
             ${{ steps.generate_notes.outputs.merged_prs }}
             
             ### Open Pull Requests
             ${{ steps.generate_notes.outputs.open_prs }}
+
+      - name: Add 'needs review' label
+        run: |
+          pr_number=$(gh pr list --search "Version ${{ env.VERSION }}" --json number -q '.[0].number')
+          if [ -n "$pr_number" ]; then
+            gh pr edit "$pr_number" --add-label "needs review"
+          else
+            echo "No PR found with the title 'Version ${{ env.VERSION }}'"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
