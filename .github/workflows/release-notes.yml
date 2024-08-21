@@ -13,9 +13,6 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
 
-      - name: Set up GitHub CLI
-        uses: cli/cli-action@v2
-
       - name: Extract version from branch name
         id: extract_version
         run: |
