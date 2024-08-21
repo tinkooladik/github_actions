@@ -77,20 +77,19 @@ jobs:
       - name: Generate release notes
         id: generate_notes
         run: |
-          echo "## Release Notes for ${{ env.VERSION }}" > release_notes.md
-          echo "" >> release_notes.md
-          echo "### Merged Pull Requests Since Last Release" >> release_notes.md
-          echo "${{ steps.merged_prs.outputs.merged_prs }}" >> release_notes.md
-          echo "" >> release_notes.md
-          echo "### Open Pull Requests" >> release_notes.md
-          echo "${{ steps.open_prs.outputs.open_prs }}" >> release_notes.md
-          cat release_notes.md
+          merged_prs="${{ steps.merged_prs.outputs.merged_prs }}"
+          open_prs="${{ steps.open_prs.outputs.open_prs }}"
+          release_notes="## Release Notes for ${{ env.VERSION }}\n\n"
+          release_notes+="### Merged Pull Requests Since Last Release\n$merged_prs\n\n"
+          release_notes+="### Open Pull Requests\n$open_prs"
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+          echo "$release_notes" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create branch for release notes
         run: |
           git checkout -b "version/${{ env.VERSION }}"
-          git add release_notes.md
-          git commit -m "Add release notes for version ${{ env.VERSION }}"
+          git commit --allow-empty -m "Add release notes for version ${{ env.VERSION }}"
           git push origin "version/${{ env.VERSION }}"
 
       - name: Create a pull request
@@ -104,11 +103,7 @@ jobs:
           head: "version/${{ env.VERSION }}"
           base: "main"  # Adjust if necessary
           body: |
-            ### Release Notes
-            ${{ steps.generate_notes.outputs.merged_prs }}
-            
-            ### Open Pull Requests
-            ${{ steps.generate_notes.outputs.open_prs }}
+            ${{ env.RELEASE_NOTES }}
 
       - name: Add 'needs review' label
         run: |
