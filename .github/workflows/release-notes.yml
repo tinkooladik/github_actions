@@ -111,3 +111,4 @@ jobs:
             
             ### Open Pull Requests
             ${{ steps.generate_notes.outputs.open_prs }}
+# version 0.2.0
