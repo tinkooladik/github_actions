@@ -1,86 +1,113 @@
-name: Release workflow
+name: Generate Release Notes and Create PR
 
 on:
   push:
-#    branches:
-#      - 'version/*.*.*'
+    branches:
+      - 'version/*.*.*'
 
 jobs:
-  create-release-pr:
+  release-notes:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
-      - name: Find previous release version
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Extract version from branch name
+        id: extract_version
+        run: |
+          branch_name=$(echo "${GITHUB_REF#refs/heads/}")
+          version=${branch_name#version/}
+          echo "VERSION=${version}" >> $GITHUB_ENV
+
+      - name: Set up GitHub CLI
+        uses: github-cli/github-cli-action@v2
+
+      - name: Get latest release version
+        id: get_latest_release
+        run: |
+          latest_release=$(gh release view --json tagName -q '.tagName' || echo "none")
+          echo "LATEST_RELEASE=${latest_release}" >> $GITHUB_ENV
+
+      - name: Find merged PRs since last release
+        id: merged_prs
         uses: actions/github-script@v6
         with:
           script: |
             const { data: prs } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              state: 'closed', // Only look at closed PRs
+              state: 'closed',
               sort: 'updated',
               direction: 'desc',
-              per_page: 100 // Adjust as needed
+              per_page: 100,
+              base: 'main', // Adjust if necessary
             });
 
-            // Find the last merged PR with a name matching "Version x.x.x" or branch name "version/x.x.x"
-            const pr = prs.find(pr => 
-              (pr.merged_at && pr.title.startsWith('Version ')) || 
-              pr.head.ref.startsWith('version/')
+            const lastReleaseTag = process.env.LATEST_RELEASE;
+            const lastRelease = lastReleaseTag === "none" ? null : await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: lastReleaseTag,
+            });
+
+            const lastReleaseDate = lastRelease ? new Date(lastRelease.data.published_at) : new Date(0);
+
+            const mergedPrs = prs.filter(pr => 
+              pr.merged_at && new Date(pr.merged_at) > lastReleaseDate
             );
 
-            if (pr) {
-              console.log(`Found PR: #${pr.number} - ${pr.title}`);
-              core.setOutput('pr_number', pr.number);
-              core.setOutput('pr_title', pr.title);
-              core.setOutput('pr_url', pr.html_url);
-            } else {
-              console.log('No matching PR found');
-              core.setOutput('pr_number', 'none');
-              core.setOutput('pr_title', 'none');
-              core.setOutput('pr_url', 'none');
-            }
+            const prDetails = mergedPrs.map(pr => `- [#${pr.number}](${pr.html_url}): ${pr.title}`).join('\n');
+            core.setOutput('merged_prs', prDetails || 'None');
 
-#      - name: Build Release Notes
-#
-#      - name: Create PR
-#        uses: actions/github-script@v6
-#        with:
-#          script: |
-#            const { repo, owner } = context.repo;
-#            const branchName = process.env.branch_name;
-#            const baseBranch = process.env.base_branch_name;
-#            const pulls = await github.rest.pulls.list({
-#              owner: owner,
-#              repo: repo,
-#              head: `${owner}:${branchName}`,
-#              base: baseBranch,
-#              state: 'open',
-#            });
-#
-#            let prNumber;
-#
-#            if (pulls.data.length < 1) {
-#              const newPR = await github.rest.pulls.create({
-#                title: 'New Crowdin Translations',
-#                owner: owner,
-#                repo: repo,
-#                head: branchName,
-#                base: baseBranch,
-#                body: `New Crowdin translations by Github Action last synchronization: ${process.env.current_date}`,
-#              });
-#              prNumber = newPR.data.number;
-#            } else {
-#              prNumber = pulls.data[0].number;
-#            }
-#
-#            if (prNumber) {
-#              await github.rest.issues.addLabels({
-#                owner: owner,
-#                repo: repo,
-#                issue_number: prNumber,
-#                labels: ['needs review', 'localization']
-#              });
-#            }
+      - name: Find open PRs
+        id: open_prs
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: openPrs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              sort: 'updated',
+              direction: 'desc',
+              per_page: 100,
+            });
+
+            const openPrDetails = openPrs.map(pr => `- [#${pr.number}](${pr.html_url}): ${pr.title}`).join('\n');
+            core.setOutput('open_prs', openPrDetails || 'None');
+
+      - name: Generate release notes
+        id: generate_notes
+        run: |
+          echo "## Release Notes for ${{ env.VERSION }}" > release_notes.md
+          echo "" >> release_notes.md
+          echo "### Merged Pull Requests Since Last Release" >> release_notes.md
+          echo "${{ steps.merged_prs.outputs.merged_prs }}" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "### Open Pull Requests" >> release_notes.md
+          echo "${{ steps.open_prs.outputs.open_prs }}" >> release_notes.md
+          cat release_notes.md
+
+      - name: Create branch for release notes
+        run: |
+          git checkout -b "version/${{ env.VERSION }}"
+          git add release_notes.md
+          git commit -m "Add release notes for version ${{ env.VERSION }}"
+          git push origin "version/${{ env.VERSION }}"
+
+      - name: Create a pull request
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/{owner}/{repo}/pulls
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.repository }}
+          title: "Version ${{ env.VERSION }}"
+          head: "version/${{ env.VERSION }}"
+          base: "main"
+          body: |
+            ### Release Notes
+            ${{ steps.generate_notes.outputs.merged_prs }}
+            
+            ### Open Pull Requests
+            ${{ steps.generate_notes.outputs.open_prs }}
