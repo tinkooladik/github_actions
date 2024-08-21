@@ -86,28 +86,39 @@ jobs:
           echo "$release_notes" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Create a pull request
-        id: create_pr
-        uses: octokit/request-action@v2.x
+      - name: Create PR if Changes Pushed
+        if: env.files_changed == 'true'
+        uses: actions/github-script@v6
         with:
-          route: POST /repos/{owner}/{repo}/pulls
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.repository }}
-          title: "Version ${{ env.VERSION }}"
-          head: "version/${{ env.VERSION }}"
-          base: "main"  # Adjust if necessary
-          body: |
-            ${{ env.RELEASE_NOTES }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { repo, owner } = context.repo;
+            const branchName = process.env.branch_name;
+            const version = process.env.VERSION;
+            const releaseNotes = process.env.RELEASE_NOTES;
 
-      - name: Add 'needs review' label
-        run: |
-          pr_number=$(gh pr list --search "Version ${{ env.VERSION }}" --json number -q '.[0].number')
-          if [ -n "$pr_number" ]; then
-            gh pr edit "$pr_number" --add-label "needs review"
-          else
-            echo "No PR found with the title 'Version ${{ env.VERSION }}'"
-          fi
+            // Create a new PR
+            const { data: newPr } = await github.rest.pulls.create({
+              owner: owner,
+              repo: repo,
+              title: `Version ${version}`,
+              head: branchName,
+              base: "main",
+              body: releaseNotes,
+            });
+
+            console.log(`Created PR #${newPr.number}`);
+            
+            await github.rest.issues.addLabels({
+              owner: owner,
+              repo: repo,
+              issue_number: newPr.number,
+              labels: ['needs review'],
+            });
+
+            console.log(`Added 'needs review' label to PR #${newPr.number}`);
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          branch_name: ${{ env.branch_name }}
+          VERSION: ${{ env.VERSION }}
+          RELEASE_NOTES: ${{ env.RELEASE_NOTES }}
+# version 0.2.5
