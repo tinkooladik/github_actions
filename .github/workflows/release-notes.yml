@@ -86,12 +86,6 @@ jobs:
           echo "$release_notes" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Create branch for release notes
-        run: |
-          git checkout -b "version/${{ env.VERSION }}"
-          git commit --allow-empty -m "Add release notes for version ${{ env.VERSION }}"
-          git push origin "version/${{ env.VERSION }}"
-
       - name: Create a pull request
         id: create_pr
         uses: octokit/request-action@v2.x
