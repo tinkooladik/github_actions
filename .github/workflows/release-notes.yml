@@ -39,7 +39,7 @@ jobs:
               sort: 'updated',
               direction: 'desc',
               per_page: 100,
-              base: 'main', // Adjust if necessary
+              base: 'main',
             });
 
             const lastReleaseTag = process.env.LATEST_RELEASE;
@@ -55,7 +55,7 @@ jobs:
               pr.merged_at && new Date(pr.merged_at) > lastReleaseDate
             );
 
-            const prDetails = mergedPrs.map(pr => `- [#${pr.number}](${pr.html_url}): ${pr.title}`).join('\n');
+            const prDetails = mergedPrs.map(pr => `- ${pr.html_url}`).join('\n');
             core.setOutput('merged_prs', prDetails || 'None');
 
       - name: Find open PRs
@@ -80,9 +80,9 @@ jobs:
         run: |
           merged_prs="${{ steps.merged_prs.outputs.merged_prs }}"
           open_prs="${{ steps.open_prs.outputs.open_prs }}"
-          release_notes="## Release Notes for ${{ env.VERSION }}\n\n"
-          release_notes+="### Merged Pull Requests Since Last Release\n$merged_prs\n\n"
-          release_notes+="### Open Pull Requests\n$open_prs"
+          release_notes="## ${{ env.VERSION }}</p></p>"
+          release_notes+="### Release Notes</p>$merged_prs</p></p>"
+          release_notes+="### Open Pull Requests</p>$open_prs"
           echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
           echo "$release_notes" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
