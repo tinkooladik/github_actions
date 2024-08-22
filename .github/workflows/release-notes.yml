@@ -96,7 +96,7 @@ jobs:
             const { repo, owner } = context.repo;
             const branchName = process.env.branch_name;
             const version = process.env.VERSION;
-            const releaseNotes = ${fs.readFileSync('release_notes.md', 'utf8')};
+            const releaseNotes = fs.readFileSync('release_notes.md', 'utf8');
 
             // Create a new PR
             const { data: newPr } = await github.rest.pulls.create({
