@@ -98,17 +98,11 @@ jobs:
             const version = process.env.VERSION;
             
             // generate notes
-            const releaseNotes = [
-              '# Version ${version}',
-              '',
-              '## Release Notes',
-              '',
-              mergedPrs,
-              '',
-              '## Open Pull Requests',
-              '',
-              openPrs
-            ].join('\n');
+            const releaseNotes = '# Version ${version}'.join('\n\n');
+                                  .join('## Release Notes').join('\n\n')
+                                  .join(mergedPrs).join('\n\n')
+                                  .join('## Open Pull Requests').join('\n\n')
+                                  .join(openPrs);
             
             const { repo, owner } = context.repo;
             const branchName = process.env.branch_name;
