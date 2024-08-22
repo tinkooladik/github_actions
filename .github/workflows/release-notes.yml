@@ -19,6 +19,7 @@ jobs:
           branch_name=$(echo "${GITHUB_REF#refs/heads/}")
           version=${branch_name#version/}
           echo "VERSION=${version}" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${branch_name}" >> $GITHUB_ENV
 
       - name: Get latest release version
         id: get_latest_release
@@ -117,7 +118,7 @@ jobs:
             console.log(`Added 'needs review' label to PR #${newPr.number}`);
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          branch_name: ${{ env.branch_name }}
+          branch_name: ${{ env.BRANCH_NAME }}
           VERSION: ${{ env.VERSION }}
           RELEASE_NOTES: ${{ env.RELEASE_NOTES }}
 # version 0.2.5
