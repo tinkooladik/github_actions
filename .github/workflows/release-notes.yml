@@ -55,7 +55,7 @@ jobs:
               pr.merged_at && new Date(pr.merged_at) > lastReleaseDate
             );
 
-            const prDetails = mergedPrs.map(pr => `- ${pr.html_url}`).join('\n');
+            const prDetails = mergedPrs.map(pr => `- ${pr.title} by ${pr.user.login} [#${pr.number}](${pr.html_url})`).join('\n');
             core.setOutput('merged_prs', prDetails || 'None');
 
       - name: Find open PRs
@@ -72,17 +72,18 @@ jobs:
               per_page: 100,
             });
 
-            const openPrDetails = openPrs.map(pr => `- ${pr.html_url}`).join('\n');
+            const openPrDetails = openPrs.map(pr => `- ${pr.title} by ${pr.user.login} [#${pr.number}](${pr.html_url})`).join('\n');
             core.setOutput('open_prs', openPrDetails || 'None');
 
       - name: Generate release notes
         id: generate_notes
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const mergedPrs = `${{ steps.merged_prs.outputs.merged_prs }}`;
             const openPrs = `${{ steps.open_prs.outputs.open_prs }}`;
             const version = process.env.VERSION;
+            const previousVersion = process.env.LATEST_RELEASE;
             
             const releaseNotes = [
               `# Version ${version}`,
@@ -93,7 +94,9 @@ jobs:
               '',
               '## Open Pull Requests',
               '',
-              openPrs
+              openPrs,
+              '',
+              `**Full Changelog**: https://github.com/RBNA/rbak-dtv-foundation-android/compare/${previousVersion}...${version}`
             ].join('\n');
             
             console.log(`Generated release notes:\n${releaseNotes}`);
