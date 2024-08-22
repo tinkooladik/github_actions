@@ -44,20 +44,20 @@ jobs:
           distribution: zulu
           java-version: 17
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+#      - name: Setup Gradle
+#        uses: gradle/actions/setup-gradle@v3
+#
+#      - name: Building Android aar
+#        run: ./gradlew assembleRelease
+#        env:
+#          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Building Android aar
-        run: ./gradlew assembleRelease
-        env:
-          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publishing Android aar
-        run: ./gradlew publish${{ inputs.publication-name }}PublicationTo${{ inputs.repo-name }}Repository
-        env:
-          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Publishing Android aar
+#        run: ./gradlew publish${{ inputs.publication-name }}PublicationTo${{ inputs.repo-name }}Repository
+#        env:
+#          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Tag
         env:
@@ -73,6 +73,7 @@ jobs:
         with:
           script: |
             const { repo, owner } = context.repo;
+            const tagName = '${{ env.VERSION }}';
 
             // Fetch the latest release
             const { data: latestRelease } = await github.rest.repos.getLatestRelease({
@@ -85,7 +86,7 @@ jobs:
               owner,
               repo,
               tag_name: tagName,
-              previous_tag_name: ${latestRelease.tag_name}
+              previous_tag_name: latestRelease.tag_name
             });
             
             console.log(`Generated release notes: ${releaseNotes}`);
