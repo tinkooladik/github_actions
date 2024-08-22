@@ -96,18 +96,19 @@ jobs:
               openPrs
             ].join('\n');
             
-            console.log(`RELEASE_NOTES<<EOF\n${releaseNotes}\nEOF`);
+            console.log(`Generated release notes:\n${releaseNotes}`);
+            core.setOutput('release_notes', releaseNotes);
         env:
           VERSION: ${{ env.VERSION }}
 
-      - name: Generate notes and Create PR
+      - name: Create PR
         uses: actions/github-script@v7
         with:
           script: |
             const { repo, owner } = context.repo;
             const branchName = process.env.branch_name;
             const version = process.env.VERSION;
-            const releaseNotes = process.env.RELEASE_NOTES;
+            const releaseNotes = `${{ steps.generate_notes.outputs.release_notes }}`;
 
             // Create a new PR
             const { data: newPr } = await github.rest.pulls.create({
@@ -133,5 +134,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           branch_name: ${{ env.BRANCH_NAME }}
           VERSION: ${{ env.VERSION }}
-          RELEASE_NOTES: ${{ env.RELEASE_NOTES }}
 # version 0.2.12
