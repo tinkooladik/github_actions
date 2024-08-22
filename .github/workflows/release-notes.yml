@@ -115,15 +115,13 @@ jobs:
             
             console.log(`Generated release notes:\n${releaseNotes}`);
             core.setOutput('release_notes', releaseNotes);
-        env:
-          VERSION: ${{ env.VERSION }}
 
       - name: Create PR
         uses: actions/github-script@v7
         with:
           script: |
             const { repo, owner } = context.repo;
-            const branchName = process.env.branch_name;
+            const branchName = process.env.BRANCH_NAME;
             const version = process.env.VERSION;
             const releaseNotes = `${{ steps.generate_notes.outputs.release_notes }}`;
 
@@ -147,8 +145,4 @@ jobs:
             });
 
             console.log(`Added 'needs review' label to PR #${newPr.number}`);
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          branch_name: ${{ env.BRANCH_NAME }}
-          VERSION: ${{ env.VERSION }}
 # version 0.2.13 (2)
