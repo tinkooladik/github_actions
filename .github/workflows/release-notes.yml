@@ -98,7 +98,7 @@ jobs:
             const { repo, owner } = context.repo;
             const branchName = process.env.branch_name;
             const version = process.env.VERSION;
-            const releaseNotes = "${{ steps.generate_notes.outputs.release_notes }}";
+            const releaseNotes = process.env.RELEASE_NOTES;
 
             // Create a new PR
             const { data: newPr } = await github.rest.pulls.create({
@@ -124,4 +124,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           branch_name: ${{ env.BRANCH_NAME }}
           VERSION: ${{ env.VERSION }}
+          RELEASE_NOTES: ${{ env.RELEASE_NOTES }}
 # version 0.2.12
