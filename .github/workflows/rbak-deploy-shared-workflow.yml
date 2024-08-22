@@ -71,6 +71,34 @@ jobs:
           body: ${{ env.PR_DESCRIPTION }}
           draft: false
           prerelease: false
+          generate_release_notes: true
+
+      - name: Push Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME=${{ env.VERSION }}
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+
+      - name: Create Release
+        id: create_release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const tagName = '${{ env.VERSION }}';
+            
+            // Create the release
+            const { data: release } = await github.rest.repos.createRelease({
+              owner,
+              repo,
+              tag_name: tagName,
+              name: `Release ${tagName}`,
+              generate_release_notes: true
+            });
+            
+            console.log(`Created release #${release.id} with tag ${tagName}`);
 #
 #      - name: Delete pre-release versions
 #        if: ${{ inputs.delete-alphas }}
