@@ -82,14 +82,12 @@ jobs:
           open_prs="${{ steps.open_prs.outputs.open_prs }}"
           
           release_notes="# Version ${{ env.VERSION }}"
-          release_notes+="\n\n## Release Notes"
+          release_notes+="\n\n## Release Notes\n\n"
           release_notes+="$merged_prs"
-          release_notes+="\n\n## Open Pull Requests"
+          release_notes+="\n\n## Open Pull Requests\n\n"
           release_notes+="$open_prs"
           
-          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
-          echo "$release_notes" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          echo -e "$release_notes" > release_notes.md
 
       - name: Create PR
         uses: actions/github-script@v6
@@ -98,7 +96,7 @@ jobs:
             const { repo, owner } = context.repo;
             const branchName = process.env.branch_name;
             const version = process.env.VERSION;
-            const releaseNotes = process.env.RELEASE_NOTES;
+            const releaseNotes = ${fs.readFileSync('release_notes.md', 'utf8')};
 
             // Create a new PR
             const { data: newPr } = await github.rest.pulls.create({
@@ -124,5 +122,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           branch_name: ${{ env.BRANCH_NAME }}
           VERSION: ${{ env.VERSION }}
-          RELEASE_NOTES: ${{ env.RELEASE_NOTES }}
 # version 0.2.12
