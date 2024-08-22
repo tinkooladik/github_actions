@@ -99,15 +99,15 @@ jobs:
             
             // generate notes
             const releaseNotes = [
-            `# Version ${version}`,
-            "",
-            "## Release Notes",
-            "",
-            mergedPrs,
-            "",
-            "## Open Pull Requests",
-            "",
-            openPrs
+              '# Version ${version}',
+              '',
+              '## Release Notes',
+              '',
+              mergedPrs,
+              '',
+              '## Open Pull Requests',
+              '',
+              openPrs
             ].join('\n');
             
             const { repo, owner } = context.repo;
