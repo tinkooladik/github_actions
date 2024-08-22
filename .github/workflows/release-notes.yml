@@ -121,4 +121,4 @@ jobs:
           branch_name: ${{ env.BRANCH_NAME }}
           VERSION: ${{ env.VERSION }}
           RELEASE_NOTES: ${{ env.RELEASE_NOTES }}
-# version 0.2.5
+# version 0.2.9
