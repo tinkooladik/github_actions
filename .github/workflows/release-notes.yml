@@ -81,13 +81,15 @@ jobs:
           merged_prs="${{ steps.merged_prs.outputs.merged_prs }}"
           open_prs="${{ steps.open_prs.outputs.open_prs }}"
           
-          release_notes="# Version ${{ env.VERSION }}".join('\n\n')
-          release_notes+="## Release Notes".join('\n\n')
-          release_notes+="$merged_prs".join('\n\n')
-          release_notes+="## Open Pull Requests".join('\n\n')
+          release_notes="# Version ${{ env.VERSION }}"
+          release_notes+="\n\n## Release Notes"
+          release_notes+="$merged_prs"
+          release_notes+="\n\n## Open Pull Requests"
           release_notes+="$open_prs"
           
-          core.setOutput('release_notes', release_notes);
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+          echo "$release_notes" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create PR
         uses: actions/github-script@v6
