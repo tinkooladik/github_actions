@@ -108,9 +108,6 @@ jobs:
               '## Release Notes',
               '',
               mergedPrs,
-              '',
-              '## Open Pull Requests',
-              '',
               openPrs,
               '',
               `**Full Changelog**: https://github.com/${owner}/${repo}/compare/${previousVersion}...${newVersion}`
