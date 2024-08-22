@@ -89,8 +89,8 @@ jobs:
               previous_tag_name: latestRelease.tag_name
             });
             
-            console.log(`Generated release notes: ${releaseNotes}`);
-            core.setOutput('release_notes', releaseNotes);
+            console.log(`Generated release notes: ${releaseNotes.body}`);
+            core.setOutput('release_notes', releaseNotes.body);
 
       - name: Create Release
         id: create_release
