@@ -72,7 +72,7 @@ jobs:
               per_page: 100,
             });
 
-            const openPrDetails = openPrs.map(pr => `- [#${pr.number}](${pr.html_url}): ${pr.title}`).join('\n');
+            const openPrDetails = openPrs.map(pr => `- ${pr.html_url}`).join('\n');
             core.setOutput('open_prs', openPrDetails || 'None');
 
       - name: Generate release notes
@@ -80,9 +80,11 @@ jobs:
         run: |
           merged_prs="${{ steps.merged_prs.outputs.merged_prs }}"
           open_prs="${{ steps.open_prs.outputs.open_prs }}"
-          release_notes="## ${{ env.VERSION }}</p></p>"
-          release_notes+="### Release Notes</p>$merged_prs</p></p>"
-          release_notes+="### Open Pull Requests</p>$open_prs"
+          release_notes="# Version ${{ env.VERSION }}".join('\n\n')
+          release_notes+="## Release Notes".join('\n\n')
+          release_notes+="$merged_prs".join('\n\n')
+          release_notes+="## Open Pull Requests".join('\n\n')
+          release_notes+="$open_prs"
           echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
           echo "$release_notes" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
