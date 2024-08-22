@@ -86,8 +86,7 @@ jobs:
           echo "$release_notes" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Create PR if Changes Pushed
-        if: env.files_changed == 'true'
+      - name: Create PR
         uses: actions/github-script@v6
         with:
           script: |
