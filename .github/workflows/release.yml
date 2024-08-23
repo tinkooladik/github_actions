@@ -2,11 +2,11 @@ name: Release workflow
 
 on:
   pull_request:
-    types: [ labeled ]
+    types:
+      - closed
 
 jobs:
   Build-Release:
-    if: github.event.label.name == 'approved' && startsWith(github.head_ref, 'version/')
     uses: ./.github/workflows/rbak-deploy-shared-workflow.yml
     with:
       artifact-id: "github_actions"
