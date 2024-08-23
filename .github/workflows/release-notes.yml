@@ -21,14 +21,52 @@ jobs:
           echo "VERSION=${version}" >> $GITHUB_ENV
           echo "BRANCH_NAME=${branch_name}" >> $GITHUB_ENV
 
+      - name: Check if PR from branch already exists
+        id: check_pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const branchName = process.env.BRANCH_NAME;
+            
+            // List pull requests with the specified head branch
+            const { data: prs } = await github.rest.pulls.list({
+              owner,
+              repo,
+              head: `${owner}:${branchName}`,
+              state: 'open'
+            });
+            
+            if (prs.length > 0) {
+              console.log(`PR from branch ${branchName} already exists. Skipping other steps.`);
+              core.setOutput('pr_exists', 'true');
+            } else {
+              core.setOutput('pr_exists', 'false');
+            }
+
       - name: Get latest release version
         id: get_latest_release
-        run: |
-          latest_release=$(gh release view --json tagName -q '.tagName' || echo "none")
-          echo "LATEST_RELEASE=${latest_release}" >> $GITHUB_ENV
+        if: steps.check_pr.outputs.pr_exists == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+
+            // Fetch the latest release
+            const { data: latestRelease } = await github.rest.repos.getLatestRelease({
+              owner,
+              repo
+            });
+
+            // Log the tag name
+            console.log(`Latest release tag: ${latestRelease.tag_name}`);
+
+            // Set the tag name as an output
+            core.setOutput('latest_tag', latestRelease.tag_name);
 
       - name: Find merged PRs since last release
         id: merged_prs
+        if: steps.check_pr.outputs.pr_exists == 'false'
         uses: actions/github-script@v7
         with:
           script: |
@@ -42,7 +80,7 @@ jobs:
               base: 'main',
             });
 
-            const lastReleaseTag = process.env.LATEST_RELEASE;
+            const lastReleaseTag = `${{ steps.get_latest_release.outputs.latest_tag }}`;
             const lastRelease = lastReleaseTag === "none" ? null : await github.rest.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -50,6 +88,9 @@ jobs:
             });
 
             const lastReleaseDate = lastRelease ? new Date(lastRelease.data.published_at) : new Date(0);
+
+            // Log date
+            console.log(`Latest release (${lastReleaseTag}) was published: ${lastReleaseDate}`);
 
             const mergedPrs = prs.filter(pr => 
               pr.merged_at && new Date(pr.merged_at) > lastReleaseDate
@@ -60,6 +101,7 @@ jobs:
 
       - name: Find open PRs
         id: open_prs
+        if: steps.check_pr.outputs.pr_exists == 'false'
         uses: actions/github-script@v7
         with:
           script: |
@@ -77,36 +119,37 @@ jobs:
 
       - name: Generate release notes
         id: generate_notes
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const mergedPrs = `${{ steps.merged_prs.outputs.merged_prs }}`;
-            const openPrs = `${{ steps.open_prs.outputs.open_prs }}`;
-            const version = process.env.VERSION;
-            
-            const releaseNotes = [
-              `# Version ${version}`,
-              '',
-              '## Release Notes',
-              '',
-              mergedPrs,
-              '',
-              '## Open Pull Requests',
-              '',
-              openPrs
-            ].join('\n');
-            
-            console.log(`Generated release notes:\n${releaseNotes}`);
-            core.setOutput('release_notes', releaseNotes);
-        env:
-          VERSION: ${{ env.VERSION }}
-
-      - name: Create PR
+        if: steps.check_pr.outputs.pr_exists == 'false'
         uses: actions/github-script@v7
         with:
           script: |
             const { repo, owner } = context.repo;
-            const branchName = process.env.branch_name;
+            const mergedPrs = `${{ steps.merged_prs.outputs.merged_prs }}`;
+            const openPrs = `${{ steps.open_prs.outputs.open_prs }}`;
+            const previousVersion = `${{ steps.get_latest_release.outputs.latest_tag }}`;
+            const newVersion = process.env.VERSION;
+            
+            const releaseNotes = [
+              `# Version ${newVersion}`,
+              '',
+              '## Release Notes',
+              '',
+              mergedPrs,
+              openPrs,
+              '',
+              `**Full Changelog**: https://github.com/${owner}/${repo}/compare/${previousVersion}...${newVersion}`
+            ].join('\n');
+            
+            console.log(`Generated release notes:\n${releaseNotes}`);
+            core.setOutput('release_notes', releaseNotes);
+
+      - name: Create PR
+        if: steps.check_pr.outputs.pr_exists == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const branchName = process.env.BRANCH_NAME;
             const version = process.env.VERSION;
             const releaseNotes = `${{ steps.generate_notes.outputs.release_notes }}`;
 
@@ -130,8 +173,4 @@ jobs:
             });
 
             console.log(`Added 'needs review' label to PR #${newPr.number}`);
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          branch_name: ${{ env.BRANCH_NAME }}
-          VERSION: ${{ env.VERSION }}
-# pr 4
+# version 0.2.13 (2)
