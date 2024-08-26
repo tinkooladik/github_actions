@@ -124,8 +124,7 @@ jobs:
             });
             
             if (prs.length > 0) {
-              console.log(`PR from branch ${branchName} already exists. Skipping other steps.`);
-              core.setOutput('pr_number', prs[0]);
+              core.setOutput('pr_number', prs[0].number);
             }
 
       - name: Create PR if doesn't exist yet
