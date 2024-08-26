@@ -26,7 +26,7 @@ on:
 
 jobs:
   release_shared:
-    if: |
+    if:
       is_merged: github.event.pull_request.merged
       is_version_branch: startsWith(github.event.pull_request.head.ref, 'version/')
       has_approved_label: contains(github.event.pull_request.labels.*.name, 'approved')
