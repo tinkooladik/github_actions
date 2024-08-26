@@ -173,4 +173,4 @@ jobs:
             });
 
             console.log(`Added 'needs review' label to PR #${newPr.number}`);
-# version 0.2.17
+# version 0.2.17 another test for trigger (without if statement)
