@@ -26,7 +26,10 @@ on:
 
 jobs:
   release_shared:
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'version/')
+    if: |
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'version/') &&
+      contains(github.event.pull_request.labels.*.name, 'approved')
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
