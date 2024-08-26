@@ -21,32 +21,8 @@ jobs:
           echo "VERSION=${version}" >> $GITHUB_ENV
           echo "BRANCH_NAME=${branch_name}" >> $GITHUB_ENV
 
-      - name: Check if PR from branch already exists
-        id: check_pr
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { repo, owner } = context.repo;
-            const branchName = process.env.BRANCH_NAME;
-            
-            // List pull requests with the specified head branch
-            const { data: prs } = await github.rest.pulls.list({
-              owner,
-              repo,
-              head: `${owner}:${branchName}`,
-              state: 'open'
-            });
-            
-            if (prs.length > 0) {
-              console.log(`PR from branch ${branchName} already exists. Skipping other steps.`);
-              core.setOutput('pr_exists', 'true');
-            } else {
-              core.setOutput('pr_exists', 'false');
-            }
-
       - name: Get latest release version
         id: get_latest_release
-        if: steps.check_pr.outputs.pr_exists == 'false'
         uses: actions/github-script@v7
         with:
           script: |
@@ -72,7 +48,6 @@ jobs:
 
       - name: Find merged PRs since last release
         id: merged_prs
-        if: steps.check_pr.outputs.pr_exists == 'false'
         uses: actions/github-script@v7
         with:
           script: |
@@ -107,7 +82,6 @@ jobs:
 
       - name: Generate release notes
         id: generate_notes
-        if: steps.check_pr.outputs.pr_exists == 'false'
         uses: actions/github-script@v7
         with:
           script: |
@@ -133,8 +107,29 @@ jobs:
             console.log(`Generated release notes:\n${releaseNotes}`);
             core.setOutput('release_notes', releaseNotes);
 
-      - name: Create PR
-        if: steps.check_pr.outputs.pr_exists == 'false'
+      - name: Check if PR from branch already exists
+        id: check_pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const branchName = process.env.BRANCH_NAME;
+            
+            // List pull requests with the specified head branch
+            const { data: prs } = await github.rest.pulls.list({
+              owner,
+              repo,
+              head: `${owner}:${branchName}`,
+              state: 'open'
+            });
+            
+            if (prs.length > 0) {
+              console.log(`PR from branch ${branchName} already exists. Skipping other steps.`);
+              core.setOutput('pr_number', prs[0]);
+            }
+
+      - name: Create PR if doesn't exist yet
+        if: steps.check_pr.outputs.pr_number == null
         uses: actions/github-script@v7
         with:
           script: |
@@ -163,3 +158,21 @@ jobs:
             });
 
             console.log(`Added 'needs review' label to PR #${newPr.number}`);
+
+      - name: Update PR if exists
+        if: steps.check_pr.outputs.pr_number != null
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const branchName = process.env.BRANCH_NAME;
+            const releaseNotes = `${{ steps.generate_notes.outputs.release_notes }}`;
+
+            await github.rest.pulls.update({
+                owner,
+                repo,
+                pull_number: parseInt(prNumber, 10),
+                body: releaseNotes,
+              });
+            
+            console.log(`Updated PR #${prNumber}`);
