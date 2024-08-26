@@ -26,12 +26,11 @@ on:
 
 jobs:
   release_shared:
-    if:
-      is_merged: github.event.pull_request.merged
-      is_version_branch: startsWith(github.event.pull_request.head.ref, 'version/')
-      has_approved_label: contains(github.event.pull_request.labels.*.name, 'approved')
+    is_merged: github.event.pull_request.merged
+    is_version_branch: startsWith(github.event.pull_request.head.ref, 'version/')
+    has_approved_label: contains(github.event.pull_request.labels.*.name, 'approved')
 
-      if: is_merged && is_version_branch && has_approved_label
+    if: is_merged && is_version_branch && has_approved_label
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
