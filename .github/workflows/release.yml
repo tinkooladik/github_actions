@@ -1,9 +1,9 @@
 name: Release workflow
 
 on:
-  pull_request:
-    types:
-      - closed
+#  pull_request:
+#    types:
+#      - closed
 
 jobs:
   Build-Release:
