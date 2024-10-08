@@ -5,64 +5,64 @@ inputs:
   buildType:
     description: debug / release
     required: true
-  store:
-    description: GooglePlay / Amazon
-    required: true
+#  store:
+#    description: GooglePlay / Amazon
+#    required: true
   brand:
-    description: rbtv / servus
+    description: RBTV / STV
     required: true
-  platform:
-    description: mobile / 10ft
-    required: true
-  format:
-    description: apk / bundle
-    required: true
+#  platform:
+#    description: Mobile / 10ft
+#    required: true
+#  rbak_token:
+#    description: RBAK_ANALYTICS_ANDROID_SHARED_TOKEN
+#    required: true
+#  aws_key:
+#    description: DTV_AWS_ACCESS_KEY_ID
+#    required: true
+#  aws_secret:
+#    description: DTV_AWS_SECRET_ACCESS_KEY
+#    required: true
 
 
 runs:
   using: "composite"
   steps:
-    - name: Extract version name old
-      shell: bash
-      run: |
-        echo "VERSION_OLD=$(echo "${{ github.ref }}" | grep -Eoiw "([^\/]+$)" | paste -sd "_" -)" >> $GITHUB_ENV
-        echo "version $VERSION_OLD"
-
     - name: Extract version name
+      id: extract_version_name
       shell: bash
       run: |
         branch=${{ github.ref }}
         echo "VERSION=$(echo "${branch#"${branch%%[0-9]*}"}")" >> $GITHUB_ENV
 
-    - name: Prepare string variables
+    - name: Make builds
       shell: bash
       run: |
-        if [[ "${{ inputs.platform }}" == "mobile" ]]; then
-            echo "MODULE=app" >> $GITHUB_ENV; else
-            echo "MODULE=tv" >> $GITHUB_ENV
-        fi
-        if [[ "${{ inputs.format }}" == "apk" ]]; then
-            echo "ACTION=assemble" >> $GITHUB_ENV; else
-            echo "ACTION=${{ inputs.format }}" >> $GITHUB_ENV
-        fi
-        brand=${{ inputs.brand }}
-        if [[ $brand == "STV" ]]; then
-            echo "TEST_BRAND=servus" >> $GITHUB_ENV; else
-            echo "TEST_BRAND=mf" >> $GITHUB_ENV
-        fi
-        brand_lc="${brand,,}"
-        echo "BRAND=$(echo "${brand_lc^}")" >> $GITHUB_ENV
         buildType=${{ inputs.buildType }}
         echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
+        echo ./gradlew assemble${buildType^}
+        echo ./gradlew android:bundle${buildType^}
 
-    - name: Extract build name
-      shell: bash
-      run: echo "BUILD_NAME=${{ inputs.brand }}-Android-${{ inputs.platform }}-${{ inputs.store }}-${{ env.VERSION }}-${{ inputs.buildType }}" >> $GITHUB_ENV
-
-    - name: Print build action
+    - name: Rename files (GooglePlay)
       shell: bash
       run: |
-        echo PRINT ACTION: ${{ env.MODULE }}:${{ env.ACTION }}${{ env.BRAND }}${{ inputs.store }}${{ env.BUILD_TYPE }}
+        prefix=${{ inputs.brand }}-Android-GooglePlay-${{ env.VERSION }}-${buildType^}
+        filePath=android/build/outputs/
+        ## rename apk
+        echo new file name: ${prefix}.apk
+        echo ${filePath}apk/${{ inputs.buildType }}/android-${{ inputs.buildType }}.apk
+        ## rename bundle
+        echo new file name: ${prefix}.aab
+        echo ${filePath}bundle/${{ inputs.buildType }}/android-${{ inputs.buildType }}.aab
+
+    - name: Rename files (Amazon)
+      shell: bash
+      run: |
+        prefix=${{ inputs.brand }}-Android-Amazon-${{ env.VERSION }}-${buildType^}
+        filePath=android/build/outputs/
+        ## rename apk
+        echo new file name: ${prefix}.apk
+        echo ${filePath}apk/${{ inputs.buildType }}/android-${{ inputs.buildType }}.apk
 
 #    - uses: actions/checkout@v3
 #    - name: Set up JDK 11
@@ -78,16 +78,32 @@ runs:
 #
 #    - name: Build APK
 #      shell: bash
-#      run: bash ./gradlew app:"${{ env.ACTION }}${{ inputs.buildType }}" --stacktrace
-#
-#    - name: Upload APK
-#      uses: actions/upload-artifact@v3
-#      with:
-#        name: ${{ env.BUILD_NAME }}
-#        path: app/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
-#        ##path: ${{ env.MODULE }}/build/outputs/${{ inputs.format }}/${{ inputs.buildType }}/*.*
+#      run: bash ./gradlew ${{ env.MODULE }}:${{ env.ACTION }}${{ env.BRAND }}${{ inputs.store }}${{ env.BUILD_TYPE }} --no-build-cache
+#      env:
+#        GITHUB_TOKEN: ${{ inputs.rbak_token }}
+
+#    - name: Rename APK
+#      shell: bash
+#      run: |
+#        echo ${{ env.FILE_PATH }}${{ env.BUILD_NAME }}.${{ env.FILE_EXT }}
+#        file=$(find ${{ env.FILE_PATH }} -type f -name "*.${{ env.FILE_EXT }}")
+#        mv ${file[0]} ${{ env.FILE_PATH }}${{ env.BUILD_NAME }}.${{ env.FILE_EXT }}
+
+    #    - name: Build Package for AWS Upload
+    #      shell: bash
+    #      run: |
+    #        mkdir s3bundle
+    #        cp -R ${{ env.FILE_PATH }}${{ env.BUILD_NAME }}.${{ env.FILE_EXT }} s3bundle
+    #
+    #    - name: Configure AWS Credentials
+    #      uses: aws-actions/configure-aws-credentials@v1
+    #      with:
+    #        aws-access-key-id: ${{ inputs.aws_key }}
+    #        aws-secret-access-key: ${{ inputs.aws_secret }}
+    #        aws-region: us-west-2
 
     - name: Upload files to S3 with AWS CLI
       shell: bash
       run: |
-        echo //rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/${{ env.VERSION }}/${{ env.BUILD_TYPE }}
+        echo Builds/${{ inputs.brand }}/Android/Shared/${{ env.VERSION }}/${{ env.BUILD_TYPE }}
+#        aws s3 sync s3bundle/ s3://rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/${{ inputs.platform }}/${{ env.VERSION }}/${{ env.BUILD_TYPE }}
