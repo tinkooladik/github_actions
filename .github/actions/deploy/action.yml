@@ -47,12 +47,12 @@ runs:
       shell: bash
       run: |
         echo "Printing Android project file tree:"
-        tree
+        tree -L 6
 
     - name: Rename files (GooglePlay)
       shell: bash
       run: |
-        pathPrefix=android/build/outputs/
+        pathPrefix=./android/build/outputs/
         buildType=${{ inputs.buildType }}
         oldName=android-${{ inputs.buildType }}
         newName=${{ inputs.brand }}-Android-GooglePlay-${{ env.VERSION }}-${{ env.BUILD_TYPE }}
@@ -70,7 +70,7 @@ runs:
     - name: Rename files (Amazon)
       shell: bash
       run: |
-        pathPrefix=amazon/build/outputs/
+        pathPrefix=./amazon/build/outputs/
         buildType=${{ inputs.buildType }}
         oldName=amazon-${{ inputs.buildType }}
         newName=${{ inputs.brand }}-Android-Amazon-${{ env.VERSION }}-${{ env.BUILD_TYPE }}
@@ -84,7 +84,7 @@ runs:
       shell: bash
       run: |
         echo "Printing Android project file tree:"
-        tree
+        tree -L 6
 
 #    - name: Rename APK
 #      shell: bash
