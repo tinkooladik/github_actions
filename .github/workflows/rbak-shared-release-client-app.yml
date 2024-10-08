@@ -8,51 +8,22 @@ on:
 
 jobs:
   ######################### Google Play ##############################
-  google_play_apk_release:
+  build_release:
     runs-on: ubuntu-latest
     name: GooglePlay APK release
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/deploy
         with:
-          store: "GooglePlay"
           buildType: "release"
-          format: "apk"
           brand: "STV" ## this should be input from client repo
 
-  google_play_apk_debug:
+  build_debug:
     runs-on: ubuntu-latest
     name: GooglePlay APK debug
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/deploy
         with:
-          store: "GooglePlay"
           buildType: "debug"
-          format: "apk"
-          brand: "STV"
-
-  ######################### Amazon ##############################
-  amazon_apk_release:
-    runs-on: ubuntu-latest
-    name: Amazon APK release
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./.github/actions/deploy
-        with:
-          store: "Amazon"
-          buildType: "release"
-          format: "apk"
-          brand: "STV"
-
-  amazon_apk_debug:
-    runs-on: ubuntu-latest
-    name: Amazon APK debug
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./.github/actions/deploy
-        with:
-          store: "Amazon"
-          buildType: "debug"
-          format: "apk"
-          brand: "STV"
+          brand: "STV" ## this should be input from client repo
