@@ -18,7 +18,7 @@ runs:
       run: |
         branch=${{ github.ref }}
         echo "VERSION=$(echo "${branch#"${branch%%[0-9]*}"}")" >> $GITHUB_ENV
-    
+
     - uses: actions/checkout@v3
     - name: Set up JDK 17
       uses: actions/setup-java@v3
@@ -58,14 +58,18 @@ runs:
         newName=${{ inputs.brand }}-Android-GooglePlay-${{ env.VERSION }}-${{ env.BUILD_TYPE }}
         
         ## rename apk
-        oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
-        newFilePath=${pathPrefix}apk/${buildType}/${newName}.apk
-        mv ${oldFilePath} ${newFilePath}.apk
+#        oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
+        filePath=${pathPrefix}apk/${buildType}/
+        oldFilePath=$(find ${filePath} -type f -name "*.apk")
+        newFilePath=${filePath}${newName}.apk
+        mv ${oldFilePath[0]} ${newFilePath}.apk
         
         ## rename bundle
-        oldFilePath=${pathPrefix}bundle/${buildType}/${oldName}.aab
-        newFilePath=${pathPrefix}bundle/${buildType}/${newName}.aab
-        mv ${oldFilePath} ${newFilePath}.aab
+#        oldFilePath=${pathPrefix}bundle/${buildType}/${oldName}.aab
+        filePath=${pathPrefix}bundle/${buildType}/
+        oldFilePath=$(find ${filePath} -type f -name "*.aab")
+        newFilePath=${filePath}${newName}.aab
+        mv ${oldFilePath[0]} ${newFilePath}.aab
 
     - name: Rename files (Amazon)
       shell: bash
@@ -76,9 +80,11 @@ runs:
         newName=${{ inputs.brand }}-Android-Amazon-${{ env.VERSION }}-${{ env.BUILD_TYPE }}
         
         ## rename apk
-        oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
-        newFilePath=${pathPrefix}apk/${buildType}/${newName}.apk
-        mv ${oldFilePath} ${newFilePath}.apk
+#        oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
+        filePath=${pathPrefix}apk/${buildType}/
+        oldFilePath=$(find ${filePath} -type f -name "*.apk")
+        newFilePath=${filePath}${newName}.apk
+        mv ${oldFilePath[0]} ${newFilePath}.apk
 
     - name: Print file tree
       shell: bash
