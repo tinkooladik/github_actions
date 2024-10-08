@@ -5,25 +5,9 @@ inputs:
   buildType:
     description: debug / release
     required: true
-#  store:
-#    description: GooglePlay / Amazon
-#    required: true
   brand:
     description: RBTV / STV
     required: true
-#  platform:
-#    description: Mobile / 10ft
-#    required: true
-#  rbak_token:
-#    description: RBAK_ANALYTICS_ANDROID_SHARED_TOKEN
-#    required: true
-#  aws_key:
-#    description: DTV_AWS_ACCESS_KEY_ID
-#    required: true
-#  aws_secret:
-#    description: DTV_AWS_SECRET_ACCESS_KEY
-#    required: true
-
 
 runs:
   using: "composite"
@@ -46,23 +30,23 @@ runs:
     - name: Rename files (GooglePlay)
       shell: bash
       run: |
-        prefix=${{ inputs.brand }}-Android-GooglePlay-${{ env.VERSION }}-${buildType^}
+        prefix=${{ inputs.brand }}-Android-GooglePlay-${{ env.VERSION }}-${{ env.BUILD_TYPE }}
         filePath=android/build/outputs/
         ## rename apk
         echo new file name: ${prefix}.apk
         echo ${filePath}apk/${{ inputs.buildType }}/android-${{ inputs.buildType }}.apk
         ## rename bundle
         echo new file name: ${prefix}.aab
-        echo ${filePath}bundle/${{ inputs.buildType }}/android-${{ inputs.buildType }}.aab
+        echo file path to rename: ${filePath}bundle/${{ inputs.buildType }}/android-${{ inputs.buildType }}.aab
 
     - name: Rename files (Amazon)
       shell: bash
       run: |
-        prefix=${{ inputs.brand }}-Android-Amazon-${{ env.VERSION }}-${buildType^}
+        prefix=${{ inputs.brand }}-Android-Amazon-${{ env.VERSION }}-${{ env.BUILD_TYPE }}
         filePath=android/build/outputs/
         ## rename apk
         echo new file name: ${prefix}.apk
-        echo ${filePath}apk/${{ inputs.buildType }}/android-${{ inputs.buildType }}.apk
+        echo file path to rename: ${filePath}apk/${{ inputs.buildType }}/android-${{ inputs.buildType }}.apk
 
 #    - uses: actions/checkout@v3
 #    - name: Set up JDK 11
