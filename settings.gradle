@@ -36,5 +36,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "GitHub Actions Test"
-include ':app'
-//include ':githubtest-multimodule'
+include ':android'
+include ':amazon'
