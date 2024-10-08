@@ -39,15 +39,15 @@ runs:
         ./gradlew assemble${buildType^}
         ./gradlew android:bundle${buildType^}
 
-    - name: Install tree
-      shell: bash
-      run: sudo apt-get update && sudo apt-get install tree
-
-    - name: Print file tree
-      shell: bash
-      run: |
-        echo "Printing Android project file tree:"
-        tree -L 6
+#    - name: Install tree
+#      shell: bash
+#      run: sudo apt-get update && sudo apt-get install tree
+#
+#    - name: Print file tree
+#      shell: bash
+#      run: |
+#        echo "Printing Android project file tree:"
+#        tree -L 6
 
     - name: Rename files (GooglePlay)
       shell: bash
@@ -61,15 +61,15 @@ runs:
         ## oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
         filePath=${pathPrefix}apk/${buildType}/
         oldFilePath=$(find ${filePath} -type f -name "*.apk")
-        newFilePath=${filePath}${newName}.apk
-        mv ${oldFilePath[0]} ${newFilePath}.apk
+        newFilePath=./artifacts/${newName}.apk
+        mv ${oldFilePath[0]} ${newFilePath}
         
         ## rename bundle
         ## oldFilePath=${pathPrefix}bundle/${buildType}/${oldName}.aab
         filePath=${pathPrefix}bundle/${buildType}/
         oldFilePath=$(find ${filePath} -type f -name "*.aab")
-        newFilePath=${filePath}${newName}.aab
-        mv ${oldFilePath[0]} ${newFilePath}.aab
+        newFilePath=./artifacts/${newName}.aab
+        mv ${oldFilePath[0]} ${newFilePath}
 
     - name: Rename files (Amazon)
       shell: bash
@@ -83,14 +83,19 @@ runs:
         ## oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
         filePath=${pathPrefix}apk/${buildType}/
         oldFilePath=$(find ${filePath} -type f -name "*.apk")
-        newFilePath=${filePath}${newName}.apk
-        mv ${oldFilePath[0]} ${newFilePath}.apk
+        newFilePath=./artifacts/${newName}.apk
+        mv ${oldFilePath[0]} ${newFilePath}
+
+#    - name: Upload multiple files to S3 with AWS CLI
+#      shell: bash
+#      run: |
+#        aws s3 sync ./artifacts/ s3://rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/Shared/${{ env.VERSION }}/${{ env.BUILD_TYPE }}
 
     - name: Print file tree
       shell: bash
       run: |
         echo "Printing Android project file tree:"
-        tree -L 6
+        tree -L 3
 
 #    - name: Rename APK
 #      shell: bash
