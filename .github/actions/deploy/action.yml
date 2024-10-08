@@ -58,14 +58,14 @@ runs:
         newName=${{ inputs.brand }}-Android-GooglePlay-${{ env.VERSION }}-${{ env.BUILD_TYPE }}
         
         ## rename apk
-#        oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
+        ## oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
         filePath=${pathPrefix}apk/${buildType}/
         oldFilePath=$(find ${filePath} -type f -name "*.apk")
         newFilePath=${filePath}${newName}.apk
         mv ${oldFilePath[0]} ${newFilePath}.apk
         
         ## rename bundle
-#        oldFilePath=${pathPrefix}bundle/${buildType}/${oldName}.aab
+        ## oldFilePath=${pathPrefix}bundle/${buildType}/${oldName}.aab
         filePath=${pathPrefix}bundle/${buildType}/
         oldFilePath=$(find ${filePath} -type f -name "*.aab")
         newFilePath=${filePath}${newName}.aab
@@ -80,7 +80,7 @@ runs:
         newName=${{ inputs.brand }}-Android-Amazon-${{ env.VERSION }}-${{ env.BUILD_TYPE }}
         
         ## rename apk
-#        oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
+        ## oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
         filePath=${pathPrefix}apk/${buildType}/
         oldFilePath=$(find ${filePath} -type f -name "*.apk")
         newFilePath=${filePath}${newName}.apk
