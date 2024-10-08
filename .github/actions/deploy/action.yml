@@ -31,13 +31,14 @@ runs:
       shell: bash
       run: chmod +x gradlew
 
-    - name: Make builds
+    - name: Make builds and prepare folder for artifacts
       shell: bash
       run: |
         buildType=${{ inputs.buildType }}
         echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
         ./gradlew assemble${buildType^}
         ./gradlew android:bundle${buildType^}
+        mkdir ./artifacts
 
 #    - name: Install tree
 #      shell: bash
@@ -49,7 +50,7 @@ runs:
 #        echo "Printing Android project file tree:"
 #        tree -L 6
 
-    - name: Rename files (GooglePlay)
+    - name: Rename files and move to artifacts folder (GooglePlay)
       shell: bash
       run: |
         pathPrefix=./android/build/outputs/
@@ -71,7 +72,7 @@ runs:
         newFilePath=./artifacts/${newName}.aab
         mv ${oldFilePath[0]} ${newFilePath}
 
-    - name: Rename files (Amazon)
+    - name: Rename files and move to artifacts folder (Amazon)
       shell: bash
       run: |
         pathPrefix=./amazon/build/outputs/
