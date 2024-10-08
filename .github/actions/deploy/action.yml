@@ -39,6 +39,16 @@ runs:
         ./gradlew assemble${buildType^}
         ./gradlew android:bundle${buildType^}
 
+    - name: Install tree
+      shell: bash
+      run: sudo apt-get update && sudo apt-get install tree
+
+    - name: Print file tree
+      shell: bash
+      run: |
+        echo "Printing Android project file tree:"
+        tree
+
     - name: Rename files (GooglePlay)
       shell: bash
       run: |
@@ -69,6 +79,12 @@ runs:
         oldFilePath=${pathPrefix}apk/${buildType}/${oldName}.apk
         newFilePath=${pathPrefix}apk/${buildType}/${newName}.apk
         mv ${oldFilePath} ${newFilePath}.apk
+
+    - name: Print file tree
+      shell: bash
+      run: |
+        echo "Printing Android project file tree:"
+        tree
 
 #    - name: Rename APK
 #      shell: bash
