@@ -10,9 +10,6 @@ on:
 
 jobs:
   push_tag_and_create_github_release_with_notes:
-    if: |
-      startsWith(github.event.pull_request.head.ref, 'version/') &&
-      github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
