@@ -1,12 +1,12 @@
-name: Deploy Servus Mobile
-
-on:
-  push:
-    branches:
-      - 'version/*.*.*'
-
-jobs:
-  servus_mobile:
-    uses: ./.github/workflows/rbak-shared-release-client-app.yml
-    with:
-      brand: "STV"
+#name: Deploy Servus Mobile
+#
+#on:
+#  push:
+#    branches:
+#      - 'version/*.*.*'
+#
+#jobs:
+#  servus_mobile:
+#    uses: ./.github/workflows/rbak-shared-release-client-app.yml
+#    with:
+#      brand: "STV"

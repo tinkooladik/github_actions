@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
+      - uses: actions/checkout@v2
       - name: Use Composite Action to Push Tag and Generate Release Notes
         uses: ./.github/actions/push-tag-release
         with:
