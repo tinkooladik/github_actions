@@ -9,9 +9,4 @@ jobs:
   Build-Release:
     uses: ./.github/workflows/rbak-shared-release-client-app.yml
     with:
-      artifact-id: "github_actions"
-      group-id: "com.tinkooladik"
-      delete-alphas: true
-      #0.2.14
-#    secrets:
-#      rbak-token: ${{ secrets.RBAK_REPOS_SHARED_TOKEN }}
+      brand: "STV"
