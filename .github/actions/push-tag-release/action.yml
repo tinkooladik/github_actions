@@ -1,8 +1,8 @@
-name: "Push Tag and Generate Release Notes"
-description: "Extract version from branch, push a Git tag, and generate release notes."
+name: Push Tag and Generate Release Notes
+description: Shared action that can be used for both rbak sdks and client apps deployment
 inputs:
   GITHUB_TOKEN:
-    description: "GitHub token to push the tag and generate release notes."
+    description: standard secrets.GITHUB_TOKEN can be used
     required: true
 
 runs:
