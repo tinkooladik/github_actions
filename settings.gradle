@@ -22,13 +22,13 @@ dependencyResolutionManagement {
                 password = localProperties['gpr.key'] ?: System.getenv("GITHUB_TOKEN")
             }
         }
-        maven {
-            url = uri("https://maven.pkg.github.com/RBNA/rbak-analytics-android")
-            credentials {
-                username = localProperties['gpr.user'] ?: System.getenv("GITHUB_ACTOR")
-                password = localProperties['gpr.key'] ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
+//        maven {
+//            url = uri("https://maven.pkg.github.com/RBNA/rbak-analytics-android")
+//            credentials {
+//                username = localProperties['gpr.user'] ?: System.getenv("GITHUB_ACTOR")
+//                password = localProperties['gpr.key'] ?: System.getenv("GITHUB_TOKEN")
+//            }
+//        }
         google()
         jcenter()
         maven { url "https://ease-live-sdk-releases.s3.eu-central-1.amazonaws.com/maven" }
@@ -36,5 +36,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "GitHub Actions Test"
-include ':app'
-//include ':githubtest-multimodule'
+include ':android'
+include ':amazon'

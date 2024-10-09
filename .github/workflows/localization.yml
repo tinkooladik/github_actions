@@ -11,12 +11,12 @@ name: Strings localization Update existing PR
 # if no - finish
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
-  push:
-    branches:
-      - 'localization'
+#  workflow_dispatch:
+#  schedule:
+#    - cron: "0 0 * * *"
+#  push:
+#    branches:
+#      - 'localization'
 
 jobs:
   update:

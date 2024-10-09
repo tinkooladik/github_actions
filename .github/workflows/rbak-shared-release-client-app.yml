@@ -1,29 +1,46 @@
 name: RBAK shared deploy workflow
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - 'version/*.*.*'
+  workflow_call:
+    inputs:
+      brand:
+        type: string
+        description: RBTV / STV
+        required: true
 
 jobs:
-  ######################### Google Play ##############################
-  build_release:
+  push_tag_and_create_github_release_with_notes:
     runs-on: ubuntu-latest
-    name: GooglePlay APK release
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Composite Action to Push Tag and Generate Release Notes
+        uses: ./.github/actions/push-tag-release
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build_release:
+#    if: |
+#      startsWith(github.event.pull_request.head.ref, 'version/') &&
+#      github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    name: Release
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/deploy
         with:
           buildType: "release"
-          brand: "STV" ## this should be input from client repo
+          brand: ${{ inputs.brand }}
 
   build_debug:
+#    if: |
+#      startsWith(github.event.pull_request.head.ref, 'version/') &&
+#      github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    name: GooglePlay APK debug
+    name: Debug
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/deploy
         with:
           buildType: "debug"
-          brand: "STV" ## this should be input from client repo
+          brand: ${{ inputs.brand }}

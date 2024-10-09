@@ -1,10 +1,10 @@
 name: Android CI
 
 on:
-  pull_request:
-  push:
-    branches:
-      - 'version/*.*.*'
+#  pull_request:
+#  push:
+#    branches:
+#      - 'version/*.*.*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

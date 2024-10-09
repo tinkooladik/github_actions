@@ -5,25 +5,9 @@ inputs:
   buildType:
     description: debug / release
     required: true
-#  store:
-#    description: GooglePlay / Amazon
-#    required: true
   brand:
     description: RBTV / STV
     required: true
-#  platform:
-#    description: Mobile / 10ft
-#    required: true
-#  rbak_token:
-#    description: RBAK_ANALYTICS_ANDROID_SHARED_TOKEN
-#    required: true
-#  aws_key:
-#    description: DTV_AWS_ACCESS_KEY_ID
-#    required: true
-#  aws_secret:
-#    description: DTV_AWS_SECRET_ACCESS_KEY
-#    required: true
-
 
 runs:
   using: "composite"
@@ -35,52 +19,84 @@ runs:
         branch=${{ github.ref }}
         echo "VERSION=$(echo "${branch#"${branch%%[0-9]*}"}")" >> $GITHUB_ENV
 
-    - name: Make builds
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      shell: bash
+      run: chmod +x gradlew
+
+    - name: Make builds and prepare folder for artifacts
       shell: bash
       run: |
         buildType=${{ inputs.buildType }}
         echo "BUILD_TYPE=$(echo "${buildType^}")" >> $GITHUB_ENV
-        echo ./gradlew assemble${buildType^}
-        echo ./gradlew android:bundle${buildType^}
+        ./gradlew assemble${buildType^}
+        ./gradlew android:bundle${buildType^}
+        mkdir ./artifacts
 
-    - name: Rename files (GooglePlay)
+#    - name: Install tree
+#      shell: bash
+#      run: sudo apt-get update && sudo apt-get install tree
+#
+#    - name: Print file tree
+#      shell: bash
+#      run: |
+#        echo "Printing Android project file tree:"
+#        tree -L 6
+
+    - name: Rename files and move to artifacts folder (GooglePlay)
       shell: bash
       run: |
-        prefix=${{ inputs.brand }}-Android-GooglePlay-${{ env.VERSION }}-${buildType^}
-        filePath=android/build/outputs/
+        pathPrefix=./android/build/outputs/
+        buildType=${{ inputs.buildType }}
+        oldName=android-${{ inputs.buildType }}
+        newName=${{ inputs.brand }}-Android-GooglePlay-${{ env.VERSION }}-${{ env.BUILD_TYPE }}
+        
         ## rename apk
-        echo new file name: ${prefix}.apk
-        echo ${filePath}apk/${{ inputs.buildType }}/android-${{ inputs.buildType }}.apk
+        ## oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
+        filePath=${pathPrefix}apk/${buildType}/
+        oldFilePath=$(find ${filePath} -type f -name "*.apk")
+        newFilePath=./artifacts/${newName}.apk
+        mv ${oldFilePath[0]} ${newFilePath}
+        
         ## rename bundle
-        echo new file name: ${prefix}.aab
-        echo ${filePath}bundle/${{ inputs.buildType }}/android-${{ inputs.buildType }}.aab
+        ## oldFilePath=${pathPrefix}bundle/${buildType}/${oldName}.aab
+        filePath=${pathPrefix}bundle/${buildType}/
+        oldFilePath=$(find ${filePath} -type f -name "*.aab")
+        newFilePath=./artifacts/${newName}.aab
+        mv ${oldFilePath[0]} ${newFilePath}
 
-    - name: Rename files (Amazon)
+    - name: Rename files and move to artifacts folder (Amazon)
       shell: bash
       run: |
-        prefix=${{ inputs.brand }}-Android-Amazon-${{ env.VERSION }}-${buildType^}
-        filePath=android/build/outputs/
+        pathPrefix=./amazon/build/outputs/
+        buildType=${{ inputs.buildType }}
+        oldName=amazon-${{ inputs.buildType }}
+        newName=${{ inputs.brand }}-Android-Amazon-${{ env.VERSION }}-${{ env.BUILD_TYPE }}
+        
         ## rename apk
-        echo new file name: ${prefix}.apk
-        echo ${filePath}apk/${{ inputs.buildType }}/android-${{ inputs.buildType }}.apk
+        ## oldFilePath=${pathPrefix}apk/${buildType}/${oldName-unsigned}.apk
+        filePath=${pathPrefix}apk/${buildType}/
+        oldFilePath=$(find ${filePath} -type f -name "*.apk")
+        newFilePath=./artifacts/${newName}.apk
+        mv ${oldFilePath[0]} ${newFilePath}
 
-#    - uses: actions/checkout@v3
-#    - name: Set up JDK 11
-#      uses: actions/setup-java@v3
-#      with:
-#        java-version: '11'
-#        distribution: 'temurin'
-#        cache: gradle
-#
-#    - name: Grant execute permission for gradlew
+#    - name: Upload multiple files to S3 with AWS CLI
 #      shell: bash
-#      run: chmod +x gradlew
-#
-#    - name: Build APK
-#      shell: bash
-#      run: bash ./gradlew ${{ env.MODULE }}:${{ env.ACTION }}${{ env.BRAND }}${{ inputs.store }}${{ env.BUILD_TYPE }} --no-build-cache
-#      env:
-#        GITHUB_TOKEN: ${{ inputs.rbak_token }}
+#      run: |
+#        aws s3 sync ./artifacts/ s3://rb-streaming-app-builds/Builds/${{ inputs.brand }}/Android/Shared/${{ env.VERSION }}/${{ env.BUILD_TYPE }}
+
+    - name: Print file tree
+      shell: bash
+      run: |
+        echo "Printing Android project file tree:"
+        tree -L 3
 
 #    - name: Rename APK
 #      shell: bash

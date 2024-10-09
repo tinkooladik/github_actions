@@ -1,9 +1,7 @@
 name: Generate Release Notes and Create PR
 
 on:
-  push:
-    branches:
-      - 'version/*.*.*'
+  workflow_call:
 
 jobs:
   release-notes:
