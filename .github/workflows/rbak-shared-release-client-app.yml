@@ -19,9 +19,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build_release:
-    if: |
-      startsWith(github.event.pull_request.head.ref, 'version/') &&
-      github.event.pull_request.merged == true
+#    if: |
+#      startsWith(github.event.pull_request.head.ref, 'version/') &&
+#      github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Release
     steps:
@@ -32,9 +32,9 @@ jobs:
           brand: ${{ inputs.brand }}
 
   build_debug:
-    if: |
-      startsWith(github.event.pull_request.head.ref, 'version/') &&
-      github.event.pull_request.merged == true
+#    if: |
+#      startsWith(github.event.pull_request.head.ref, 'version/') &&
+#      github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Debug
     steps:

@@ -7,7 +7,7 @@ on:
 
 jobs:
   Build-Release:
-    uses: ./.github/workflows/rbak-deploy-shared-workflow.yml
+    uses: ./.github/workflows/rbak-shared-release-client-app.yml
     with:
       artifact-id: "github_actions"
       group-id: "com.tinkooladik"
