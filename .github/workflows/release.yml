@@ -1,9 +1,9 @@
 name: Release workflow
 
 on:
-#  pull_request:
-#    types:
-#      - closed
+  push:
+    branches:
+      - 'version/*.*.*'
 
 jobs:
   Build-Release:
