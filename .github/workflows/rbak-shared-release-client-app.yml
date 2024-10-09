@@ -16,87 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
-
-      - name: Extract version from branch name
-        id: extract_version
-        run: |
-          branch_name=$(echo "${GITHUB_REF#refs/heads/}")
-          version=${branch_name#version/}
-          echo "VERSION=${version}" >> $GITHUB_ENV
-
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - name: Use Composite Action to Push Tag and Generate Release Notes
+        uses: ./.github/actions/push-tag-release
         with:
-          distribution: zulu
-          java-version: 17
-
-      - name: Push Tag
-        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG_NAME=${{ env.VERSION }}
-          git tag $TAG_NAME
-          git push origin $TAG_NAME
-
-      - name: Generate Release notes
-        id: generate_notes
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { repo, owner } = context.repo;
-            const tagName = '${{ env.VERSION }}';
-
-            // Fetch the latest release
-            let latestRelease;
-            try {
-              const { data } = await github.rest.repos.getLatestRelease({
-                owner,
-                repo
-              });
-              latestRelease = data.tag_name;
-            } catch (error) {
-                latestRelease = null;
-            }
-            
-            // Generate release notes
-            const params = {
-              owner,
-              repo,
-              tag_name: tagName
-            };
-            
-            // Only add previous_tag_name if latestRelease is available
-            if (latestRelease != null) {
-              params.previous_tag_name = latestRelease;
-            }
-            
-            const { data: releaseNotes } = await github.rest.repos.generateReleaseNotes(params);
-            
-            console.log(`Generated release notes: ${releaseNotes.body}`);
-            core.setOutput('release_notes', releaseNotes.body);
-
-      - name: Create Release
-        id: create_release
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { repo, owner } = context.repo;
-            const tagName = '${{ env.VERSION }}';
-            const releaseNotes = `${{ steps.generate_notes.outputs.release_notes }}`;
-            
-            // Create the release
-            const { data: release } = await github.rest.repos.createRelease({
-              owner,
-              repo,
-              tag_name: tagName,
-              name: `Version ${tagName}`,
-              body: releaseNotes
-            });
-            
-            console.log(`Created release #${release.id} with tag ${tagName}`);
 
   build_release:
+    if: |
+      startsWith(github.event.pull_request.head.ref, 'version/') &&
+      github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Release
     steps:
@@ -107,6 +35,9 @@ jobs:
           brand: ${{ inputs.brand }}
 
   build_debug:
+    if: |
+      startsWith(github.event.pull_request.head.ref, 'version/') &&
+      github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Debug
     steps:
