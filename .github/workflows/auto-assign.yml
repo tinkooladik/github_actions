@@ -1,7 +1,7 @@
 name: 'Auto Assign'
 on:
   pull_request:
-    types: [opened, ready_for_review]
+    types: [ready_for_review]
 
 jobs:
   assign-reviewers:
@@ -30,3 +30,4 @@ jobs:
             console.log(`Added 'needs review' label to PR #${pullRequestNumber}`);
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ## test 2 (draft)
