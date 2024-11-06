@@ -1,0 +1,32 @@
+name: 'Auto Assign'
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+
+jobs:
+  assign-reviewers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kentaro-m/auto-assign-action@v2.0.0
+
+  add-needs-review-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add "needs review" label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pullRequestNumber = context.payload.pull_request.number;
+
+            // Add the "needs review" label to the PR
+            await github.rest.issues.addLabels({
+              owner,
+              repo,
+              issue_number: pullRequestNumber,
+              labels: ['needs review']
+            });
+
+            console.log(`Added 'needs review' label to PR #${pullRequestNumber}`);
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

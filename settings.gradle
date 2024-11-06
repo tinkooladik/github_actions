@@ -37,4 +37,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "GitHub Actions Test"
 include ':android'
-include ':amazon'
+//include ':amazon'
