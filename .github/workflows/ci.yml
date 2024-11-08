@@ -1,10 +1,11 @@
-name: Android CI
+name: CI workflow
 
 on:
-#  pull_request:
-#  push:
-#    branches:
-#      - 'version/*.*.*'
+  pull_request:
+    types: [ready_for_review]
+  push:
+    branches:
+      - 'version/*.*.*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -12,32 +13,38 @@ concurrency:
 
 jobs:
   ktlint:
+    uses: RBNA/rbak-shared-sdk-setup-android/.github/workflows/ci-ktlint.yml@alex/RBMN-52666-common-repos-updates
+
+  tests_and_metrics:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK 11
-        uses: actions/setup-java@v3
+      - name: Clone Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up JDK 17
+        uses: actions/setup-java@v4
         with:
+          distribution: 'zulu'
           java-version: '17'
-          distribution: 'temurin'
-          cache: gradle
-#      - name: Grant execute permission for gradlew
-#        shell: bash
-#        run: chmod +x gradlew
-#      - name: clean gradlew
-#        shell: bash
-#        run: ./gradlew clean
-#      - name: Assemble
-#        run: ./gradlew app:assembleDebug
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.SHARED_SECRET }}
+          java-package: jdk # optional (jdk or jre) - defaults to jdk
 
-#      - name: Run unit tests
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          arguments: test
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
-#      - name: Building Android aar
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          arguments: build
+      - name: Run Unit Tests
+        run: ./gradlew test
+        env:
+          GITHUB_ACTOR: ${{ env.GITHUB_ACTOR }}
+          GITHUB_TOKEN: ${{ secrets.RBAK_SHARED_SDK_ANDROID_TOKEN }}
+
+      - name: Compose Metrics
+        run: |
+          chmod +x ./.github/transform_compose_metrics.sh
+          echo "## Unstable arguments" >> $GITHUB_STEP_SUMMARY
+          echo "The following functions were reported to have unstable arguments." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Unstable argument will make it recompose every time something changes in the parent Composable." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "$(./.github/transform_compose_metrics.sh)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "##" >> $GITHUB_STEP_SUMMARY
