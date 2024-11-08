@@ -1,6 +1,6 @@
 name: Deploy RBTV Mobile
 
-on:
+#on:
 #  workflow_dispatch:
 #  pull_request:
 #    types: [opened,labeled,reopened]

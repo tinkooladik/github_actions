@@ -29,6 +29,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = '17'
+        def reportPath = "${project.buildDir.absolutePath}/compose_metrics"
+        freeCompilerArgs += [
+                "-P=plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$reportPath",
+                "-P=plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$reportPath"
+        ]
     }
     buildFeatures {
         viewBinding true
