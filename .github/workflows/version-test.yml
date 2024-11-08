@@ -9,5 +9,5 @@ concurrency:
 
 jobs:
   test-version:
-    uses: tinkooladik/github_actions_shared/.github/workflows/rbak-shared-version-test.yml@v1
-    ## test 1 (v1) try again with public
+    uses: tinkooladik/github_actions_shared/.github/workflows/rbak-shared-version-test.yml@v1.0
+    ## test 1 (v1.0) try again with public
