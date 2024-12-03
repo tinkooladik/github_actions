@@ -20,14 +20,15 @@ jobs:
             const prNumber = context.payload.pull_request.number;
             const isDraft = context.payload.pull_request.draft;
             const isClosed = context.payload.pull_request.state === 'closed';
-            const labels = await github.rest.issues.listLabelsOnIssue({
+            const labelsResponse = await github.rest.issues.listLabelsOnIssue({
               owner,
               repo,
               issue_number: prNumber
-            }).data.map(label => label.name);
+            })
+            const labels = labelsResponse.data.map(label => label.name);
             
             const hasLabel = (labelName) => labels.includes(label);
-                      
+            
             async function removeLabelsIfExist(labelsToRemove) {
               for (const label of labelsToRemove) {
                 if (hasLabel(label)) {
