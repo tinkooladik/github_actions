@@ -38,7 +38,25 @@ jobs:
                 labels: ['needs review']
               });
               console.log(`Added 'needs review' label to PR #${prNumber}`);
+            
+              // Remove "wip" label if it exists
+              const labels = await github.rest.issues.listLabelsOnIssue({
+                owner,
+                repo,
+                issue_number: prNumber
+              });
+
+              const hasWipLabel = labels.data.some(label => label.name === 'wip');
+              if (hasWipLabel) {
+                await github.rest.issues.removeLabel({
+                  owner,
+                  repo,
+                  issue_number: prNumber,
+                  name: 'wip'
+                });
+                console.log(`Removed 'wip' label from PR #${prNumber}`);
+              }
             }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ## test draft
+          ## test draft (2)
