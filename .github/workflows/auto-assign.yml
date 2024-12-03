@@ -80,16 +80,18 @@ jobs:
               });
               console.log(`Added 'needs review' label to PR #${prNumber}`);
             
-              // Remove "wip" label if it exists
-              const hasWipLabel = labels.data.some(label => label.name === 'wip');
-              if (hasWipLabel) {
-                await github.rest.issues.removeLabel({
-                  owner,
-                  repo,
-                  issue_number: prNumber,
-                  name: 'wip'
-                });
-                console.log(`Removed 'wip' label from PR #${prNumber}`);
+              // Remove "wip" and "wontfix" labels
+              const labelNamesToRemove = ['wip', 'wontfix'];
+              for (const label of labelNamesToRemove) {
+                if (labels.data.some(l => l.name === label)) {
+                  await github.rest.issues.removeLabel({
+                    owner,
+                    repo,
+                    issue_number: prNumber,
+                    name: label
+                  });
+                  console.log(`Removed '${label}' label from closed PR #${prNumber}`);
+                }
               }
             }
         env:
