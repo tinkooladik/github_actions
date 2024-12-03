@@ -12,22 +12,33 @@ jobs:
   add-needs-review-label:
     runs-on: ubuntu-latest
     steps:
-      - name: Add "needs review" label
+      - name: Add appropriate label based on PR status
         uses: actions/github-script@v7
         with:
           script: |
             const { owner, repo } = context.repo;
-            const pullRequestNumber = context.payload.pull_request.number;
-
-            // Add the "needs review" label to the PR
-            await github.rest.issues.addLabels({
-              owner,
-              repo,
-              issue_number: pullRequestNumber,
-              labels: ['needs review']
-            });
-
-            console.log(`Added 'needs review' label to PR #${pullRequestNumber}`);
+            const prNumber = context.payload.pull_request.number;
+            const isDraft = context.payload.pull_request.draft;
+            
+            if (isDraft) {
+              // Add the "wip" label if the PR is a draft
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: prNumber,
+                labels: ['wip']
+              });
+              console.log(`Added 'wip' label to draft PR #${prNumber}`);
+            } else {
+              // Add the "needs review" label otherwise
+              await github.rest.issues.addLabels({
+                owner,
+                repo,
+                issue_number: prNumber,
+                labels: ['needs review']
+              });
+              console.log(`Added 'needs review' label to PR #${prNumber}`);
+            }
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ## test 2 (draft)
