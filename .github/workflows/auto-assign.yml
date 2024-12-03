@@ -1,7 +1,7 @@
 name: 'Auto Assign'
 on:
   pull_request:
-    types: [opened, ready_for_review, converted_to_draft, closed]
+    types: [opened, ready_for_review, converted_to_draft, closed, reopened]
 
 jobs:
   assign-reviewers:
