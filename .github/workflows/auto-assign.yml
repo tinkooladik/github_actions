@@ -27,7 +27,7 @@ jobs:
             })
             const labels = labelsResponse.data.map(label => label.name);
             
-            const hasLabel = (labelName) => labels.includes(label);
+            const hasLabel = (label) => labels.includes(label);
             
             async function removeLabelsIfExist(labelsToRemove) {
               for (const label of labelsToRemove) {
