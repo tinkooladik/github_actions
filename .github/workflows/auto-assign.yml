@@ -37,8 +37,8 @@ jobs:
               console.log(`Added 'wontfix' label to closed PR #${prNumber}`);
             
               // Remove "wip" and "needs review" labels
-              const labelNamesToRemove = ['wip', 'needs review'];
-              for (const label of labelNamesToRemove) {
+              const labelsRemove = ['wip', 'needs review'];
+              for (const label of labelsRemove) {
                 if (labels.data.some(l => l.name === label)) {
                   await github.rest.issues.removeLabel({
                     owner,
@@ -59,16 +59,18 @@ jobs:
               });
               console.log(`Added 'wip' label to draft PR #${prNumber}`);
             
-              // Remove "needs review" label if it exists
-              const hasNeedsReviewLabel = labels.data.some(label => label.name === 'needs review');
-              if (hasNeedsReviewLabel) {
-                await github.rest.issues.removeLabel({
-                  owner,
-                  repo,
-                  issue_number: prNumber,
-                  name: 'needs review'
-                });
-                console.log(`Removed 'needs review' label from PR #${prNumber}`);
+              // Remove "needs review" and "wontfix" labels
+              const labelsRemove = ['needs review', 'wontfix'];
+              for (const label of labelsRemove) {
+                if (labels.data.some(l => l.name === label)) {
+                  await github.rest.issues.removeLabel({
+                    owner,
+                    repo,
+                    issue_number: prNumber,
+                    name: label
+                  });
+                  console.log(`Removed '${label}' label from closed PR #${prNumber}`);
+                }
               }
             } else {
               // Add the "needs review" label otherwise
@@ -81,8 +83,8 @@ jobs:
               console.log(`Added 'needs review' label to PR #${prNumber}`);
             
               // Remove "wip" and "wontfix" labels
-              const labelNamesToRemove = ['wip', 'wontfix'];
-              for (const label of labelNamesToRemove) {
+              const labelsRemove = ['wip', 'wontfix'];
+              for (const label of labelsRemove) {
                 if (labels.data.some(l => l.name === label)) {
                   await github.rest.issues.removeLabel({
                     owner,
