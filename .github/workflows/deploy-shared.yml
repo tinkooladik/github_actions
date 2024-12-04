@@ -9,7 +9,7 @@ on:
         required: true
       debug_variant_name:
         type: string
-        description: 'debug' if not specified
+        description: debug if not specified
         required: false
       release_variant_name:
         type: string
