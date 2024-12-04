@@ -10,3 +10,5 @@ jobs:
     uses: ./.github/workflows/rbak-shared-release-client-app.yml
     with:
       brand: "STV"
+      debugVariantName: "qa"
+      releaseVariantName: "prod"

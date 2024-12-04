@@ -39,6 +39,7 @@ jobs:
         with:
           buildType: ${{ inputs.releaseVariantName || 'release' }}
           brand: ${{ inputs.brand }}
+          head_branch: ${{ github.event.pull_request.head.ref }}
 
   build_debug:
 #    if: |
@@ -52,3 +53,4 @@ jobs:
         with:
           buildType: ${{ inputs.debugVariantName || 'debug' }}
           brand: ${{ inputs.brand }}
+          head_branch: ${{ github.event.pull_request.head.ref }}
