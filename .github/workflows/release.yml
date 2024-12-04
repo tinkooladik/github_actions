@@ -7,7 +7,7 @@ on:
 
 jobs:
   Build-Release:
-    uses: ./.github/workflows/rbak-shared-release-client-app.yml@main
+    uses: ./.github/workflows/rbak-shared-release-client-app.yml
     with:
       brand: "STV"
       debugVariantName: "qa"
