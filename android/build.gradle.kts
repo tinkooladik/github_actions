@@ -28,7 +28,7 @@ android {
             keyPassword = "asdasd"
         }
     }
-    //test 0.5.0
+    //test 0.5.1
 
     buildTypes {
         create("prod") {
