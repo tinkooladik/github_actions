@@ -7,6 +7,14 @@ on:
         type: string
         description: RBTV / STV
         required: true
+      debugVariantName:
+        type: string
+        description: "debug" by default
+        required: false
+      releaseVariantName:
+        type: string
+        description: "release" by default
+        required: false
 
 jobs:
   push_tag_and_create_github_release_with_notes:
@@ -29,7 +37,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/deploy
         with:
-          buildType: "release"
+          buildType: ${{ inputs.releaseVariantName || 'release' }}
           brand: ${{ inputs.brand }}
 
   build_debug:
@@ -42,5 +50,5 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/deploy
         with:
-          buildType: "debug"
+          buildType: ${{ inputs.debugVariantName || 'debug' }}
           brand: ${{ inputs.brand }}
