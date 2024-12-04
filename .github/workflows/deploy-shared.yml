@@ -1,36 +1,56 @@
 name: RBAK shared deploy workflow
 
 on:
-  push:
-    branches:
-      - 'version/*.*.*'
+  workflow_call:
+    inputs:
+      brand:
+        type: string
+        description: RBTV / STV
+        required: true
+      debugVariantName:
+        type: string
+        description: "debug" by default
+        required: false
+      releaseVariantName:
+        type: string
+        description: "release" by default
+        required: false
 
 jobs:
-  release_shared:
-    runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-
-      - name: Push tag, generate Release Notes and create a release
-        uses: ./.github/actions/push-tag-release
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#
-#      - name: Delete pre-release versions
-#        if: ${{ inputs.delete-alphas }}
-#        uses: actions/delete-package-versions@v5
+#  push_tag_and_create_github_release_with_notes:
+#    runs-on: ubuntu-latest
+#    permissions: write-all
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Use Composite Action to Push Tag and Generate Release Notes
+#        uses: ./.github/actions/push-tag-release
 #        with:
-#          package-name: ${{ inputs.group-id }}.${{ inputs.artifact-id }}
-#          package-type: 'maven'
-#          min-versions-to-keep: 0
-#          delete-only-pre-release-versions: "true"
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: List all package versions
-#        run: |
-#          gh pkg list OWNER/REPOSITORY
-#        env:
-#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  build_release:
+#    if: |
+#      startsWith(github.event.pull_request.head.ref, 'version/') &&
+#      github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    name: Release
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          buildType: ${{ inputs.releaseVariantName || 'release' }}
+          brand: ${{ inputs.brand }}
+          head_branch: ${{ github.event.pull_request.head.ref }}
 
-## version 2
+  build_debug:
+#    if: |
+#      startsWith(github.event.pull_request.head.ref, 'version/') &&
+#      github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    name: Debug
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/deploy
+        with:
+          buildType: ${{ inputs.debugVariantName || 'debug' }}
+          brand: ${{ inputs.brand }}
+          head_branch: ${{ github.event.pull_request.head.ref }}
