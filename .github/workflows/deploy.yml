@@ -10,5 +10,5 @@ jobs:
     uses: ./.github/workflows/deploy-shared.yml
     with:
       brand: "STV"
-      debugVariantName: "qa"
-      releaseVariantName: "prod"
+      debug_variant_name: "qa"
+      release_variant_name: "prod"
