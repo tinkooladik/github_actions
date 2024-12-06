@@ -114,9 +114,14 @@ for REPO in "${REPOS[@]}"; do
 
   echo "Base directory: $BASE_DIR"
 
-  # Copy specified files
+  # Copy specified files or remove them if missing in the base directory
   for FILE in "${FILES[@]}"; do
-    cp -v "$BASE_DIR/$FILE" ./ || { echo "Failed to copy $FILE to $REPO 😿"; continue; }
+    if [[ -f "$BASE_DIR/$FILE" ]]; then
+      cp -v "$BASE_DIR/$FILE" ./ || { echo "Failed to copy $FILE to $REPO 😿"; continue; }
+    elif [[ -f "./$FILE" ]]; then
+      echo "File $FILE does not exist in the base directory but exists in the repo. Removing..."
+      rm -v "./$FILE"
+    fi
   done
 
   # Commit and push changes

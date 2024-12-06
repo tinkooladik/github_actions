@@ -7,7 +7,9 @@ tinkooladik/github_packages_test
 .github/pull_request_template.md
 .github/PULL_REQUEST_TEMPLATE/pr_template_default.md
 .github/test-shared-file.txt
+.github/test-shared-file2.txt
 .github/settings.yml
+.github/workflows/rbak-shared-version-test.yml
 
 [branch]
 alex/RBMN-XXXXX-update-repos
