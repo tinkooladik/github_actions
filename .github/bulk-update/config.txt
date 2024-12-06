@@ -1,0 +1,28 @@
+[repos]
+tinkooladik/github_actions_shared
+tinkooladik/github_packages_test
+
+[files]
+.github/auto_assign.yml
+.github/pull_request_template.md
+.github/PULL_REQUEST_TEMPLATE/pr_template_default.md
+.github/test-shared-file.txt
+.github/settings.yml
+
+[branch]
+alex/RBMN-XXXXX-update-repos
+
+[commit_message]
+RBMN-XXXXX | updated shared files
+
+[pr_title]
+RBMN-XXXXX | updated shared files
+
+[pr_description]
+[RBMN-XXXXX](https://jira.redbullmediahouse.com/browse/RBMN-XXXXX)
+
+### Updates:
+
+- added new files
+- created script
+- created config
