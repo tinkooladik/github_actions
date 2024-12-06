@@ -6,7 +6,7 @@ set -e
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 # Config file in the same directory as the script
-CONFIG_FILE="$SCRIPT_DIR/config.txt"
+CONFIG_FILE="$SCRIPT_DIR/create-prs-config.txt"
 
 # Check if config file exists
 if [[ ! -f "$CONFIG_FILE" ]]; then
