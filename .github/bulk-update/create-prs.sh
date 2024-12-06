@@ -6,7 +6,7 @@ set -e
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 # Config file in the same directory as the script
-CONFIG_FILE="$SCRIPT_DIR/create-prs-config.txt"
+CONFIG_FILE="$SCRIPT_DIR/config.txt"
 
 # Check if config file exists
 if [[ ! -f "$CONFIG_FILE" ]]; then
@@ -39,7 +39,6 @@ while IFS= read -r line || [ -n "$line" ]; do
       ;;
     "[commit_message]")
       SECTION="commit_message"
-      echo "Entering commit_message section"
       ;;
     "[pr_title]")
       SECTION="pr_title"
@@ -53,71 +52,23 @@ while IFS= read -r line || [ -n "$line" ]; do
     *)
       if [[ -n "$SECTION" ]]; then
         case "$SECTION" in
-          "repos")
-            [[ -n "$line" ]] && REPOS+=("$line")
-            ;;
-          "files")
-            [[ -n "$line" ]] && FILES+=("$line")
-            ;;
-          "branch")
-            if [[ -n "$line" ]]; then
-              BRANCH="$line"
-            fi
-            ;;
-          "commit_message")
-            if [[ -n "$line" ]]; then
-              COMMIT_MESSAGE="$line"
-            fi
-            ;;
-          "pr_title")
-            if [[ -n "$line" ]]; then
-              PR_TITLE="$line"
-            fi
-            ;;
-          "pr_description")
-            if [[ -n "$line" ]]; then
-              PR_DESCRIPTION+="$line"$'\n'
-            fi
-            ;;
+          "repos") [[ -n "$line" ]] && REPOS+=("$line") ;;
+          "files") [[ -n "$line" ]] && FILES+=("$line") ;;
+          "branch") [[ -n "$line" ]] && BRANCH="$line" ;;
+          "commit_message") [[ -n "$line" ]] && COMMIT_MESSAGE="$line" ;;
+          "pr_title") [[ -n "$line" ]] && PR_TITLE="$line" ;;
+          "pr_description") [[ -n "$line" ]] && PR_DESCRIPTION+="$line"$'\n' ;;
         esac
       fi
       ;;
   esac
 done < "$CONFIG_FILE"
 
-echo "REPOS: $REPOS"
-echo "FILES: $FILES"
-echo "Branch: $BRANCH"
-echo "Commit message: $COMMIT_MESSAGE"
+PR_DESCRIPTION=$(echo -e "$PR_DESCRIPTION" | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba')
 
 # Validate input
-if [[ ${#REPOS[@]} -eq 0 ]]; then
-  echo "Error: No repositories specified in [repos] section."
-  exit 1
-fi
-
-if [[ ${#FILES[@]} -eq 0 ]]; then
-  echo "Error: No files specified in [files] section."
-  exit 1
-fi
-
-if [[ -z "$BRANCH" ]]; then
-  echo "Error: Branch name is missing in [branch] section."
-  exit 1
-fi
-
-if [[ -z "$COMMIT_MESSAGE" ]]; then
-  echo "Error: Commit message is missing in [commit_message] section."
-  exit 1
-fi
-
-if [[ -z "$PR_TITLE" ]]; then
-  echo "Error: PR title is missing in [pr_title] section."
-  exit 1
-fi
-
-if [[ -z "$PR_DESCRIPTION" ]]; then
-  echo "Error: PR description is missing in [pr_description] section."
+if [[ ${#REPOS[@]} -eq 0 || ${#FILES[@]} -eq 0 || -z "$BRANCH" || -z "$COMMIT_MESSAGE" || -z "$PR_TITLE" || -z "$PR_DESCRIPTION" ]]; then
+  echo "Error: Missing required configuration in config file."
   exit 1
 fi
 
@@ -168,7 +119,7 @@ for REPO in "${REPOS[@]}"; do
 
   # Commit and push changes
   git add .
-  git commit -m "$COMMIT_MESSAGE"
+  git commit -m "$COMMIT_MESSAGE" || echo "No changes to commit"
 
   # Push the branch to the remote repository
   if git ls-remote --heads "https://github.com/$REPO.git" "$BRANCH" | grep -q "$BRANCH"; then
@@ -179,12 +130,19 @@ for REPO in "${REPOS[@]}"; do
     git push origin "$BRANCH"
   fi
 
-  # Create pull request
-  gh pr create \
+  PR_URL=$(gh pr view "$BRANCH" --json url --jq '.url' 2>/dev/null || true)
+  if [[ -n "$PR_URL" ]]; then
+    echo "Updating existing PR: $PR_URL"
+    gh pr edit "$BRANCH" \
+    --title "$PR_TITLE" \
+    --body "$PR_DESCRIPTION"
+  else
+    gh pr create \
     --title "$PR_TITLE" \
     --body "$PR_DESCRIPTION" \
     --base main \
     --head "$BRANCH" || { echo "Failed to create PR for $REPO"; }
+  fi
 
   # Go back to the root directory
   cd ..
