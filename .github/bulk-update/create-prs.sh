@@ -10,7 +10,7 @@ CONFIG_FILE="$SCRIPT_DIR/config.txt"
 
 # Check if config file exists
 if [[ ! -f "$CONFIG_FILE" ]]; then
-  echo "Error: Config file '$CONFIG_FILE' not found"
+  echo "Error: Config file '$CONFIG_FILE' not found 😿"
   exit 1
 fi
 
@@ -22,6 +22,7 @@ COMMIT_MESSAGE=""
 PR_TITLE=""
 PR_DESCRIPTION=""
 SECTION=""
+PR_LINKS=()
 
 while IFS= read -r line || [ -n "$line" ]; do
   # Trim leading/trailing whitespace
@@ -68,7 +69,7 @@ PR_DESCRIPTION=$(echo -e "$PR_DESCRIPTION" | sed -e :a -e '/^\n*$/{$d;N;};/\n$/b
 
 # Validate input
 if [[ ${#REPOS[@]} -eq 0 || ${#FILES[@]} -eq 0 || -z "$BRANCH" || -z "$COMMIT_MESSAGE" || -z "$PR_TITLE" || -z "$PR_DESCRIPTION" ]]; then
-  echo "Error: Missing required configuration in config file."
+  echo "Error: Missing required configuration in config file. 😿"
   exit 1
 fi
 
@@ -85,15 +86,16 @@ trap cleanup EXIT
 
 # Process each repository
 for REPO in "${REPOS[@]}"; do
-  echo "_____________________________"
+  printf '🐱%.0s' {1..30}
+  echo
   echo "Processing repository: $REPO"
 
   REPO_DIR="$(basename "$REPO")"
   cleanup
 
   # Clone the repository
-  git clone "https://github.com/$REPO.git" || { echo "Failed to clone $REPO"; continue; }
-  cd "$REPO_DIR" || { echo "Failed to enter directory $REPO_DIR"; continue; }
+  git clone "https://github.com/$REPO.git" || { echo "Failed to clone $REPO 😿"; continue; }
+  cd "$REPO_DIR" || { echo "Failed to enter directory $REPO_DIR 😿"; continue; }
 
   # Create or use the branch
   if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
@@ -114,7 +116,7 @@ for REPO in "${REPOS[@]}"; do
 
   # Copy specified files
   for FILE in "${FILES[@]}"; do
-    cp -v "$BASE_DIR/$FILE" ./ || { echo "Failed to copy $FILE to $REPO"; continue; }
+    cp -v "$BASE_DIR/$FILE" ./ || { echo "Failed to copy $FILE to $REPO 😿"; continue; }
   done
 
   # Commit and push changes
@@ -136,12 +138,14 @@ for REPO in "${REPOS[@]}"; do
     gh pr edit "$BRANCH" \
     --title "$PR_TITLE" \
     --body "$PR_DESCRIPTION"
+    PR_LINKS+=("$PR_URL (updated)")
   else
     gh pr create \
     --title "$PR_TITLE" \
     --body "$PR_DESCRIPTION" \
     --base main \
-    --head "$BRANCH" || { echo "Failed to create PR for $REPO"; }
+    --head "$BRANCH" || { echo "Failed to create PR for $REPO 😿"; }
+    PR_LINKS+=("$PR_URL")
   fi
 
   # Go back to the root directory
@@ -149,5 +153,10 @@ for REPO in "${REPOS[@]}"; do
   cleanup
 done
 
-echo "_____________________________"
-echo "All repositories processed."
+printf '😺%.0s' {1..30}
+echo
+echo "All repositories processed. 🐈"
+echo "Pull Requests:"
+for PR_LINK in "${PR_LINKS[@]}"; do
+  echo "$PR_LINK"
+done
