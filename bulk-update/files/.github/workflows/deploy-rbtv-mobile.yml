@@ -1,0 +1,16 @@
+name: Deploy RBTV Mobile
+
+on:
+#  workflow_dispatch:
+#  pull_request:
+#    types: [opened,labeled,reopened]
+#    paths:
+#      - 'build.gradle'
+
+jobs:
+  rbtv_mobile:
+    uses: ./.github/workflows/deploy-variants.yml
+    with:
+      brand: "RBTV"
+      platform: "Mobile"
+    if: contains(github.event.pull_request.labels.*.name, 'deploy')

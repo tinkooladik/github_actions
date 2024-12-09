@@ -73,6 +73,16 @@ if [[ ${#REPOS[@]} -eq 0 || ${#FILES[@]} -eq 0 || -z "$BRANCH" || -z "$COMMIT_ME
   exit 1
 fi
 
+# Base directory containing the source files
+FILES_DIR="$SCRIPT_DIR/files"
+
+if [[ ! -d "$FILES_DIR" ]]; then
+  echo "Error: Source directory '$FILES_DIR' does not exist 😿"
+  exit 1
+fi
+
+echo "Files directory: $FILES_DIR"
+
 # Function to clean up the cloned repository
 cleanup() {
   if [[ -n "$REPO_DIR" && -d "$REPO_DIR" ]]; then
@@ -106,18 +116,10 @@ for REPO in "${REPOS[@]}"; do
     git checkout -b "$BRANCH"
   fi
 
-  # Get the directory of the current script
-  SCRIPT_DIR=$(dirname "$(realpath "$0")")
-
-  # Go two levels up
-  BASE_DIR=$(dirname "$(dirname "$SCRIPT_DIR")")
-
-  echo "Base directory: $BASE_DIR"
-
   # Copy specified files or remove them if missing in the base directory
   for FILE in "${FILES[@]}"; do
-    if [[ -f "$BASE_DIR/$FILE" ]]; then
-      cp -v "$BASE_DIR/$FILE" ./ || { echo "Failed to copy $FILE to $REPO 😿"; continue; }
+    if [[ -f "$FILES_DIR/$FILE" ]]; then
+      cp -v "$FILES_DIR/$FILE" ./ || { echo "Failed to copy $FILE to $REPO 😿"; continue; }
     elif [[ -f "./$FILE" ]]; then
       echo "File $FILE does not exist in the base directory but exists in the repo. Removing..."
       rm -v "./$FILE"
@@ -137,19 +139,22 @@ for REPO in "${REPOS[@]}"; do
     git push origin "$BRANCH"
   fi
 
-  PR_URL=$(gh pr view "$BRANCH" --json url --jq '.url' 2>/dev/null || true)
-  if [[ -n "$PR_URL" ]]; then
+  PR_INFO=$(gh pr view "$BRANCH" --json url,state --jq '{url: .url, state: .state}' 2>/dev/null || true)
+  PR_URL=$(echo "$PR_INFO" | jq -r '.url' 2>/dev/null)
+  PR_STATE=$(echo "$PR_INFO" | jq -r '.state' 2>/dev/null)
+
+  if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
     echo "Updating existing PR: $PR_URL"
     gh pr edit "$BRANCH" \
     --title "$PR_TITLE" \
-    --body "$PR_DESCRIPTION"
+    --body "$PR_DESCRIPTION" || { echo "Failed to update PR $PR_URL 😿"; }
     PR_LINKS+=("$PR_URL (updated)")
   else
-    gh pr create \
+    PR_URL=$(gh pr create \
     --title "$PR_TITLE" \
     --body "$PR_DESCRIPTION" \
     --base main \
-    --head "$BRANCH" || { echo "Failed to create PR for $REPO 😿"; }
+    --head "$BRANCH") || { echo "Failed to create PR $PR_URL 😿"; }
     PR_LINKS+=("$PR_URL")
   fi
 

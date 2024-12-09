@@ -10,9 +10,10 @@ tinkooladik/github_packages_test
 .github/test-shared-file2.txt
 .github/settings.yml
 .github/workflows/rbak-shared-version-test.yml
+.gitignore
 
 [branch]
-alex/RBMN-XXXXX-update-repos
+alex/RBMN-XXXXX-update-repos-2
 
 [commit_message]
 RBMN-XXXXX | updated shared files
