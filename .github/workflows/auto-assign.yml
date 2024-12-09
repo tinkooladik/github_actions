@@ -19,7 +19,7 @@ jobs:
             const { owner, repo } = context.repo;
             const prNumber = context.payload.pull_request.number;
             const isDraft = context.payload.pull_request.draft;
-            const isClosed = context.payload.pull_request.state === 'closed';
+            const isClosed = context.payload.pull_request.state === 'closed' && !context.payload.pull_request.merged;
             const labelsResponse = await github.rest.issues.listLabelsOnIssue({
               owner,
               repo,
