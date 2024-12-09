@@ -62,19 +62,19 @@ runs:
         newFilePath=./artifacts/${newName}.aab
         mv ${oldFilePath[0]} ${newFilePath}
 
-    - name: Rename files and move to artifacts folder (Amazon)
-      shell: bash
-      run: |
-        pathPrefix=./amazon/build/outputs/
-        buildType=${{ inputs.build_type }}
-        oldName=amazon-${buildType}
-        newName=${{ inputs.brand }}-Android-Amazon-${{ env.VERSION }}-${buildType^}
-        
-        ## apk
-        filePath=${pathPrefix}apk/${buildType}/
-        oldFilePath=$(find ${filePath} -type f -name "*.apk")
-        newFilePath=./artifacts/${newName}.apk
-        mv ${oldFilePath[0]} ${newFilePath}
+#    - name: Rename files and move to artifacts folder (Amazon)
+#      shell: bash
+#      run: |
+#        pathPrefix=./amazon/build/outputs/
+#        buildType=${{ inputs.build_type }}
+#        oldName=amazon-${buildType}
+#        newName=${{ inputs.brand }}-Android-Amazon-${{ env.VERSION }}-${buildType^}
+#
+#        ## apk
+#        filePath=${pathPrefix}apk/${buildType}/
+#        oldFilePath=$(find ${filePath} -type f -name "*.apk")
+#        newFilePath=./artifacts/${newName}.apk
+#        mv ${oldFilePath[0]} ${newFilePath}
 
     - name: Install tree
       shell: bash

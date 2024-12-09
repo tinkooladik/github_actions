@@ -7,6 +7,6 @@
 #
 #jobs:
 #  servus_mobile:
-#    uses: ./.github/workflows/rbak-shared-release-client-app.yml
+#    uses: ./.github/workflows/deploy-shared.yml
 #    with:
 #      brand: "STV"
