@@ -9,6 +9,6 @@ on:
 
 jobs:
   auto_assign:
-    uses: tinkooladik/github_actions/.github/workflows/auto-assign.yml@main
+    uses: .github/workflows/auto-assign.yml@main
 
 # test
