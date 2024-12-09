@@ -1,0 +1,12 @@
+name: Auto Assign
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, converted_to_draft, closed, reopened]
+  push:
+    branches:
+      - 'version/*.*.*'
+
+jobs:
+  auto_assign:
+    uses: .github/workflows/auto-assign.yml@main
