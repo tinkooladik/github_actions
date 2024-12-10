@@ -116,13 +116,26 @@ for REPO in "${REPOS[@]}"; do
     continue;
   }
 
-  # Create or use the branch
+  # Check if the branch exists locally or remotely
   if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
-    echo "Branch '$BRANCH' already exists locally. Checking out..."
-    git checkout "$BRANCH"
+      echo "Branch '$BRANCH' already exists locally. Checking out..."
+      git checkout "$BRANCH"
+      git pull origin "$BRANCH" --rebase || {
+          echo "Failed to pull changes for branch '$BRANCH' 😿";
+          FAILED_REPOS+=("$REPO (failed to pull changes)");
+          cd ..; cleanup; continue;
+      }
+  elif git ls-remote --heads "https://github.com/$REPO.git" "$BRANCH" | grep -q "$BRANCH"; then
+      echo "Branch '$BRANCH' exists on remote but not locally. Checking out and pulling..."
+      git checkout -b "$BRANCH" --track "origin/$BRANCH"
+      git pull origin "$BRANCH" --rebase || {
+          echo "Failed to pull changes for branch '$BRANCH' 😿";
+          FAILED_REPOS+=("$REPO (failed to pull changes)");
+          cd ..; cleanup; continue;
+      }
   else
-    echo "Creating new branch '$BRANCH'..."
-    git checkout -b "$BRANCH"
+      echo "Branch '$BRANCH' does not exist. Creating a new branch..."
+      git checkout -b "$BRANCH"
   fi
 
   # Copy specified files or remove them if missing in the base directory
@@ -143,15 +156,14 @@ for REPO in "${REPOS[@]}"; do
     cd ..; cleanup; continue; }
 
   # Push the branch to the remote repository
-  if git ls-remote --heads "https://github.com/$REPO.git" "$BRANCH" | grep -q "$BRANCH"; then
-    echo "Branch '$BRANCH' already exists on remote. Resetting it..."
-    git push origin "$BRANCH" --force
-  else
-    echo "Pushing new branch '$BRANCH' to remote..."
-    git push origin "$BRANCH"
-  fi
+  echo "Pushing updates to branch '$BRANCH'..."
+  git push origin "$BRANCH" || {
+    echo "Failed to push changes";
+    FAILED_REPOS+=("$REPO (failed to push changes)");
+    cd ..; cleanup; continue;
+  }
 
-  PR_INFO=$(gh pr view "$BRANCH" --json url, state --jq '{url: .url, state: .state}' 2>/dev/null || true)
+  PR_INFO=$(gh pr view "$BRANCH" --json url,state --jq '{url: .url, state: .state}' 2>/dev/null || true)
   PR_URL=$(echo "$PR_INFO" | jq -r '.url' 2>/dev/null)
   PR_STATE=$(echo "$PR_INFO" | jq -r '.state' 2>/dev/null)
 
@@ -166,6 +178,7 @@ for REPO in "${REPOS[@]}"; do
         FAILED_REPOS+=("$REPO (failed to update PR $PR_URL)")
     fi
   else
+    echo "Opening a new PR"
     PR_URL=$(gh pr create \
         --title "$PR_TITLE" \
         --body "$PR_DESCRIPTION" \
@@ -188,6 +201,7 @@ done
 printf '😺%.0s' {1..30}
 echo
 echo "All repositories processed. 🐈"
+
 echo
 echo "✅ Pull Requests:"
 for PR_LINK in "${PR_LINKS[@]}"; do

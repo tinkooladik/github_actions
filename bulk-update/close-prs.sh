@@ -104,9 +104,11 @@ for PR_LINK in "${CLOSED_PRS[@]}"; do
   echo "$PR_LINK"
 done
 
-echo
-echo "❌ Failed repos:"
-for REPO in "${FAILED_REPOS[@]}"; do
-  echo "https://github.com/$REPO"
-done
+if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
+  echo
+  echo "❌ Failed repos:"
+  for REPO in "${FAILED_REPOS[@]}"; do
+    echo "https://github.com/$REPO"
+  done
+fi
 echo
