@@ -19,6 +19,7 @@ REPOS=()
 BRANCH=""
 SECTION=""
 CLOSED_PRS=()
+FAILED_REPOS=()
 
 while IFS= read -r line || [ -n "$line" ]; do
   # Trim leading/trailing whitespace
@@ -51,9 +52,6 @@ while IFS= read -r line || [ -n "$line" ]; do
   esac
 done < "$CONFIG_FILE"
 
-echo "REPOS: ${REPOS[@]}"
-echo "Branch: $BRANCH"
-
 # Validate input
 if [[ ${#REPOS[@]} -eq 0 ]]; then
   echo "Error: No repositories specified in [repos] section."
@@ -75,28 +73,40 @@ for REPO in "${REPOS[@]}"; do
   if [[ -n "$PR_INFO" ]]; then
     PR_NUMBER=$(echo "$PR_INFO" | awk '{print $1}')
     PR_STATE=$(echo "$PR_INFO" | awk '{print $2}')
+    PR_URL="https://github.com/$REPO/pull/$PR_NUMBER"
 
     if [[ "$PR_STATE" != "CLOSED" ]]; then
-      echo "Closing PR #$PR_NUMBER in repository $REPO..."
-      gh pr close "$PR_NUMBER" --repo "$REPO" || { echo "Failed to close PR #$PR_NUMBER for $REPO"; continue; }
-      echo "Closed PR #$PR_NUMBER in repository $REPO"
-      CLOSED_PRS+=("https://github.com/$REPO/pull/$PR_NUMBER")
+      echo "Closing PR $PR_URL"
+      if gh pr close "$PR_NUMBER" --repo "$REPO"; then
+        echo "Closed PR $PR_URL"
+        CLOSED_PRS+=("$PR_URL")
+      else
+        echo "Failed to close PR $PR_URL 😿"
+        FAILED_REPOS+=("$REPO (failed to close $PR_URL)")
+      fi
     else
-      echo "PR #$PR_NUMBER in repository $REPO is already closed."
+      echo "PR $PR_URL is already closed."
+      FAILED_REPOS+=("$REPO (PR $PR_URL already closed)")
     fi
   else
     echo "No PR found for branch '$BRANCH' in repository $REPO."
+    FAILED_REPOS+=("$REPO (no PR found for branch $BRANCH)")
   fi
 done
 
-echo "🐱🐱🐱 All repositories processed 🐱🐱🐱"
+printf '😺%.0s' {1..30}
+echo
+echo "All repositories processed. 🐈"
 
-# Print the list of closed PRs
-if [[ ${#CLOSED_PRS[@]} -gt 0 ]]; then
-  echo "Closed PRs:"
-  for PR_LINK in "${CLOSED_PRS[@]}"; do
-    echo "- $PR_LINK"
-  done
-else
-  echo "No PRs were closed."
-fi
+echo
+echo "✅ Closed PRs:"
+for PR_LINK in "${CLOSED_PRS[@]}"; do
+  echo "$PR_LINK"
+done
+
+echo
+echo "❌ Failed repos:"
+for REPO in "${FAILED_REPOS[@]}"; do
+  echo "https://github.com/$REPO"
+done
+echo

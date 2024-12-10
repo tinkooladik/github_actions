@@ -151,7 +151,7 @@ for REPO in "${REPOS[@]}"; do
     git push origin "$BRANCH"
   fi
 
-  PR_INFO=$(gh pr view "$BRANCH" --json url,state --jq '{url: .url, state: .state}' 2>/dev/null || true)
+  PR_INFO=$(gh pr view "$BRANCH" --json url, state --jq '{url: .url, state: .state}' 2>/dev/null || true)
   PR_URL=$(echo "$PR_INFO" | jq -r '.url' 2>/dev/null)
   PR_STATE=$(echo "$PR_INFO" | jq -r '.state' 2>/dev/null)
 
@@ -188,14 +188,17 @@ done
 printf '😺%.0s' {1..30}
 echo
 echo "All repositories processed. 🐈"
-echo "Pull Requests:"
+echo
+echo "✅ Pull Requests:"
 for PR_LINK in "${PR_LINKS[@]}"; do
   echo "$PR_LINK"
 done
 
-echo
-echo "Failed repos:"
-for REPO in "${FAILED_REPOS[@]}"; do
-  echo "https://github.com/$REPO"
-done
+if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
+  echo
+  echo "❌ Failed repos:"
+  for REPO in "${FAILED_REPOS[@]}"; do
+    echo "https://github.com/$REPO"
+  done
+fi
 echo
