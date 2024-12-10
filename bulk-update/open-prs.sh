@@ -23,6 +23,7 @@ PR_TITLE=""
 PR_DESCRIPTION=""
 SECTION=""
 PR_LINKS=()
+FAILED_REPOS=()
 
 while IFS= read -r line || [ -n "$line" ]; do
   # Trim leading/trailing whitespace
@@ -104,40 +105,69 @@ for REPO in "${REPOS[@]}"; do
   cleanup
 
   # Clone the repository
-  git clone "https://github.com/$REPO.git" || { echo "Failed to clone $REPO 😿"; continue; }
-  cd "$REPO_DIR" || { echo "Failed to enter directory $REPO_DIR 😿"; continue; }
+  git clone "https://github.com/$REPO.git" || {
+    echo "Failed to clone $REPO 😿";
+    FAILED_REPOS+=("$REPO (failed)");
+    continue;
+  }
+  cd "$REPO_DIR" || {
+    echo "Failed to enter directory $REPO_DIR 😿";
+    FAILED_REPOS+=("$REPO (failed)");
+    continue;
+  }
 
-  # Create or use the branch
+  # Check if the branch exists locally or remotely
   if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
-    echo "Branch '$BRANCH' already exists locally. Checking out..."
-    git checkout "$BRANCH"
+      echo "Branch '$BRANCH' already exists locally. Checking out..."
+      git checkout "$BRANCH"
+      git pull origin "$BRANCH" --rebase || {
+          echo "Failed to pull changes for branch '$BRANCH' 😿";
+          FAILED_REPOS+=("$REPO (failed to pull changes)");
+          cd ..; cleanup; continue;
+      }
+  elif git ls-remote --heads "https://github.com/$REPO.git" "$BRANCH" | grep -q "$BRANCH"; then
+      echo "Branch '$BRANCH' exists on remote but not locally. Checking out and pulling..."
+      git checkout -b "$BRANCH" --track "origin/$BRANCH"
+      git pull origin "$BRANCH" --rebase || {
+          echo "Failed to pull changes for branch '$BRANCH' 😿";
+          FAILED_REPOS+=("$REPO (failed to pull changes)");
+          cd ..; cleanup; continue;
+      }
   else
-    echo "Creating new branch '$BRANCH'..."
-    git checkout -b "$BRANCH"
+      echo "Branch '$BRANCH' does not exist. Creating a new branch..."
+      git checkout -b "$BRANCH"
   fi
 
   # Copy specified files or remove them if missing in the base directory
   for FILE in "${FILES[@]}"; do
-    if [[ -f "$FILES_DIR/$FILE" ]]; then
-      cp -v "$FILES_DIR/$FILE" ./ || { echo "Failed to copy $FILE to $REPO 😿"; continue; }
-    elif [[ -f "./$FILE" ]]; then
-      echo "File $FILE does not exist in the base directory but exists in the repo. Removing..."
-      rm -v "./$FILE"
-    fi
+      SOURCE_PATH="$FILES_DIR/$FILE"
+      DEST_PATH="./$FILE"
+
+      if [[ -f "$SOURCE_PATH" ]]; then
+          # Create the necessary directory structure in the destination
+          mkdir -p "$(dirname "$DEST_PATH")"
+          # Copy the file
+          cp -v "$SOURCE_PATH" "$DEST_PATH" || { echo "Failed to copy $FILE to $REPO 😿"; continue; }
+      elif [[ -f "$DEST_PATH" ]]; then
+          echo "File $FILE does not exist in the source but exists in the repo. Removing..."
+          rm -v "$DEST_PATH"
+      fi
   done
 
   # Commit and push changes
   git add .
-  git commit -m "$COMMIT_MESSAGE" || echo "No changes to commit"
+  git commit -m "$COMMIT_MESSAGE" || {
+    echo "No changes to commit";
+    FAILED_REPOS+=("$REPO (no changes to commit)");
+    cd ..; cleanup; continue; }
 
   # Push the branch to the remote repository
-  if git ls-remote --heads "https://github.com/$REPO.git" "$BRANCH" | grep -q "$BRANCH"; then
-    echo "Branch '$BRANCH' already exists on remote. Resetting it..."
-    git push origin "$BRANCH" --force
-  else
-    echo "Pushing new branch '$BRANCH' to remote..."
-    git push origin "$BRANCH"
-  fi
+  echo "Pushing updates to branch '$BRANCH'..."
+  git push origin "$BRANCH" || {
+    echo "Failed to push changes";
+    FAILED_REPOS+=("$REPO (failed to push changes)");
+    cd ..; cleanup; continue;
+  }
 
   PR_INFO=$(gh pr view "$BRANCH" --json url,state --jq '{url: .url, state: .state}' 2>/dev/null || true)
   PR_URL=$(echo "$PR_INFO" | jq -r '.url' 2>/dev/null)
@@ -145,17 +175,28 @@ for REPO in "${REPOS[@]}"; do
 
   if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
     echo "Updating existing PR: $PR_URL"
-    gh pr edit "$BRANCH" \
-    --title "$PR_TITLE" \
-    --body "$PR_DESCRIPTION" || { echo "Failed to update PR $PR_URL 😿"; }
-    PR_LINKS+=("$PR_URL (updated)")
+    if gh pr edit "$BRANCH" \
+        --title "$PR_TITLE" \
+        --body "$PR_DESCRIPTION"; then
+        PR_LINKS+=("$PR_URL (updated)")
+    else
+        echo "Failed to update PR $PR_URL 😿"
+        FAILED_REPOS+=("$REPO (failed to update PR $PR_URL)")
+    fi
   else
+    echo "Opening a new PR"
     PR_URL=$(gh pr create \
-    --title "$PR_TITLE" \
-    --body "$PR_DESCRIPTION" \
-    --base main \
-    --head "$BRANCH") || { echo "Failed to create PR $PR_URL 😿"; }
-    PR_LINKS+=("$PR_URL")
+        --title "$PR_TITLE" \
+        --body "$PR_DESCRIPTION" \
+        --base main \
+        --head "$BRANCH" 2>/dev/null)
+
+    if [[ $? -eq 0 && -n "$PR_URL" ]]; then
+        PR_LINKS+=("$PR_URL")
+    else
+        echo "Failed to create PR for $REPO 😿"
+        FAILED_REPOS+=("$REPO (failed to create PR)")
+    fi
   fi
 
   # Go back to the root directory
@@ -166,7 +207,18 @@ done
 printf '😺%.0s' {1..30}
 echo
 echo "All repositories processed. 🐈"
-echo "Pull Requests:"
+
+echo
+echo "✅ Pull Requests:"
 for PR_LINK in "${PR_LINKS[@]}"; do
   echo "$PR_LINK"
 done
+
+if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
+  echo
+  echo "❌ Failed repos:"
+  for REPO in "${FAILED_REPOS[@]}"; do
+    echo "https://github.com/$REPO"
+  done
+fi
+echo
