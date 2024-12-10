@@ -140,12 +140,18 @@ for REPO in "${REPOS[@]}"; do
 
   # Copy specified files or remove them if missing in the base directory
   for FILE in "${FILES[@]}"; do
-    if [[ -f "$FILES_DIR/$FILE" ]]; then
-      cp -v "$FILES_DIR/$FILE" ./ || { echo "Failed to copy $FILE to $REPO 😿"; continue; }
-    elif [[ -f "./$FILE" ]]; then
-      echo "File $FILE does not exist in the base directory but exists in the repo. Removing..."
-      rm -v "./$FILE"
-    fi
+      SOURCE_PATH="$FILES_DIR/$FILE"
+      DEST_PATH="./$FILE"
+
+      if [[ -f "$SOURCE_PATH" ]]; then
+          # Create the necessary directory structure in the destination
+          mkdir -p "$(dirname "$DEST_PATH")"
+          # Copy the file
+          cp -v "$SOURCE_PATH" "$DEST_PATH" || { echo "Failed to copy $FILE to $REPO 😿"; continue; }
+      elif [[ -f "$DEST_PATH" ]]; then
+          echo "File $FILE does not exist in the source but exists in the repo. Removing..."
+          rm -v "$DEST_PATH"
+      fi
   done
 
   # Commit and push changes
