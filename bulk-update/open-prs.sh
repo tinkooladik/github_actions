@@ -23,6 +23,7 @@ PR_TITLE=""
 PR_DESCRIPTION=""
 SECTION=""
 PR_LINKS=()
+FAILED_REPOS=()
 
 while IFS= read -r line || [ -n "$line" ]; do
   # Trim leading/trailing whitespace
@@ -104,8 +105,16 @@ for REPO in "${REPOS[@]}"; do
   cleanup
 
   # Clone the repository
-  git clone "https://github.com/$REPO.git" || { echo "Failed to clone $REPO 😿"; continue; }
-  cd "$REPO_DIR" || { echo "Failed to enter directory $REPO_DIR 😿"; continue; }
+  git clone "https://github.com/$REPO.git" || {
+    echo "Failed to clone $REPO 😿";
+    FAILED_REPOS+=("$REPO (failed)");
+    continue;
+  }
+  cd "$REPO_DIR" || {
+    echo "Failed to enter directory $REPO_DIR 😿";
+    FAILED_REPOS+=("$REPO (failed)");
+    continue;
+  }
 
   # Create or use the branch
   if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
@@ -128,7 +137,10 @@ for REPO in "${REPOS[@]}"; do
 
   # Commit and push changes
   git add .
-  git commit -m "$COMMIT_MESSAGE" || echo "No changes to commit"
+  git commit -m "$COMMIT_MESSAGE" || {
+    echo "No changes to commit";
+    FAILED_REPOS+=("$REPO (no changes to commit)");
+    cd ..; cleanup; continue; }
 
   # Push the branch to the remote repository
   if git ls-remote --heads "https://github.com/$REPO.git" "$BRANCH" | grep -q "$BRANCH"; then
@@ -145,17 +157,27 @@ for REPO in "${REPOS[@]}"; do
 
   if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
     echo "Updating existing PR: $PR_URL"
-    gh pr edit "$BRANCH" \
-    --title "$PR_TITLE" \
-    --body "$PR_DESCRIPTION" || { echo "Failed to update PR $PR_URL 😿"; }
-    PR_LINKS+=("$PR_URL (updated)")
+    if gh pr edit "$BRANCH" \
+        --title "$PR_TITLE" \
+        --body "$PR_DESCRIPTION"; then
+        PR_LINKS+=("$PR_URL (updated)")
+    else
+        echo "Failed to update PR $PR_URL 😿"
+        FAILED_REPOS+=("$REPO (failed to update PR $PR_URL)")
+    fi
   else
     PR_URL=$(gh pr create \
-    --title "$PR_TITLE" \
-    --body "$PR_DESCRIPTION" \
-    --base main \
-    --head "$BRANCH") || { echo "Failed to create PR $PR_URL 😿"; }
-    PR_LINKS+=("$PR_URL")
+        --title "$PR_TITLE" \
+        --body "$PR_DESCRIPTION" \
+        --base main \
+        --head "$BRANCH" 2>/dev/null)
+
+    if [[ $? -eq 0 && -n "$PR_URL" ]]; then
+        PR_LINKS+=("$PR_URL")
+    else
+        echo "Failed to create PR for $REPO 😿"
+        FAILED_REPOS+=("$REPO (failed to create PR)")
+    fi
   fi
 
   # Go back to the root directory
@@ -170,3 +192,10 @@ echo "Pull Requests:"
 for PR_LINK in "${PR_LINKS[@]}"; do
   echo "$PR_LINK"
 done
+
+echo
+echo "Failed repos:"
+for REPO in "${FAILED_REPOS[@]}"; do
+  echo "https://github.com/$REPO"
+done
+echo
