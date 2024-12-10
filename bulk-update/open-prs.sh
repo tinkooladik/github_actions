@@ -66,6 +66,12 @@ while IFS= read -r line || [ -n "$line" ]; do
   esac
 done < "$CONFIG_FILE"
 
+# Check if BRANCH is updated
+if [[ "$BRANCH" == "alex/RBMN-XXXXX-update-repos" ]]; then
+  echo "Using template branch 'alex/RBMN-XXXXX-update-repos'. Did you forget to update the config file? 🔫😾😾😾"
+  exit 0
+fi
+
 PR_DESCRIPTION=$(echo -e "$PR_DESCRIPTION" | sed -e :a -e '/^\n*$/{$d;N;};/\n$/ba')
 
 # Validate input
@@ -189,13 +195,14 @@ for REPO in "${REPOS[@]}"; do
         --title "$PR_TITLE" \
         --body "$PR_DESCRIPTION" \
         --base main \
-        --head "$BRANCH" 2>/dev/null)
+        --head "$BRANCH" 2>/dev/null) || {
+       echo "Failed to create PR for repo $REPO 😿";
+       FAILED_REPOS+=("$REPO (failed to create PR)");
+       cd ..; cleanup; continue;
+    }
 
     if [[ $? -eq 0 && -n "$PR_URL" ]]; then
-        PR_LINKS+=("$PR_URL")
-    else
-        echo "Failed to create PR for $REPO 😿"
-        FAILED_REPOS+=("$REPO (failed to create PR)")
+        PR_LINKS+=("$PR_URL");
     fi
   fi
 

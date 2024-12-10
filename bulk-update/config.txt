@@ -8,7 +8,7 @@ tinkooladik/github_packages_test
 .github/bulk-test/test2.txt
 
 [branch]
-alex/RBMN-XXXXX-update-repos-3
+alex/RBMN-XXXXX-update-repos
 
 [commit_message]
 RBMN-XXXXX | updated shared files
@@ -17,10 +17,12 @@ RBMN-XXXXX | updated shared files
 RBMN-XXXXX | updated shared files
 
 [pr_description]
-[RBMN-XXXXX](https://jira.redbullmediahouse.com/browse/RBMN-XXXXX)
+[RBMN-53860](https://jira.redbullmediahouse.com/browse/RBMN-53860)
 
-### Updates:
+- updated auto assign triggers to manage "needs review" / "wip" / "wontfix" labels automatically
 
-- added new files
-- created script
-- created config
+## Related
+
+- https://github.com/RBNA/rbak-shared-sdk-setup-android/pull/44
+
+Update PR description
