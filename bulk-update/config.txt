@@ -8,7 +8,7 @@ tinkooladik/github_packages_test
 .github/bulk-test/test2.txt
 
 [branch]
-alex/RBMN-12345-update-repos
+alex/RBMN-12345-comment-prs
 
 [commit_message]
 RBMN-XXXXX | updated shared files
