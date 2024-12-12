@@ -304,5 +304,7 @@ echo
 echo "All repositories processed. 🐈"
 echo
 
-echo "$OUTPUT"
+# Replace <br> with newline
+PROCESSED_OUTPUT=${OUTPUT//<br>/$'\n'}
+echo -e "$PROCESSED_OUTPUT"
 echo "Shared repo PR: $PR_URL"
