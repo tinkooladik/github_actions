@@ -8,7 +8,7 @@ tinkooladik/github_packages_test
 .github/bulk-test/test2.txt
 
 [branch]
-alex/RBMN-12346-comment-prs-demo
+alex/RBMN-12347-comment-prs-demo
 
 [commit_message]
 RBMN-12345 | test pr comments
