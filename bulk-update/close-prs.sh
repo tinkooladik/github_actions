@@ -116,7 +116,7 @@ echo
 PR_INFO=$(gh pr view "$BRANCH" --json url,state,title,body --jq '{url: .url, state: .state, title: .title, description: .body}' 2>/dev/null || true)
 PR_URL=$(echo "$PR_INFO" | jq -r '.url' 2>/dev/null)
 
-gh pr comment "$PR_URL" --body "$OUTPUT"
+gh pr comment "$PR_URL" --body "$OUTPUT" || { echo "Failed to comment on PR $PR_URL 😿"; }
 
 ## Print output
 
