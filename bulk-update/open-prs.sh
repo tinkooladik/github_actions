@@ -306,8 +306,8 @@ if ! create_or_update_pr "$REPO" "$BRANCH"; then
 fi
 
 # Add comment with results
-gh pr comment $PR_URL --body "$OUTPUT"
+gh pr comment "$PR_URL" --body "$OUTPUT"
 
-echo OUTPUT
+echo "$OUTPUT"
 echo
 echo "Shared repo PR: $PR_URL"
