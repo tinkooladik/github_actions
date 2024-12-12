@@ -17,7 +17,7 @@ RBMN-12345 | test pr comments
 RBMN-12345 | comment on prs
 
 [pr_description]
-[RBMN-53860](https://jira.redbullmediahouse.com/browse/RBMN-53860)
+[RBMN-12345](https://jira.redbullmediahouse.com/browse/RBMN-12345)
 
 - updated auto assign triggers to manage "needs review" / "wip" / "wontfix" labels automatically
 
