@@ -147,6 +147,7 @@ update_pr() {
 
 create_or_update_pr() {
     local is_draft_flag=$1 # Accept the --draft flag as the first parameter (optional)
+    echo "$PR_STATE"
     if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
       update_pr "updated" \
           "failed to update PR $PR_URL"
