@@ -1,6 +1,8 @@
 [repos]
 tinkooladik/github_actions_shared
 tinkooladik/github_packages_test
+tinkooladik/update-versions-test
+tinkooladik/update-versions-test-2
 
 [files]
 .github/test-shared-file2.txt

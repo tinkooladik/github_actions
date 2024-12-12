@@ -1,22 +1,6 @@
 [repos]
-RBNA/dtv-stv-android
-RBNA/dtv-rbtv-android
-RBNA/dtv-rallytv-android
-RBNA/rbak-theme-android
-RBNA/rbak-player-android
-RBNA/rbak-consent-android
-RBNA/rbak-network-android
-RBNA/rbak-account-android
-RBNA/rbak-analytics-android
-RBNA/rbak-network-monitor-android
-RBNA/rbak-player-extensions-android
-RBNA/rbak-dtv-ads-android
-RBNA/rbak-dtv-api-android
-RBNA/rbak-dtv-views-android
-RBNA/rbak-dtv-template-android
-RBNA/rbak-dtv-video-metrics-android
-RBNA/rbak-dtv-user-services-android
-RBNA/rbak-dtv-in-app-purchase-android
+tinkooladik/update-versions-test
+tinkooladik/update-versions-test-2
 
 [lib_name]
-rbakVideoMetrics
+libName
