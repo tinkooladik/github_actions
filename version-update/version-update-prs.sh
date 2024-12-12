@@ -5,7 +5,7 @@ set -e
 # Static fields
 BRANCH="bulk/update-library-versions"
 PR_TITLE="Bulk | update library versions"
-VERSION="0.0.1"
+VERSION="0.0.2"
 
 # Get the directory of the current script
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
@@ -63,4 +63,81 @@ COMMIT_NAME="Update $LIB_NAME library version"
 for REPO in "${REPOS[@]}"; do
   echo "🐱🐱🐱 Processing repository: $REPO 🐱🐱🐱"
 
+  # Clone the repository
+  REPO_DIR="$(basename "$REPO")"
+  git clone "https://github.com/$REPO.git" || {
+    echo "Failed to clone $REPO 😿"
+    FAILED_REPOS+=("$REPO")
+    continue
+  }
+  cd "$REPO_DIR" || continue
+
+  # Create or switch to branch
+  if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
+    git checkout "$BRANCH"
+    git pull origin "$BRANCH" --rebase
+  else
+    git checkout -b "$BRANCH"
+  fi
+
+  # Touch the gradle/libs.versions.toml file
+  TOML_FILE="gradle/libs.versions.toml"
+  if [[ ! -f "$TOML_FILE" ]]; then
+    echo "Error: File '$TOML_FILE' not found in $REPO 😿"
+    FAILED_REPOS+=("$REPO (file not found)")
+    cd .. && rm -rf "$REPO_DIR"
+    continue
+  fi
+
+  # Update the version for the library
+  if grep -q "^$LIB_NAME" "$TOML_FILE"; then
+    sed -i.bak -E "s|^($LIB_NAME\s*=\s*\"[0-9]+\.[0-9]+\.[0-9]+).*\"|\1$VERSION\"|" "$TOML_FILE" || {
+      echo "Failed to update $LIB_NAME in $TOML_FILE 😿"
+      FAILED_REPOS+=("$REPO (failed to update version)")
+      cd .. && rm -rf "$REPO_DIR"
+      continue
+    }
+    echo "Updated $LIB_NAME to version $VERSION in $TOML_FILE"
+  else
+    echo "Error: $LIB_NAME not found in $TOML_FILE 😿"
+    FAILED_REPOS+=("$REPO (library not found)")
+    cd .. && rm -rf "$REPO_DIR"
+    continue
+  fi
+
+  # Commit and push changes
+  git add "$TOML_FILE"
+  git commit -m "$COMMIT_NAME" || {
+    echo "No changes to commit for $REPO"
+    FAILED_REPOS+=("$REPO (no changes to commit)")
+  }
+  git push origin "$BRANCH"
+
+  # Create or update a PR
+  PR_URL=$(gh pr create \
+    --title "$PR_TITLE" \
+    --body "Updated $LIB_NAME to version $VERSION." \
+    --base main \
+    --head "$BRANCH" 2>/dev/null) || {
+    echo "Failed to create PR for $REPO 😿"
+    FAILED_REPOS+=("$REPO (failed to create PR)")
+    cd .. && rm -rf "$REPO_DIR"
+    continue
+  }
+
+  PR_LINKS+=("$PR_URL")
+  cd .. && rm -rf "$REPO_DIR"
 done
+
+# Output results
+echo "✅ Pull Requests:"
+for PR_LINK in "${PR_LINKS[@]}"; do
+  echo "$PR_LINK"
+done
+
+if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
+  echo "❌ Failed repositories:"
+  for FAILED_REPO in "${FAILED_REPOS[@]}"; do
+    echo "$FAILED_REPO"
+  done
+fi
