@@ -262,16 +262,16 @@ done
 
 ## Process output
 
-OUTPUT+="✅ Pull Requests:\n"
+OUTPUT+="✅ Pull Requests:<br>"
 for PR_LINK in "${PR_LINKS[@]}"; do
-  OUTPUT+="$PR_LINK\n"
+  OUTPUT+="$PR_LINK<br>"
 done
 
 if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
-  OUTPUT+="\n"
-  OUTPUT+="❌ Failed repos:\n"
+  OUTPUT+="<br>"
+  OUTPUT+="❌ Failed repos:<br>"
   for REPO in "${FAILED_REPOS[@]}"; do
-    OUTPUT+="https://github.com/$REPO\n"
+    OUTPUT+="https://github.com/$REPO<br>"
   done
 fi
 
@@ -304,6 +304,5 @@ echo
 echo "All repositories processed. 🐈"
 echo
 
-echo -e "$OUTPUT"
-echo
+echo "$OUTPUT"
 echo "Shared repo PR: $PR_URL"
