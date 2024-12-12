@@ -147,7 +147,6 @@ update_pr() {
 
 create_or_update_pr() {
     local is_draft_flag=$1 # Accept the --draft flag as the first parameter (optional)
-    echo "$PR_STATE"
     if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
       update_pr "updated" \
           "failed to update PR $PR_URL"
@@ -294,6 +293,7 @@ git push origin "$BRANCH" || { echo "Failed to push changes"; }
 # Create or update PR
 PR_INFO=$(gh pr view "$BRANCH" --json url,state --jq '{url: .url, state: .state}' 2>/dev/null || true)
 PR_URL=$(echo "$PR_INFO" | jq -r '.url' 2>/dev/null)
+PR_STATE=$(echo "$PR_INFO" | jq -r '.state' 2>/dev/null)
 
 if ! create_or_update_pr "--draft"; then
   echo "Couldn't create or update a PR $PR_URL"
