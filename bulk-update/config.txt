@@ -24,6 +24,3 @@ RBMN-12345 | comment on prs
 ## Related
 
 - https://github.com/RBNA/rbak-shared-sdk-setup-android/pull/44
-
-Update PR description<br>
-Update description again
