@@ -264,32 +264,25 @@ done
 
 OUTPUT=""
 
-# Append to the output variable and print
-add_output() {
-  local line="$1"
-  echo "$line"          # Print to console
-  OUTPUT+="$line"$'\n'  # Append to variable
-}
+OUTPUT+="$(printf '😺%.0s' {1..30})"
+OUTPUT+=""
+OUTPUT+="All repositories processed. 🐈"
 
-add_output "$(printf '😺%.0s' {1..30})"
-add_output ""
-add_output "All repositories processed. 🐈"
-
-add_output ""
-add_output "✅ Pull Requests:"
+OUTPUT+=""
+OUTPUT+="✅ Pull Requests:"
 for PR_LINK in "${PR_LINKS[@]}"; do
-  add_output "$PR_LINK"
+  OUTPUT+="$PR_LINK"
 done
 
 if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
-  add_output ""
-  add_output "❌ Failed repos:"
+  OUTPUT+=""
+  OUTPUT+="❌ Failed repos:"
   for REPO in "${FAILED_REPOS[@]}"; do
-    add_output "https://github.com/$REPO"
+    OUTPUT+="https://github.com/$REPO"
   done
 fi
 
-add_output ""
+OUTPUT+=""
 
 ## Post comment with results in shared repo
 REPO="tinkooladik/github_actions"
@@ -313,4 +306,8 @@ if ! create_or_update_pr "$REPO" "$BRANCH"; then
 fi
 
 # Add comment with results
-gh pr comment <PR_NUMBER_OR_URL> --body "$OUTPUT"
+gh pr comment $PR_URL --body "$OUTPUT"
+
+echo OUTPUT
+echo
+echo "Shared repo PR: $PR_URL"
