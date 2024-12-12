@@ -8,13 +8,13 @@ tinkooladik/github_packages_test
 .github/bulk-test/test2.txt
 
 [branch]
-alex/RBMN-12345-comment-prs-closed
+alex/RBMN-12345-comment-prs-demo
 
 [commit_message]
 RBMN-12345 | comment on prs (when closed)
 
 [pr_title]
-RBMN-XXXXX | updated shared files (update 2)
+RBMN-12345 | comment on prs
 
 [pr_description]
 [RBMN-53860](https://jira.redbullmediahouse.com/browse/RBMN-53860)
@@ -26,4 +26,4 @@ RBMN-XXXXX | updated shared files (update 2)
 - https://github.com/RBNA/rbak-shared-sdk-setup-android/pull/44
 
 Update PR description
-Update description again 2
+Update description again
