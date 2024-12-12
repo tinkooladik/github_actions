@@ -136,7 +136,7 @@ for REPO in "${REPOS[@]}"; do
 
   # Commit and push changes
   git add "$TOML_FILE"
-  git commit -m "Updated $LIB_NAME to version $VERSION." || {
+  git commit -m "Updated $LIB_NAME to version $VERSION" || {
     echo "No changes to commit for $REPO"
     FAILED_REPOS+=("$REPO (no changes to commit)")
     cd ..; cleanup; continue;
