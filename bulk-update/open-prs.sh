@@ -297,7 +297,7 @@ if ! create_or_update_pr "--draft"; then
 fi
 
 # Add comment with results
-gh pr comment "$PR_URL" ---body "$OUTPUT" || { echo "Failed to comment on PR $PR_URL 😿"; }
+gh pr comment "$PR_URL" ---body "$OUTPUT" #|| { echo "Failed to comment on PR $PR_URL 😿"; }
 
 printf '😺%.0s' {1..30}
 echo
