@@ -262,27 +262,18 @@ done
 
 ## Process output
 
-OUTPUT=""
-
-OUTPUT+="$(printf '😺%.0s' {1..30})"
-OUTPUT+=""
-OUTPUT+="All repositories processed. 🐈"
-
-OUTPUT+=""
-OUTPUT+="✅ Pull Requests:"
+OUTPUT+="✅ Pull Requests:\n"
 for PR_LINK in "${PR_LINKS[@]}"; do
-  OUTPUT+="$PR_LINK"
+  OUTPUT+="$PR_LINK\n"
 done
 
 if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
-  OUTPUT+=""
-  OUTPUT+="❌ Failed repos:"
+  OUTPUT+="\n"
+  OUTPUT+="❌ Failed repos:\n"
   for REPO in "${FAILED_REPOS[@]}"; do
-    OUTPUT+="https://github.com/$REPO"
+    OUTPUT+="https://github.com/$REPO\n"
   done
 fi
-
-OUTPUT+=""
 
 ## Post comment with results in shared repo
 REPO="tinkooladik/github_actions"
@@ -307,6 +298,11 @@ fi
 
 # Add comment with results
 gh pr comment "$PR_URL" --body "$OUTPUT"
+
+printf '😺%.0s' {1..30}
+echo
+echo "All repositories processed. 🐈"
+echo
 
 echo "$OUTPUT"
 echo
