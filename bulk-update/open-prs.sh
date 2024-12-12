@@ -304,6 +304,6 @@ echo
 echo "All repositories processed. 🐈"
 echo
 
-echo "$OUTPUT"
+echo -e "$OUTPUT"
 echo
 echo "Shared repo PR: $PR_URL"
