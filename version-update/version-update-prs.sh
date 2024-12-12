@@ -6,6 +6,7 @@ set -e
 BRANCH="bulk/update-library-versions"
 PR_TITLE="Bulk | update library versions"
 VERSION="0.0.2"
+LIB_PR_URL="https://github.com/tinkooladik/github_actions/pull/1"
 
 # Get the directory of the current script
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
@@ -114,19 +115,46 @@ for REPO in "${REPOS[@]}"; do
   git push origin "$BRANCH"
 
   # Create or update a PR
-  PR_URL=$(gh pr create \
-    --title "$PR_TITLE" \
-    --body "Updated $LIB_NAME to version $VERSION." \
-    --base main \
-    --head "$BRANCH" 2>/dev/null) || {
-    echo "Failed to create PR for $REPO 😿"
-    FAILED_REPOS+=("$REPO (failed to create PR)")
-    cd .. && rm -rf "$REPO_DIR"
-    continue
-  }
+  PR_INFO=$(gh pr view "$BRANCH" --json url,body,state --jq '{url: .url, body: .body, state: .state}' 2>/dev/null || true)
+  PR_URL=$(echo "$PR_INFO" | jq -r '.url')
+  PR_BODY=$(echo "$PR_INFO" | jq -r '.body')
+  PR_STATE=$(echo "$PR_INFO" | jq -r '.state')
 
-  PR_LINKS+=("$PR_URL")
-  cd .. && rm -rf "$REPO_DIR"
+  if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
+    echo "PR already exists: $PR_URL"
+
+    # Append LIB_PR_URL to the existing description if not already present
+    if [[ "$PR_BODY" != *"$LIB_PR_URL"* ]]; then
+      UPDATED_PR_BODY="${PR_BODY}"$'<br>'"$LIB_PR_URL"
+      gh pr edit "$BRANCH" \
+        --body "$UPDATED_PR_BODY" || {
+          echo "Failed to update PR $PR_URL 😿"
+          FAILED_REPOS+=("$REPO (failed to update PR)")
+          cd .. && rm -rf "$REPO_DIR"
+          continue
+        }
+      echo "Updated PR description for $PR_URL"
+    else
+      echo "LIB_PR_URL already present in PR description for $PR_URL"
+    fi
+  else
+    echo "Opening a new PR"
+    PR_URL=$(gh pr create \
+      --title "$PR_TITLE" \
+      --body "Updated $LIB_NAME to version $VERSION." \
+      --base main \
+      --head "$BRANCH" 2>/dev/null) || {
+      echo "Failed to create PR for $REPO 😿"
+      FAILED_REPOS+=("$REPO (failed to create PR)")
+      cd .. && rm -rf "$REPO_DIR"
+      continue
+    }
+
+    if [[ $? -eq 0 && -n "$PR_URL" ]]; then
+      PR_LINKS+=("$PR_URL")
+    fi
+  fi
+
 done
 
 # Output results
