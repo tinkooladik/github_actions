@@ -98,6 +98,37 @@ cleanup() {
   fi
 }
 
+# Set up a trap to call cleanup when the script exits
+trap cleanup EXIT
+
+checkout_or_create_branch() {
+  local REPO=$1
+  local BRANCH=$2
+
+  if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
+    echo "Branch '$BRANCH' already exists locally. Checking out..."
+    git checkout "$BRANCH"
+    git pull origin "$BRANCH" --rebase || {
+      echo "Failed to pull changes for branch '$BRANCH' 😿"
+      FAILED_REPOS+=("$REPO (failed to pull changes)")
+      return 1
+    }
+  elif git ls-remote --heads "https://github.com/$REPO.git" "$BRANCH" | grep -q "$BRANCH"; then
+    echo "Branch '$BRANCH' exists on remote but not locally. Checking out and pulling..."
+    git checkout -b "$BRANCH" --track "origin/$BRANCH"
+    git pull origin "$BRANCH" --rebase || {
+      echo "Failed to pull changes for branch '$BRANCH' 😿"
+      FAILED_REPOS+=("$REPO (failed to pull changes)")
+      return 1
+    }
+  else
+    echo "Branch '$BRANCH' does not exist. Creating a new branch..."
+    git checkout -b "$BRANCH"
+  fi
+
+  return 0
+}
+
 update_pr() {
     local success_msg="$1"
     local error_msg="$2"
@@ -114,8 +145,26 @@ update_pr() {
     fi
 }
 
-# Set up a trap to call cleanup when the script exits
-trap cleanup EXIT
+create_or_update_pr() {
+    if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
+      update_pr "updated" \
+          "failed to update PR $PR_URL"
+    else
+      echo "Opening a new PR"
+      PR_URL=$(gh pr create \
+          --title "$PR_TITLE" \
+          --body "$PR_DESCRIPTION" \
+          --base main \
+          --head "$BRANCH" 2>/dev/null) || {
+                echo "Failed to create PR for repo $REPO 😿";
+                FAILED_REPOS+=("$REPO (failed to create PR)");
+                return 1
+             }
+      if [[ $? -eq 0 && -n "$PR_URL" ]]; then
+          PR_LINKS+=("$PR_URL");
+      fi
+    fi
+}
 
 # Process each repository
 for REPO in "${REPOS[@]}"; do
@@ -139,25 +188,10 @@ for REPO in "${REPOS[@]}"; do
   }
 
   # Check if the branch exists locally or remotely
-  if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
-      echo "Branch '$BRANCH' already exists locally. Checking out..."
-      git checkout "$BRANCH"
-      git pull origin "$BRANCH" --rebase || {
-          echo "Failed to pull changes for branch '$BRANCH' 😿";
-          FAILED_REPOS+=("$REPO (failed to pull changes)");
-          cd ..; cleanup; continue;
-      }
-  elif git ls-remote --heads "https://github.com/$REPO.git" "$BRANCH" | grep -q "$BRANCH"; then
-      echo "Branch '$BRANCH' exists on remote but not locally. Checking out and pulling..."
-      git checkout -b "$BRANCH" --track "origin/$BRANCH"
-      git pull origin "$BRANCH" --rebase || {
-          echo "Failed to pull changes for branch '$BRANCH' 😿";
-          FAILED_REPOS+=("$REPO (failed to pull changes)");
-          cd ..; cleanup; continue;
-      }
-  else
-      echo "Branch '$BRANCH' does not exist. Creating a new branch..."
-      git checkout -b "$BRANCH"
+  if ! checkout_or_create_branch "$REPO" "$BRANCH"; then
+    cd ..
+    cleanup
+    continue
   fi
 
   # Copy specified files or remove them if missing in the base directory
@@ -215,24 +249,10 @@ for REPO in "${REPOS[@]}"; do
     cd ..; cleanup; continue;
   }
 
-  if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
-    update_pr "updated" \
-        "failed to update PR $PR_URL"
-  else
-    echo "Opening a new PR"
-    PR_URL=$(gh pr create \
-        --title "$PR_TITLE" \
-        --body "$PR_DESCRIPTION" \
-        --base main \
-        --head "$BRANCH" 2>/dev/null) || {
-              echo "Failed to create PR for repo $REPO 😿";
-              FAILED_REPOS+=("$REPO (failed to create PR)");
-              cd ..; cleanup; continue;
-           }
-
-    if [[ $? -eq 0 && -n "$PR_URL" ]]; then
-        PR_LINKS+=("$PR_URL");
-    fi
+  if ! create_or_update_pr "$REPO" "$BRANCH"; then
+    cd ..
+    cleanup
+    continue
   fi
 
   # Go back to the root directory
@@ -240,21 +260,57 @@ for REPO in "${REPOS[@]}"; do
   cleanup
 done
 
-printf '😺%.0s' {1..30}
-echo
-echo "All repositories processed. 🐈"
+## Process output
 
-echo
-echo "✅ Pull Requests:"
+OUTPUT=""
+
+# Append to the output variable and print
+add_output() {
+  local line="$1"
+  echo "$line"          # Print to console
+  OUTPUT+="$line"$'\n'  # Append to variable
+}
+
+add_output "$(printf '😺%.0s' {1..30})"
+add_output ""
+add_output "All repositories processed. 🐈"
+
+add_output ""
+add_output "✅ Pull Requests:"
 for PR_LINK in "${PR_LINKS[@]}"; do
-  echo "$PR_LINK"
+  add_output "$PR_LINK"
 done
 
 if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
-  echo
-  echo "❌ Failed repos:"
+  add_output ""
+  add_output "❌ Failed repos:"
   for REPO in "${FAILED_REPOS[@]}"; do
-    echo "https://github.com/$REPO"
+    add_output "https://github.com/$REPO"
   done
 fi
-echo
+
+add_output ""
+
+## Post comment with results in shared repo
+REPO="tinkooladik/github_actions"
+
+# Check if the branch exists locally or remotely
+if ! checkout_or_create_branch "$REPO" "$BRANCH"; then
+  echo "Couldn't checkout shared repo branch"
+fi
+
+# Commit and push changes in shared repo
+git add .
+git commit -m "$COMMIT_MESSAGE" || { echo "No changes to commit"; }
+git push origin "$BRANCH" || { echo "Failed to push changes"; }
+
+# Create or update PR
+PR_INFO=$(gh pr view "$BRANCH" --json url,state --jq '{url: .url, state: .state}' 2>/dev/null || true)
+PR_URL=$(echo "$PR_INFO" | jq -r '.url' 2>/dev/null)
+
+if ! create_or_update_pr "$REPO" "$BRANCH"; then
+  echo "Couldn't create or update a PR $PR_URL"
+fi
+
+# Add comment with results
+gh pr comment <PR_NUMBER_OR_URL> --body "$OUTPUT"
