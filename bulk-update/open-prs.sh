@@ -146,6 +146,7 @@ update_pr() {
 }
 
 create_or_update_pr() {
+    local is_draft_flag=$1 # Accept the --draft flag as the first parameter (optional)
     if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
       update_pr "updated" \
           "failed to update PR $PR_URL"
@@ -155,7 +156,8 @@ create_or_update_pr() {
           --title "$PR_TITLE" \
           --body "$PR_DESCRIPTION" \
           --base main \
-          --head "$BRANCH" 2>/dev/null) || {
+          --head "$BRANCH" \
+          $is_draft_flag 2>/dev/null) || {
                 echo "Failed to create PR for repo $REPO 😿";
                 FAILED_REPOS+=("$REPO (failed to create PR)");
                 return 1
@@ -249,7 +251,7 @@ for REPO in "${REPOS[@]}"; do
     cd ..; cleanup; continue;
   }
 
-  if ! create_or_update_pr "$REPO" "$BRANCH"; then
+  if ! create_or_update_pr ""; then
     cd ..
     cleanup
     continue
@@ -292,7 +294,7 @@ git push origin "$BRANCH" || { echo "Failed to push changes"; }
 PR_INFO=$(gh pr view "$BRANCH" --json url,state --jq '{url: .url, state: .state}' 2>/dev/null || true)
 PR_URL=$(echo "$PR_INFO" | jq -r '.url' 2>/dev/null)
 
-if ! create_or_update_pr "$REPO" "$BRANCH"; then
+if ! create_or_update_pr "--draft"; then
   echo "Couldn't create or update a PR $PR_URL"
 fi
 
