@@ -263,7 +263,7 @@ done
 
 OUTPUT+="✅ Pull Requests:<br>"
 for PR_LINK in "${PR_LINKS[@]}"; do
-  OUTPUT+="$PR_LINK<br>"
+  OUTPUT+="- $PR_LINK<br>"
 done
 
 if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then

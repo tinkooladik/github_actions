@@ -99,7 +99,7 @@ done
 echo
 OUTPUT+="🚫 Closed PRs:<br>"
 for PR_LINK in "${CLOSED_PRS[@]}"; do
-  OUTPUT+="$PR_LINK<br>"
+  OUTPUT+="- $PR_LINK<br>"
 done
 
 if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
