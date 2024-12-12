@@ -102,9 +102,6 @@ cleanup() {
 trap cleanup EXIT
 
 checkout_or_create_branch() {
-  local REPO=$1
-  local BRANCH=$2
-
   if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
     echo "Branch '$BRANCH' already exists locally. Checking out..."
     git checkout "$BRANCH"
@@ -190,7 +187,7 @@ for REPO in "${REPOS[@]}"; do
   }
 
   # Check if the branch exists locally or remotely
-  if ! checkout_or_create_branch "$REPO" "$BRANCH"; then
+  if ! checkout_or_create_branch; then
     cd ..
     cleanup
     continue
@@ -264,9 +261,8 @@ done
 
 ## Process output
 
-OUTPUT+="✅ Pull Requests:<br>"
 for PR_LINK in "${PR_LINKS[@]}"; do
-  OUTPUT+="$PR_LINK<br>"
+  OUTPUT+="- $PR_LINK<br>"
 done
 
 if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
@@ -281,7 +277,7 @@ fi
 REPO="tinkooladik/github_actions"
 
 # Check if the branch exists locally or remotely
-if ! checkout_or_create_branch "$REPO" "$BRANCH"; then
+if ! checkout_or_create_branch; then
   echo "Couldn't checkout shared repo branch"
 fi
 
@@ -300,12 +296,15 @@ if ! create_or_update_pr "--draft"; then
 fi
 
 # Add comment with results
-gh pr comment "$PR_URL" --body "$OUTPUT"
+gh pr comment "$PR_URL" --body "$OUTPUT" || { echo "Failed to comment on PR $PR_URL 😿"; }
 
+echo
 printf '😺%.0s' {1..30}
 echo
 echo "All repositories processed. 🐈"
 echo
+
+echo "✅ Pull Requests:"
 
 # Replace <br> with newline
 PROCESSED_OUTPUT=${OUTPUT//<br>/$'\n'}
