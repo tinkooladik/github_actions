@@ -261,7 +261,6 @@ done
 
 ## Process output
 
-OUTPUT+="✅ Pull Requests:<br>"
 for PR_LINK in "${PR_LINKS[@]}"; do
   OUTPUT+="- $PR_LINK<br>"
 done
@@ -303,6 +302,8 @@ printf '😺%.0s' {1..30}
 echo
 echo "All repositories processed. 🐈"
 echo
+
+echo "✅ Pull Requests:<br>"
 
 # Replace <br> with newline
 PROCESSED_OUTPUT=${OUTPUT//<br>/$'\n'}
