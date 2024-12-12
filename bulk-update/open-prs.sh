@@ -298,12 +298,13 @@ fi
 # Add comment with results
 gh pr comment "$PR_URL" --body "$OUTPUT" || { echo "Failed to comment on PR $PR_URL 😿"; }
 
+echo
 printf '😺%.0s' {1..30}
 echo
 echo "All repositories processed. 🐈"
 echo
 
-echo "✅ Pull Requests:<br>"
+echo "✅ Pull Requests:"
 
 # Replace <br> with newline
 PROCESSED_OUTPUT=${OUTPUT//<br>/$'\n'}

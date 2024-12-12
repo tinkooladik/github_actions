@@ -96,8 +96,6 @@ done
 
 ## Process output
 
-echo
-OUTPUT+="🚫 Closed PRs:<br>"
 for PR_LINK in "${CLOSED_PRS[@]}"; do
   OUTPUT+="- $PR_LINK<br>"
 done
@@ -120,9 +118,12 @@ gh pr comment "$PR_URL" --body "$OUTPUT" || { echo "Failed to comment on PR $PR_
 
 ## Print output
 
+echo
 printf '😺%.0s' {1..30}
 echo
 echo "All repositories processed. 🐈"
+echo
+echo "🚫 Closed PRs:"
 
 # Replace <br> with newline
 PROCESSED_OUTPUT=${OUTPUT//<br>/$'\n'}
