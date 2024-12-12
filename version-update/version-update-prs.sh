@@ -5,7 +5,7 @@ set -e
 # Static fields
 BRANCH="bulk/update-library-versions"
 PR_TITLE="Bulk | update library versions"
-VERSION="0.0.2"
+VERSION="0.0.3"
 LIB_PR_URL="https://github.com/tinkooladik/github_actions/pull/1"
 
 # Get the directory of the current script
@@ -153,12 +153,21 @@ for REPO in "${REPOS[@]}"; do
   PR_BODY=$(echo "$PR_INFO" | jq -r '.body')
   PR_STATE=$(echo "$PR_INFO" | jq -r '.state')
 
+  OUTPUT_FILE="output.txt"
+  true > "$OUTPUT_FILE"  # Create or clear the file
+
   if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
     echo "PR already exists: $PR_URL"
 
     # Append LIB_PR_URL to the existing description if not already present
     if [[ "$PR_BODY" != *"$LIB_PR_URL"* ]]; then
-      UPDATED_PR_BODY="${PR_BODY}"$'<br>'"- $LIB_PR_URL"
+      # Update PR description to include new library
+      {
+        echo "${PR_BODY}"
+        echo
+        echo "- $LIB_PR_URL"
+      } >> "$OUTPUT_FILE"
+      UPDATED_PR_BODY=$(<"$OUTPUT_FILE")
       gh pr edit "$BRANCH" \
         --body "$UPDATED_PR_BODY" || {
           echo "Failed to update PR $PR_URL 😿"
@@ -172,9 +181,15 @@ for REPO in "${REPOS[@]}"; do
     fi
   else
     echo "Opening a new PR"
+    {
+      echo "## Dependency"
+      echo
+      echo "- $LIB_PR_URL"
+    } >> "$OUTPUT_FILE"
+    UPDATED_PR_BODY=$(<"$OUTPUT_FILE")
     PR_URL=$(gh pr create \
       --title "$PR_TITLE" \
-      --body "- $LIB_PR_URL" \
+      --body "$UPDATED_PR_BODY" \
       --base main \
       --head "$BRANCH" 2>/dev/null) || {
       echo "Failed to create PR for $REPO 😿"
@@ -194,18 +209,34 @@ done
 
 ## Process output
 
+OUTPUT_FILE="output.txt"
+true > "$OUTPUT_FILE"  # Create or clear the file
+
+{
+  echo "✅ Version update PRs:"
+  echo
+} >> "$OUTPUT_FILE"
+
 for PR_LINK in "${PR_LINKS[@]}"; do
-  OUTPUT+="- $PR_LINK<br>"
+  {
+    echo "- $PR_LINK"
+  } >> "$OUTPUT_FILE"
 done
 
 if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
-  OUTPUT+="<br>"
-  OUTPUT+="❌ Failed repos:<br>"
+  {
+    echo
+    echo "❌ Failed repos:"
+  } >> "$OUTPUT_FILE"
   for REPO in "${FAILED_REPOS[@]}"; do
-    OUTPUT+="https://github.com/$REPO<br>"
+    {
+      echo "- https://github.com/$REPO"
+    } >> "$OUTPUT_FILE"
   done
 fi
 echo
+
+OUTPUT=$(<"$OUTPUT_FILE")
 
 ## Comment on PR
 gh pr comment "$LIB_PR_URL" --body "$OUTPUT" || { echo "Failed to comment on PR $LIB_PR_URL 😿"; }
@@ -216,9 +247,8 @@ printf '😺%.0s' {1..30}
 echo
 echo "All repositories processed. 🐈"
 echo
-echo "Version update PRs:"
-
-# Replace <br> with newline
-PROCESSED_OUTPUT=${OUTPUT//<br>/$'\n'}
-echo -e "$PROCESSED_OUTPUT"
+echo -e "$OUTPUT"
+echo
 echo "Current repo PR: $LIB_PR_URL"
+
+rm "$OUTPUT_FILE"
