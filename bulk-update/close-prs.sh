@@ -97,7 +97,7 @@ done
 ## Process output
 
 echo
-OUTPUT+="✅ Closed PRs:<br>"
+OUTPUT+="🚫 Closed PRs:<br>"
 for PR_LINK in "${CLOSED_PRS[@]}"; do
   OUTPUT+="$PR_LINK<br>"
 done
@@ -117,6 +117,8 @@ PR_INFO=$(gh pr view "$BRANCH" --json url,state,title,body --jq '{url: .url, sta
 PR_URL=$(echo "$PR_INFO" | jq -r '.url' 2>/dev/null)
 
 gh pr comment "$PR_URL" --body "$OUTPUT"
+
+## Print output
 
 printf '😺%.0s' {1..30}
 echo

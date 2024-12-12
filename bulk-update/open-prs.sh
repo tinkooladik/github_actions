@@ -102,9 +102,6 @@ cleanup() {
 trap cleanup EXIT
 
 checkout_or_create_branch() {
-  local REPO=$1
-  local BRANCH=$2
-
   if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
     echo "Branch '$BRANCH' already exists locally. Checking out..."
     git checkout "$BRANCH"
@@ -190,7 +187,7 @@ for REPO in "${REPOS[@]}"; do
   }
 
   # Check if the branch exists locally or remotely
-  if ! checkout_or_create_branch "$REPO" "$BRANCH"; then
+  if ! checkout_or_create_branch; then
     cd ..
     cleanup
     continue
@@ -281,7 +278,7 @@ fi
 REPO="tinkooladik/github_actions"
 
 # Check if the branch exists locally or remotely
-if ! checkout_or_create_branch "$REPO" "$BRANCH"; then
+if ! checkout_or_create_branch; then
   echo "Couldn't checkout shared repo branch"
 fi
 
