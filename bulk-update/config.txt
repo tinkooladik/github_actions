@@ -8,10 +8,10 @@ tinkooladik/github_packages_test
 .github/bulk-test/test2.txt
 
 [branch]
-alex/RBMN-12345-comment-prs
+alex/RBMN-12345-comment-prs-closed
 
 [commit_message]
-RBMN-XXXXX | updated shared files
+RBMN-12345 | comment on prs (when closed)
 
 [pr_title]
 RBMN-XXXXX | updated shared files (update 2)

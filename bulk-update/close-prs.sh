@@ -94,21 +94,35 @@ for REPO in "${REPOS[@]}"; do
   fi
 done
 
+## Process output
+
+echo
+OUTPUT+="✅ Closed PRs:<br>"
+for PR_LINK in "${CLOSED_PRS[@]}"; do
+  OUTPUT+="$PR_LINK<br>"
+done
+
+if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
+  OUTPUT+="<br>"
+  OUTPUT+="❌ Failed repos:<br>"
+  for REPO in "${FAILED_REPOS[@]}"; do
+    OUTPUT+="https://github.com/$REPO<br>"
+  done
+fi
+echo
+
+## Comment on PR
+
+PR_INFO=$(gh pr view "$BRANCH" --json url,state,title,body --jq '{url: .url, state: .state, title: .title, description: .body}' 2>/dev/null || true)
+PR_URL=$(echo "$PR_INFO" | jq -r '.url' 2>/dev/null)
+
+gh pr comment "$PR_URL" --body "$OUTPUT"
+
 printf '😺%.0s' {1..30}
 echo
 echo "All repositories processed. 🐈"
 
-echo
-echo "✅ Closed PRs:"
-for PR_LINK in "${CLOSED_PRS[@]}"; do
-  echo "$PR_LINK"
-done
-
-if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
-  echo
-  echo "❌ Failed repos:"
-  for REPO in "${FAILED_REPOS[@]}"; do
-    echo "https://github.com/$REPO"
-  done
-fi
-echo
+# Replace <br> with newline
+PROCESSED_OUTPUT=${OUTPUT//<br>/$'\n'}
+echo -e "$PROCESSED_OUTPUT"
+echo "Shared repo PR: $PR_URL"
