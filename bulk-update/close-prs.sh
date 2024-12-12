@@ -79,7 +79,7 @@ for REPO in "${REPOS[@]}"; do
       echo "Closing PR $PR_URL"
       if gh pr close "$PR_NUMBER" --repo "$REPO"; then
         echo "Closed PR $PR_URL"
-        CLOSED_PRS+=("$PR_URL")
+        CLOSED_PRS+=("$PR_URL (closed)")
       else
         echo "Failed to close PR $PR_URL 😿"
         FAILED_REPOS+=("$REPO (failed to close $PR_URL)")
