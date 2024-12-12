@@ -5,7 +5,7 @@ set -e
 # Static fields
 BRANCH="bulk/update-library-versions"
 PR_TITLE="Bulk | update library versions"
-VERSION="0.0.3"
+VERSION="0.0.4"
 LIB_PR_URL="https://github.com/tinkooladik/github_actions/pull/1"
 
 # Get the directory of the current script
@@ -121,7 +121,12 @@ for REPO in "${REPOS[@]}"; do
   fi
 
   # Update the version for the library
-  if grep -q "^$LIB_NAME" "$TOML_FILE"; then
+  if grep -q "^${LIB_NAME}[[:space:]]" "$TOML_FILE"; then
+    # Extract the current version
+    CURRENT_VERSION=$(grep "^${LIB_NAME}[[:space:]]" "$TOML_FILE" | sed -E "s/^${LIB_NAME}[[:space:]]*=[[:space:]]*\"([^\"]+)\".*/\1/")
+    echo "Current version of $LIB_NAME: $CURRENT_VERSION"
+
+    # Update to the new version
     sed -i '' -E "s/^(${LIB_NAME}[[:space:]]*=[[:space:]]*\").*\"/\1$VERSION\"/" "$TOML_FILE" || {
       echo "Failed to update $LIB_NAME in $TOML_FILE 😿"
       FAILED_REPOS+=("$REPO (failed to update version)")
@@ -141,6 +146,7 @@ for REPO in "${REPOS[@]}"; do
     FAILED_REPOS+=("$REPO (no changes to commit)")
     cd ..; cleanup; continue;
   }
+
   git push origin "$BRANCH" || {
     echo "No changes to push changes for $REPO"
     FAILED_REPOS+=("$REPO (failed to push)")
@@ -156,7 +162,7 @@ for REPO in "${REPOS[@]}"; do
   OUTPUT_FILE="output.txt"
   true > "$OUTPUT_FILE"  # Create or clear the file
 
-  if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" ]]; then
+  if [[ -n "$PR_URL" && "$PR_STATE" != "CLOSED" && "$PR_STATE" != "MERGED" ]]; then
     echo "PR already exists: $PR_URL"
 
     # Append LIB_PR_URL to the existing description if not already present
@@ -175,6 +181,7 @@ for REPO in "${REPOS[@]}"; do
           cd ..; cleanup; continue;
         }
       echo "Updated PR description for $PR_URL"
+      PR_LINKS+=("$PR_URL (updated)")
     else
       echo "LIB_PR_URL already present in PR description for $PR_URL"
       cd ..; cleanup; continue;
@@ -213,8 +220,7 @@ OUTPUT_FILE="output.txt"
 true > "$OUTPUT_FILE"  # Create or clear the file
 
 {
-  echo "✅ Version update PRs:"
-  echo
+  echo "### ✅ Version update PRs:"
 } >> "$OUTPUT_FILE"
 
 for PR_LINK in "${PR_LINKS[@]}"; do
@@ -226,7 +232,7 @@ done
 if [[ ${#FAILED_REPOS[@]} -gt 0 ]]; then
   {
     echo
-    echo "❌ Failed repos:"
+    echo "### ❌ Failed repos:"
   } >> "$OUTPUT_FILE"
   for REPO in "${FAILED_REPOS[@]}"; do
     {
