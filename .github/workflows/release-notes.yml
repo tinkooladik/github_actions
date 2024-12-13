@@ -9,4 +9,4 @@ jobs:
   generate_notes_and_create_pr:
     permissions: write-all
     uses: tinkooladik/github_actions_shared/.github/workflows/release-notes-shared.yml@main
-## test 3
+## test 4
