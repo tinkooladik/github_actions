@@ -5,8 +5,10 @@ set -e
 # Static fields
 BRANCH="bulk/update-library-versions"
 PR_TITLE="Bulk | update library versions"
-VERSION="0.0.4"
-LIB_PR_URL="https://github.com/tinkooladik/github_actions/pull/1"
+
+# Access variables from environment
+VERSION="${VERSION:-default_version}"
+LIB_PR_URL="${LIB_PR_URL:-default_url}"
 
 # Get the directory of the current script
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
